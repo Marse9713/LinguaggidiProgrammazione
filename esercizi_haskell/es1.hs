@@ -1,6 +1,6 @@
---esercizio fattoriale 10000!
---per eseguire il fattoriale va moltiplicato ogni
---numero fino al numero desiderato (esempio 5 * 4 * 3 * 2 * 1)
+{-esercizio fattoriale 10000!
+per eseguire il fattoriale va moltiplicato ogni
+numero fino al numero desiderato (esempio 5 * 4 * 3 * 2 * 1)-}
 
 
 fattoriale :: (Eq p, Num p) => p -> p
@@ -16,8 +16,8 @@ testfattoriale = fattoriale 10000
 ------------------------------------------------------------------------
 
 
---esercizio sulla funzione di combinazione di k elementi su n
---devo fare (n! / k! * (n-k)!) binomiale
+{-esercizio sulla funzione di combinazione di k elementi su n
+devo fare (n! / k! * (n-k)!) binomiale-}
 
 
 numeratore :: (Eq p, Num p) => p -> p
@@ -39,25 +39,14 @@ testcombinatorio = combinatorio 5 3
 ------------------------------------------------------------------------
 
 
---esercizio del calcolo di tutte le combinazioni su n elementi
---va sommato ogni elemento all'interno della lista quindi da poter verificare
---che tutte le combinazioni siano rispettate
+{-esercizio del calcolo di tutte le combinazioni su n elementi
+va sommato ogni elemento all'interno della lista quindi da poter verificare
+che tutte le combinazioni siano rispettate-}
 
---factorial n = go n 1
-   -- where
-   -- go n res
-     --   | n > 1     = go (n - 1) (res * n)
-       -- | otherwise = res
+combinazioni list 0 = [[]]
+combinazioni [] n = []
 
---combo :: [a] -> Int -> [a]
---combo :: [a] -> Int -> [a]
-combo a k = (a !! k):[] --(combo a (k+1))
+--combinazioni (x : xs) n = map (x :) (combinazioni xs (n - 1)) ++ (combinazioni xs n)
 
---combo2 :: [a] -> Int -> [a]
-
-combo2 l k = if(k == length(l) - 1)
-              then combo l k
-              else (combo l k) ++ (combo2 l (k+1))
-  
-testcombo2 = combo2 [1, 2, 3, 4] 0
+testcombo = combinazioni [1, 2, 3, 4] 3
 
