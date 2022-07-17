@@ -51,14 +51,9 @@ testcombinatorio = combinatorio 5 3
 
 --combo :: [a] -> Int -> [a]
 combo :: [a] -> Int -> [a]
-combo a k = (a !! k):[] --(combo a (k+1))
+--combo a k = (a !! k):[] --(combo a (k+1))
 
-combo2 :: [a] -> Int -> [a]
-combo2 l = combo l 0
-            where
-                combo l k
-                   | k < length(l) = (combo l (k + 1))
-                   | otherwise = l
-
+--combo2 :: [a] -> Int -> [a]
+combo2 l = 
 testcombo2 = combo2 [1, 2, 3, 4]
 
