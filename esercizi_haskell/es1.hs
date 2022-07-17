@@ -50,10 +50,14 @@ testcombinatorio = combinatorio 5 3
        -- | otherwise = res
 
 --combo :: [a] -> Int -> [a]
-combo :: [a] -> Int -> [a]
---combo a k = (a !! k):[] --(combo a (k+1))
+--combo :: [a] -> Int -> [a]
+combo a k = (a !! k):[] --(combo a (k+1))
 
 --combo2 :: [a] -> Int -> [a]
-combo2 l = 
-testcombo2 = combo2 [1, 2, 3, 4]
+
+combo2 l k = if(k == length(l) - 1)
+              then combo l k
+              else (combo l k) ++ (combo2 l (k+1))
+  
+testcombo2 = combo2 [1, 2, 3, 4] 0
 
