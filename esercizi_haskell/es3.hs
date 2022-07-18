@@ -5,10 +5,6 @@ calcola se è ben formata, altrimenti restituisce (-1,-1)
 
 matrix_dim l = matrix_dm1 l (length l)
 
-{-matrix_dim1 l rows = if(rows == 0)
-    then((length l) ++ (length l))
-    else if()-}
-
 
 matrix_dm1 l rows = if(rows == 0)
     then (length l, length  l)
