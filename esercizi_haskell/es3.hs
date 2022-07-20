@@ -30,14 +30,16 @@ che somma tutti i valori delle singole colonne-}
 
 colsums l = colsums1 l 0 0
 
-colsums1 l r c =
-    if(r == (length (head l)))
-        then 
-        else (sumteste l c r) + (colsums1 l (r + 1) c)
+colsums1 l c r = colsums2 l c r []
 
-sumteste l c r = 
+colsums2 l c r ris= 
+    if(r == (length (head l)))
+        then reverse ris
+        else (colsums2 l c (r + 1) ris ++ (sumteste l c r 0))
+
+sumteste l c r s = 
     if(c == length l)
-    then 0
-    else (((l !! c) !! r) + (sumteste l (c + 1) r)) --return di un int
+    then s:[]
+    else (sumteste l (c + 1) r (((l !! c) !! r) + s))  -- + (sumteste l (c + 1) r) return di un int
 
 testhead = colsums [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
