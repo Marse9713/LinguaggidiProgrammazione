@@ -46,7 +46,7 @@ che tutte le combinazioni siano rispettate-}
 combinazioni list 0 = [[]]
 combinazioni [] n = []
 
---combinazioni (x : xs) n = map (x :) (combinazioni xs (n - 1)) ++ (combinazioni xs n)
+combinazioni (x : xs) n = map (x :) (combinazioni xs (n - 1)) ++ (combinazioni xs n)
 
 testcombo = combinazioni [1, 2, 3, 4] 3
 
