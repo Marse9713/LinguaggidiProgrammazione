@@ -3,4 +3,4 @@ generaraCoppia nEsercizi matricola = (primo, secondo) where
   secondo = (matricola `mod` (nEsercizi - 3) + primo + 1) `mod`  nEsercizi + 1
 
 testcoppia :: (Integer, Integer)
-testcoppia = generaraCoppia 9 133879 --5,8
+testcoppia = generaraCoppia 9 132878 --5,8
