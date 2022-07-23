@@ -35,7 +35,7 @@ colsums1 l c r = colsums2 l c r []
 colsums2 l c r ris= 
     if(r == (length (head l)))
         then reverse ris
-        else (colsums2 l c (r + 1) ris ++ (sumteste l c r 0))
+        else (colsums2 l c (r + 1) ((sumteste l c r 0) ++ ris))
 
 sumteste l c r s = 
     if(c == length l)
