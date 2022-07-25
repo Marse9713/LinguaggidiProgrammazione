@@ -2,7 +2,6 @@
 calcola se è ben formata, altrimenti restituisce (-1,-1)
 -}
 
-
 matrix_dim l = matrix_dm1 l (length l)
 
 
@@ -44,21 +43,35 @@ testhead = colsums [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
 
 
 {-colminmax per colonna-}
---minmaxcol l = minmaxcol1 l (head l) (head (tail l))
 
-calcmin l min i=
-    if (i == length l - 1)
+creatorecolonne l = creatorecolonne1 l 0 0 []
+
+creatorecolonne1 l c r col =
+    if (c == length (head l))
+        then col
+        else (creatorecolonne1 l c + 1 r ((creatorecolonne2 l c r col) ++ col))
+
+creatorecolonne2 l c r col =
+    if (r == length l)
+        then (reverse col)
+        else (creatorecolonne2 l c (r + 1) (((l !! r) !! c) : col))
+
+minmaxriga l = ((,) (calcmin l (head l) 1) (calcmax l (head l) 1))
+
+calcmin l min i = 
+    if(length l - 1== i)
         then min
         else if (min <= (l !! i))
             then (calcmin l min (i + 1))
-            else (calcmin l (l !! i) 0)
+            else (calcmin l (l !! i) 0) 
 
-{-minmaxcol1 l min max =
-    if (length l == 0)
-        then (min, max)
-        else if (min < max)
-            then (minmaxcol1 (tail l) min ())
--}
---testminmax = minmaxcol [[1, 2, 3, 4], [8, 2, 3, 5], [2, 5, 7, 8], [5, 7, 8, 9]]
+calcmax l max i = 
+    if(length l - 1== i)
+        then max
+        else if (max >= (l !! i))
+            then (calcmax l max (i + 1))
+            else (calcmax l (l !! i) 0)
 
-testminmax = calcmin [1, 2, 3, 4]
+
+
+testminmax = creatorecolonne [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]

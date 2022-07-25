@@ -1,5 +1,3 @@
-import Main (matrixcheck)
-import Distribution.Simple.Setup (falseArg)
 --check stringa palindroma
 
 checkpalindroma l = checkpalindroma1 l (reverse l)
@@ -25,18 +23,7 @@ testmat = checkmatrix [[1,2,2,1], [2,3,3,2], [4,1,1,4]]
 
 --palindroma rispetto a verticale (colonne palindrome)
 
-bringhead l = (head (head l))
-bringhead1 l = (head (tail l))
+--colmatrix l = colmatrix1 l []
 
-colcheck l aux =
-    if()
-
-matixcheckor l = matrixcheckor1 l l []
-
-matrixcheckor1 l l1 aux =
-    if(length l1 == 0)
-        then True
-        else if (colcheck l1 aux)
-            then matrixcheckor1 l l1 aux
-            else False
-
+colrig l = colrig1 l []
+testcol = colrig [1, 2, 3, 4]
