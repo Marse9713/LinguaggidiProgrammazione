@@ -1,6 +1,4 @@
-{-scrivere una funzione che data una lista ne costruis
-una rimuovendo gli elementi di posizione pari-}
-
+{-1.lista con eliminazione pari-}
 rimuovipari l = rimuovipari1 l 1 []
 
 rimuovipari1 l i aux = 
@@ -12,8 +10,7 @@ rimuovipari1 l i aux =
 
 testrimuovipari = rimuovipari [1, 2, 3, 4, 5, 6]
 
-{-scrivere una funzione che calcoli la somma degli elementi
-dispari della lista-}
+{-2. somma dispari-}
 
 sumdispari l = sum1 (rimuovipari l) 0
 
@@ -24,7 +21,7 @@ sum1 l ris =
 
 testsumdispari = sumdispari [1, 2, 3, 4, 5, 6]
 
-{-quicksort polimorfo, quindi esegue l'ordinamento anche su stringhe o altro-}
+{-3. quicksort polimorfo-}
 
 quicksort [] = []
 quicksort (x : xs) = 
@@ -33,7 +30,7 @@ quicksort (x : xs) =
 testquick = quicksort [3, 1, 4, 2]
 testquick1 = quicksort ["mandi", "boiate", "avvinazato", "dioboe"]
 
-{-calcolo degli odd più piccoli (2)-}
+{-4. calcolo degli odd più piccoli (min, min)-}
 
 minOdd list = (couple (quicksort (filter odd list)) [])
 
@@ -44,7 +41,7 @@ couple l aux =
 
 testmin = minOdd[8, 5, 7, 1, 4, 6, 9]
 
-{-lista di coppie-}
+{-5. lista di coppie (numero pos or, somma successivi)-}
 
 coppia l = coppia1 l []
 
@@ -60,3 +57,5 @@ couplecreate l s i =
 
 
 testcpp = coppia [1,2,3,4]
+
+{-6. lista coppie (numero pos or, somma antecedenti)-}

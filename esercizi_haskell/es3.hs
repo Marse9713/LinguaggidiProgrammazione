@@ -1,6 +1,4 @@
-{-scrivere una funzione matrix_dim che data una matrice
-calcola se è ben formata, altrimenti restituisce (-1,-1)
--}
+{-1. matrice ben formata o (-1,-1)-}
 
 matrix_dim l = matrix_dm1 l (length l)
 
@@ -23,8 +21,7 @@ testmatrice = matrix_dim [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
 testmatricerror = matrix_dim [[0, 8, 8, 9, 1], [1, 4, 3, 2, 2], [2, 3, 1, 7]]
 
 
-{-Scrivere una funzione che calcoli una funzione colsums
-che somma tutti i valori delle singole colonne-}
+{-2. somma valori colonne-}
 
 colsums l = colsums1 l 0 0 []
 
@@ -41,7 +38,7 @@ sumteste l c r s =
 testhead = colsums [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
 
 
-{-colminmax per colonna-}
+{-3. minmax per colonna (min, max)-}
 
 colminmax list = colminmax1 list [] [] 0 0
 
@@ -57,22 +54,8 @@ minmaxcol list = minmaxcol1 list 0 []
 minmaxcol1 l x aux =
     ((,) (calcmin l (head l) 1) (calcmax l (head l) 1))
 
-calcmin l min i=
+calcmin l min i =
     if (i == length l)
-
-creatorecolonne l = creatorecolonne1 l 0 0 []
-
-creatorecolonne1 l c r col =
-    if (c == length (head l))
-        then col
-        else (creatorecolonne1 l c + 1 r ((creatorecolonne2 l c r col) ++ col))
-
-creatorecolonne2 l c r col =
-    if (r == length l)
-        then (reverse col)
-        else (creatorecolonne2 l c (r + 1) (((l !! r) !! c) : col))
-
-minmaxriga l = ((,) (calcmin l (head l) 1) (calcmax l (head l) 1))
 
 calcmin l min i = 
     if(length l - 1 == i)

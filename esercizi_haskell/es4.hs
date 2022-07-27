@@ -12,14 +12,14 @@ data BST a = Nulla | Node {
 --base dell'albero per uso sugli esercizi
 t = (Node 10 (Node 6 (Node 3 Nulla (Node 9 Nulla Nulla)) (Node 7 Nulla Nulla)) (Node 20 Nulla (Node 29 Nulla Nulla)))
 
-{-calcolare la smomma dei valori di un albero-}
+{-1. calcolare la somma dei valori di un albero-}
 
 sommaalbero Nulla = 0 -- poniamo un valore 0 per avere il void
 sommaalbero (Node r left right) = r + (sommaalbero left) + (sommaalbero right)
 
 testalberosomma = sommaalbero t
 
-{-calcolare la somma dei valori dispari di un albero-}
+{-2. calcolare la somma dei valori dispari di un albero-}
 
 sommadispari Nulla = 0
 sommadispari (Node r left right) = 
@@ -29,7 +29,7 @@ sommadispari (Node r left right) =
 
 testsommadispari = sommadispari t
 
-{-inserimento di un valore x in un albero t-}
+{-3. inserimento di un valore x in un albero t-}
 
 inserimento x Nulla = (Node x Nulla Nulla)
 inserimento x (Node r left right) =
