@@ -25,6 +25,17 @@
 .               {}
 %%
 
+int main(){
+    
+    extern FILE *yyin, *yyout;
+ 
+    yyin = fopen("Input.txt", "r");
+
+    yylex();
+    return 0;
+
+}
+
 int yywrap (void){
 
     return 1;

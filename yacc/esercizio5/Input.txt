@@ -1,0 +1,9 @@
+{
+    while(z) {
+        if(a)
+            if(b)
+                a := 0;
+            else 
+                a += 4;
+    }
+}

@@ -76,7 +76,7 @@
 
 %%
 
-Sinput  :							{}
+Sinput  :							            {}
 	   | blocco  								{printf("\n"); printTree($1, 0); printf("\n");} 					 
 	   ;
 	   
