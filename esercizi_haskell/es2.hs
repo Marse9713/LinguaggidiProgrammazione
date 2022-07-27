@@ -59,3 +59,7 @@ couplecreate l s i =
 testcpp = coppia [1,2,3,4]
 
 {-6. lista coppie (numero pos or, somma antecedenti)-}
+
+coppianti l = reverse (coppia1 (reverse l) [])
+
+testcpprev = coppianti [1,2,3,4]
