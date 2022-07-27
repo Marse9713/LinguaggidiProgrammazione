@@ -97,9 +97,3 @@ calcmax l max i =
 
 
 testminmax = colminmax [[1, 2, 3, 4], [8, 2, 3, 5], [2, 5, 7, 8], [5, 7, 8, 9]]
-
---testcoppie = calcolacoppie [[1, 2, 3, 4], [8, 2, 3, 5], [2, 5, 7, 8], [5, 7, 8, 9]]
-
---testminmax1 = (([[1, 2, 3, 4], [8, 2, 3, 5], [2, 5, 7, 8], [5, 7, 8, 9]] !! 2) !! 0)
-
-testminmax = creatorecolonne [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
