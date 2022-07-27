@@ -44,19 +44,15 @@ testhead = colsums [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
 
 {-colminmax per colonna-}
 
-creatorecolonne l = creatorecolonne1 l 0 0 []
+minmax l = minmax1 l 0 0 [] []
 
-creatorecolonne1 l c r col =
-    if (c == length (head l))
-        then col
-        else (creatorecolonne1 l c + 1 r ((creatorecolonne2 l c r col) ++ col))
+minmax l r c col res=
+    if(c == length (head l))
+        then res
+        else if ()
 
-creatorecolonne2 l c r col =
-    if (r == length l)
-        then (reverse col)
-        else (creatorecolonne2 l c (r + 1) (((l !! r) !! c) : col))
-
-minmaxriga l = ((,) (calcmin l (head l) 1) (calcmax l (head l) 1))
+coupleminmax l min max i =
+    ((,) (calcmin l m i)(calcmax l max i))
 
 calcmin l min i = 
     if(length l - 1== i)
