@@ -1,6 +1,4 @@
-{-scrivere una funzione matrix_dim che data una matrice
-calcola se è ben formata, altrimenti restituisce (-1,-1)
--}
+{-1. matrice ben formata o (-1,-1)-}
 
 matrix_dim l = matrix_dm1 l (length l)
 
@@ -11,7 +9,6 @@ matrix_dm1 l rows =
         else if (length l == 0)
             then (-1, -1)
             else (matrix_dm2 l rows (length (head l)) 1 (tail l))
-
 
 matrix_dm2 l rows c i l1 = 
     if(rows == i)
@@ -24,8 +21,7 @@ testmatrice = matrix_dim [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
 testmatricerror = matrix_dim [[0, 8, 8, 9, 1], [1, 4, 3, 2, 2], [2, 3, 1, 7]]
 
 
-{-Scrivere una funzione che calcoli una funzione colsums
-che somma tutti i valori delle singole colonne-}
+{-2. somma valori colonne-}
 
 colsums l = colsums1 l 0 0 []
 
@@ -42,8 +38,9 @@ sumteste l c r s =
 testhead = colsums [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
 
 
-{-colminmax per colonna-}
+{-3. minmax per colonna (min, max)-}
 
+<<<<<<< HEAD
 minmax l = minmax1 l 0 0 [] []
 
 minmax l r c col res=
@@ -53,9 +50,27 @@ minmax l r c col res=
 
 coupleminmax l min max i =
     ((,) (calcmin l m i)(calcmax l max i))
+=======
+colminmax list = colminmax1 list [] [] 0 0
+
+colminmax1 l res aux r c =
+    if (c == length (head l))
+        then res
+        else if (r == length l)
+            then (colminmax1 l (res ++ (minmaxcol aux):[]) [] 0 (c + 1))
+            else (colminmax1 l res (((l !! r) !! c) : aux) (r + 1) c)
+
+minmaxcol list = minmaxcol1 list 0 []
+
+minmaxcol1 l x aux =
+    ((,) (calcmin l (head l) 1) (calcmax l (head l) 1))
+
+calcmin l min i =
+    if (i == length l)
+>>>>>>> 15806671451d769279a07facc4ce6dc7b8f81f5e
 
 calcmin l min i = 
-    if(length l - 1== i)
+    if(length l - 1 == i)
         then min
         else if (min <= (l !! i))
             then (calcmin l min (i + 1))
@@ -68,6 +83,12 @@ calcmax l max i =
             then (calcmax l max (i + 1))
             else (calcmax l (l !! i) 0)
 
+calcmax l max i =
+    if (i == length l)
+        then max
+        else if (max >= (l !! i))
+            then (calcmax l max (i + 1))
+            else (calcmax l (l !! i) 0)
 
 
-testminmax = creatorecolonne [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
+testminmax = colminmax [[1, 2, 3, 4], [8, 2, 3, 5], [2, 5, 7, 8], [5, 7, 8, 9]]

@@ -1,13 +1,11 @@
-{-esercizio fattoriale 10000!
-per eseguire il fattoriale va moltiplicato ogni
-numero fino al numero desiderato (esempio 5 * 4 * 3 * 2 * 1)-}
+{-1.esercizio fattoriale 10000!-}
 
 fattoriale 0 = 1
 fattoriale n = n * fattoriale (n - 1)
 
 testfattoriale = fattoriale 10000
 
-{-esercizio sulla funzione di combinazione di k elementi su n
+{-2.esercizio sulla funzione di combinazione di k elementi su n
 devo fare (n! / k! * (n-k)!) binomiale-}
 
 numeratore = fattoriale -- eseguo il fattoriale su n
@@ -18,9 +16,7 @@ combinatorio n k = numeratore n / denominatore n k
 
 testcombinatorio = combinatorio 5 3
 
-{-esercizio del calcolo di tutte le combinazioni su n elementi
-va sommato ogni elemento all'interno della lista quindi da poter verificare
-che tutte le combinazioni siano rispettate-}
+{-3.esercizio del calcolo di tutte le combinazioni su n elementi-}
 
 combinazioni list 0 = [[]]
 combinazioni [] n = []
