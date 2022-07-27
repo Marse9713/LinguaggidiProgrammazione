@@ -1,0 +1,430 @@
+esercizio 5 lex
+
+/*stampa a monitor gli elementi che sono all'interno del file se sono multipli di 4, compreso lo 0*/
+%{
+    #include <stdio.h>
+%}
+
+%%
+
+[048]|\d*([02468][048]|[13579][26])     {printf("%d ", atoi (yytext));}
+.                                       {}
+%%
+
+int main (){
+
+    extern FILE *yyin;
+ 
+    yyin = fopen("Input.txt", "r");
+
+    yylex();
+    return 0;
+
+}
+
+-----------------------------------------------------------------------------------------------------------
+
+esercizio 8 lex
+
+
+%{
+   #include <stdio.h>
+   #include <stdlib.h>
+%}
+
+%%
+(\+|-)[0-9]+			{ printf("%d è un decimale\n", atoi(yytext) ); }
+[0-9a-fA-F]+[hH]	 		{ printf(" 0x%0lX è un esadecimale\n", strtol(yytext, NULL, 16) ); }
+[0][x][0-9a-fA-F]+		{ printf(" 0x%0lX è un esadecimale\n", strtol(yytext, NULL, 16) ); }
+[o|O][0-7]+				{ printf("%ld è un ottale\n", strtol(yytext, NULL, 8) ); }
+[0-7]+[O]				{ printf("%ld è un ottale\n", strtol(yytext, NULL, 8) ); }
+%%
+
+main(int argc, const char *aArgv[])
+{
+   yylex();
+   return 0;
+}
+
+int yywrap()
+{
+   return(1);
+}
+
+-----------------------------------------------------------------------------------------------------------
+
+esercizio 5 lex-yacc
+
+5.l
+
+%{
+
+    #include "y.tab.h"
+    #include <string.h>
+
+    struct Tree;
+    typedef struct Tree Tree;
+
+%}
+
+%%
+[0-9]+                  {yylval.txt = strdup(yytext); return NUMERO;}
+"="                     {yylval.txt = strdup(yytext); return ASSEGNAZIONE;}
+"+="                    {yylval.txt = strdup(yytext); return INCREMENTO;}
+"if"                    {yylval.txt = strdup(yytext); return IF;}
+"else"                  {yylval.txt = strdup(yytext); return ELSE;}
+"while"                 {yylval.txt = strdup(yytext); return WHILE;}
+";"                     {yylval.txt = strdup(yytext); return FINERIGA;}
+[a-z]+[a-zA-z0-9]*		{yylval.txt = strdup(yytext); return ID;}
+"("                     {yylval.txt = strdup(yytext); return '(';}
+")"                     {yylval.txt = strdup(yytext); return ')';}
+"{"                     {yylval.txt = strdup(yytext); return '{';}
+"}"                     {yylval.txt = strdup(yytext); return '}';}
+
+.               {}
+%%
+
+int main(){
+    
+    extern FILE *yyin, *yyout;
+ 
+    yyin = fopen("Input.txt", "r");
+
+    yylex();
+    return 0;
+
+}
+
+int yywrap (void){
+
+    return 1;
+
+}
+
+
+-------------
+
+5.y
+
+%{
+    #include <stdio.h>
+    #include <string.h>
+    #include <stdlib.h>
+    #define ARIETA 6 /*6 argomenti */
+
+    void yyerror (char *s);
+    int yylex();
+
+    /*definisco l'albero di parsing */
+
+    struct Tree;
+    typedef struct Tree Tree;
+
+    struct Tree {
+
+        char* top;
+        Tree* subTrees[ARIETA];
+
+    };
+
+    Tree* makeTree (char* top, Tree* T1, Tree* T2, Tree* T3, Tree* T4, Tree* T5, Tree* T6) {
+
+        Tree* res = (Tree*) malloc(sizeof(Tree));
+        res->top = top;
+        res->subTrees[0] = T1;
+        res->subTrees[1] = T2;
+        res->subTrees[2] = T3;
+        res->subTrees[3] = T4;
+        res->subTrees[4] = T5;
+        res->subTrees[5] = T6;
+
+        return res;
+
+    }
+
+    /*procedura per la stampa dell'albero */
+
+    void printTree (Tree* T, int s){
+
+        printf("%*s%s\n", s, "", T->top);
+
+        for(int i = 0; i < ARIETA; i++){
+
+            if (!t->subTrees[i]) 
+            continue;
+
+            printTree(t->subTrees[i], s + 3);
+
+
+        }
+
+    }
+
+
+%} 
+
+%union 		{char* txt; struct Tree* tp;}
+
+%start		input
+%token     	ID 
+%token     	NUMERO
+%token 		ASSEGNAZIONE
+%token	 	INCREMENTO
+%token     	IF ELSE
+%token	 	WHILE
+%token     	'(' ')'
+%token	 	'{' '}'
+%token	 	ENDASS
+
+%type 		<txt> NUMERO IF ELSE WHILE ID ASSIGNAZIONE INCREMENTO '(' ')' '{' '}'  FINERIGA
+%type       <tp> input blocks statement com elsE rval lval
+
+%nonassoc IF
+%nonassoc ELSE /*tolgo ambiguità di if else*/
+
+%%
+
+Sinput  :							            {}
+	   | blocco  								{printf("\n"); printTree($1, 0); printf("\n");} 					 
+	   ;
+	   
+blocco : dichiarazione                    		{$$ = makeTree("BLOCCO", $1, NULL, NULL, NULL, NULL, NULL);}  
+	   | dichiarazione blocco          			{$$ = makeTree("BLOCCO", $1, $2, NULL, NULL, NULL, NULL);}
+	   ;  
+	   
+dichiarazione   : comparazione					{$$ = makeTree("DICHIARAZIONE", $1, NULL, NULL, NULL, NULL, NULL);}
+	   		| '{' blocco '}' 	 				{$$ = makeTree("DICHIARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
+	   		;
+
+comparazione: lval ASSEGNAZIONE rval FINERIGA	{$$ = makeTree("COMPARAZIONE", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
+	   | lval INCREMENTO rval FINERIGA			{$$ = makeTree("COMPARAZIONE", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
+	   | WHILE '(' lval ')' dichiarazione		{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
+	   | IF '(' lval ')' dichiarazione %prec IF	{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
+	   | IF '(' lval ')' dichiarazione Else 	{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, $6);}
+	   ;
+
+Else   : ELSE dichiarazione						{$$ = makeTree("ELSE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, NULL, NULL, NULL, NULL);}
+	   ;
+	   
+vald   : vals 									{$$ = makeTree("VALD", $1, NULL, NULL, NULL, NULL, NULL);}
+	   | NUM									{$$ = makeTree("VALD", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
+	   ;
+	               
+vals   : ID 									{$$ = makeTree("VALS", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
+	   ;
+        
+%%
+
+int main (void) {
+	yyparse();
+	return 0;
+}
+
+void yyerror (char *s) {
+	printf("%s\n", s); 
+}
+
+-----------------------------------------------------------------------------------------------------------
+
+esercizio 8 lex-yacc
+
+8.l
+
+%{
+
+    #include "y.tab.h"
+    #include <string.h>
+
+    struct Tree;
+    typedef struct Tree Tree;
+
+%}
+
+%%
+
+"+"                             {yylval.txt = strdup(yytext); return SOMMA;}
+"-"                             {yylval.txt = strdup(yytext); return DIFFERENZA;}
+"*"                             {yylval.txt = strdup(yytext); return MOLTIPLICAZIONE;}
+let                             {yylval.txt = strdup(yytext); return LET;}
+case                            {yylval.txt = strdup(yytext); return CASE;}
+else                            {yylval.txt = strdup(yytext); return ELSE;}
+"("                             {yylval.txt = strdup(yytext); return '(';}
+")"                             {yylval.txt = strdup(yytext); return ')';}
+"["                             {yylval.txt = strdup(yytext); return '[';}
+"]"                             {yylval.txt = strdup(yytext); return ']';}
+[a-zA-Z]+([a-zA-Z0-9]|"-"|"_")* {yylval.txt = strdup(yytext); return ID;}
+"="                             {yylval.txt = strdup(yytext); return EQUIVALENZA;}
+[0-9]+                          {yylval.txt = strdup(yytext); return NUMERO;}
+\n                              {yylval.txt = strdup(yytext); return FINERIGA;}
+
+%%
+
+int yywrap (void){
+
+    return 1;
+
+}
+
+-------------------
+
+8.y
+
+%{
+    #include <stdio.h>
+    #include <string.h>
+    #include <stdlib.h>
+    #define ARIETA 6 /* l'arità dell'albero è nota a priori ed è pari alla lunghezza della regola più lunga */
+
+    void yyerror (char *s);
+    int yylex();
+
+    /*definisco l'albero di parsing */
+
+    struct Tree;
+    typedef struct Tree Tree;
+
+    struct Tree {
+
+        char* top;
+        Tree* subTrees[ARIETA];
+
+    };
+
+    Tree* makeTree (char* top, Tree* T1, Tree* T2, Tree* T3, Tree* T4, Tree* T5, Tree* T6) {
+
+        Tree* res = (Tree*) malloc(sizeof(Tree));
+        res->top = top;
+        res->subTrees[0] = T1;
+        res->subTrees[1] = T2;
+        res->subTrees[2] = T3;
+        res->subTrees[3] = T4;
+        res->subTrees[4] = T5;
+        res->subTrees[5] = T6;
+
+        return res;
+
+    }
+
+    /*procedura per la stampa dell'albero */
+
+    void printTree (Tree* T, int s){
+
+        printf("%*s%s\n", s, "", T->top);
+
+        for(int i = 0; i < ARIETA; i++){
+
+            if (!t->subTrees[i]) 
+            continue;
+
+            printTree(t->subTrees[i], s + 3);
+
+
+        }
+
+    }
+    
+%}
+
+%union 		{char* txt; struct Tree* tp;}
+
+%start		input
+%token     	ID
+%token      LET
+%token     	NUMERO
+%token 		MOLTIPLICAZIONE
+%token	 	SOMMA
+%token     	CASE
+%token	 	DIFFERENZA
+%token     	'(' ')'
+%token	 	EQUIVALENZA
+%token	 	FINERIGA
+%token      '[' ']'
+%token      BREAK;
+
+%left DIFFERENZA SOMMA
+%left '*'
+%left NEG
+
+%type <txt> NUMERO CASE LET DIFFERENZA ID ASSIGNAZIONE SOMMA '[' ']' '(' ')' '{' '}'  FINERIGA
+
+%start programma
+
+%%
+programma: input
+   ;
+
+input:
+   | input linea
+;
+
+linea : '\n'
+   | espressione '\n'       
+   ;
+
+
+coppia: ID ID 
+   |  ID NUMERO
+   |  NUMERO ID
+   |  NUMERO NUMERO
+   ;
+
+assegnamento:
+   | '(' ID NUMERO ')'      {printf("'(' ID NUMERO ')'\n");}
+   ;
+
+lista_di_coppie: 
+   lista_di_coppie ID
+   | lista_di_coppie NUMERO
+   | coppia
+   ;
+
+lista_di_coppie: lista_di_coppie assegnamento 
+   | assegnamento
+   ; 
+
+definizione:
+   | '(' SOMMA coppia ')'                                               {printf("'(' + SOMMA + COPPIA + ')'\n");} 
+   | '(' DIFFERENZA coppia ')'                                           {printf("'(' + DIFFERENZA + coppia +  ')'\n");} 
+   | '(' '*' coppia ')'                                           {printf("'(' '*' coppia ')'\n");} 
+
+   | '(' '=' lista_di_coppie ')'                                      {printf("'(' = lista_di_coppie ')'\n");}
+   ;
+
+lista_di_definizioni: lista_di_definizioni definizione
+   | definizione
+   ;
+
+espressione:
+   lista_di_definizioni                                                            
+   | blocco_lista                                                               
+   | '(' SOMMA  blocco_lista ')'                                          { printf("( + espressione '')'\n"); } 
+   | '(' DIFFERENZA  blocco_lista ')'                                          { printf("'(' - espressione '')'\n"); } 
+   | '(' MOLTIPLICAZIONE  blocco_lista ')'                                          { printf("'(' MOLTIPLICAZIONE espressione ')'\n"); } 
+   | '(' LET '('    lista_di_coppie   ')' espressione ')'               {printf("'(' LET '(' lista_di_coppie ')' espressione ')'\n");} 
+   | '(' LET ID '('    lista_di_coppie   ')' espressione ')'   {printf("'(' LET ID '(' lista_di_coppie ')' espressione ')'\n");}
+   | '(' CASE definizione blocco_lista ')'                            { printf("'(' CASEdefinizione espressione ')'\n");}
+   | BREAK                                                                   {exit(0);} 
+   ;
+
+blocco:
+   | '(' SOMMA  definizione definizione ')'                         { printf("'(' + definizione definizione ')'\n"); } 
+   | '(' DIFFERENZA  definizione definizione ')'                         { printf("'(' - definizione definizione ')'\n"); }
+   | '(' MOLTIPLICAZIONE definizione definizione ')'                         { printf("'(' * definizione definizione ')'\n"); }
+   | '[' espressione ']'                                     { printf("'[' espressione ']'\n"); }
+   ;
+
+blocco_lista: blocco_lista blocco
+   | blocco
+   ;
+
+%%
+
+
+int main (void) {
+	yyparse();
+	return 0;
+}
+
+void yyerror (char *s) {
+	printf("%s\n", s); 
+}
