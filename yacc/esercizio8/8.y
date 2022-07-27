@@ -76,11 +76,7 @@
 
 %type <txt> NUMERO CASE LET DIFFERENZA ID ASSIGNAZIONE SOMMA '[' ']' '(' ')' '{' '}'  FINERIGA
 
-%start programma
-
 %%
-programma: input
-   ;
 
 input:
    | input linea
