@@ -734,7 +734,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 8 "8.l"
-{ printf(" %d è un decimale\n", atoi(yytext) ); }
+{ printf("%d è un decimale\n", atoi(yytext) ); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -749,12 +749,12 @@ YY_RULE_SETUP
 case 4:
 YY_RULE_SETUP
 #line 11 "8.l"
-{ printf(" %ld è un ottale\n", strtol(yytext, NULL, 8) ); }
+{ printf("%ld è un ottale\n", strtol(yytext, NULL, 8) ); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 12 "8.l"
-{ printf(" %ld è un ottale\n", strtol(yytext, NULL, 8) ); }
+{ printf("%ld è un ottale\n", strtol(yytext, NULL, 8) ); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
