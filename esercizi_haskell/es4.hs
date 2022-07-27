@@ -1,4 +1,4 @@
---BST
+--BST, definizione
 data BST a = Nulla | Node {
 
     val::a,
@@ -9,9 +9,7 @@ data BST a = Nulla | Node {
 
     deriving (Eq, Ord, Read, Show)
 
---test di istaziazione
--- t :: BST Integer
-
+--base dell'albero per uso sugli esercizi
 t = (Node 10 (Node 6 (Node 3 Nulla (Node 9 Nulla Nulla)) (Node 7 Nulla Nulla)) (Node 20 Nulla (Node 29 Nulla Nulla)))
 
 {-calcolare la smomma dei valori di un albero-}
