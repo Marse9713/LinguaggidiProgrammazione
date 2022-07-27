@@ -442,12 +442,11 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "5.l"
-#line 2 "5.l"
+/*stampa a monitor gli elementi che sono all'interno del file se sono multipli di 4, compreso lo 0*/
+#line 3 "5.l"
     #include <stdio.h>
-#line 448 "lex.yy.c"
-#line 6 "5.l"
- /*qua andranno i token */
-#line 451 "lex.yy.c"
+#line 449 "lex.yy.c"
+#line 450 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -664,10 +663,10 @@ YY_DECL
 		}
 
 	{
-#line 8 "5.l"
+#line 6 "5.l"
 
 
-#line 671 "lex.yy.c"
+#line 670 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -726,20 +725,20 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 10 "5.l"
+#line 8 "5.l"
 {printf("%d ", atoi (yytext));}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 11 "5.l"
+#line 9 "5.l"
 {}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 12 "5.l"
+#line 10 "5.l"
 ECHO;
 	YY_BREAK
-#line 743 "lex.yy.c"
+#line 742 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1744,11 +1743,8 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 12 "5.l"
+#line 10 "5.l"
 
-
-
-/*codice c */
 
 int main (){
 
