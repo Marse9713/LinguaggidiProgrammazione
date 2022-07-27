@@ -40,17 +40,6 @@ testhead = colsums [[0, 8, 8, 9], [4, 3, 2, 2], [2, 3, 1, 7]]
 
 {-3. minmax per colonna (min, max)-}
 
-<<<<<<< HEAD
-minmax l = minmax1 l 0 0 [] []
-
-minmax l r c col res=
-    if(c == length (head l))
-        then res
-        else if ()
-
-coupleminmax l min max i =
-    ((,) (calcmin l m i)(calcmax l max i))
-=======
 colminmax list = colminmax1 list [] [] 0 0
 
 colminmax1 l res aux r c =
@@ -65,30 +54,18 @@ minmaxcol list = minmaxcol1 list 0 []
 minmaxcol1 l x aux =
     ((,) (calcmin l (head l) 1) (calcmax l (head l) 1))
 
-calcmin l min i =
-    if (i == length l)
->>>>>>> 15806671451d769279a07facc4ce6dc7b8f81f5e
-
 calcmin l min i = 
-    if(length l - 1 == i)
+    if(length l == i)
         then min
         else if (min <= (l !! i))
             then (calcmin l min (i + 1))
             else (calcmin l (l !! i) 0) 
 
 calcmax l max i = 
-    if(length l - 1== i)
+    if(length l == i)
         then max
         else if (max >= (l !! i))
             then (calcmax l max (i + 1))
             else (calcmax l (l !! i) 0)
 
-calcmax l max i =
-    if (i == length l)
-        then max
-        else if (max >= (l !! i))
-            then (calcmax l max (i + 1))
-            else (calcmax l (l !! i) 0)
-
-
-testminmax = colminmax [[1, 2, 3, 4], [8, 2, 3, 5], [2, 5, 7, 8], [5, 7, 8, 9]]
+testminmax = colminmax [[1, 2, 3, 4], [8, 2, 3, 5], [2, 5, 7, 8], [5, 7, 8, 9]] --(1,8), (2,7), (3,8), (4,9)
