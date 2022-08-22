@@ -146,7 +146,6 @@ la leggibilità:
     - il codice intermedio è indipendente dal processore, rende più facile l’ottimizzazione o la compattezza (esse sono richieste contrastanti poiché è possibile avere un’ottima ottimizzazione ma con scarsa compattezza e viceversa)
     - per qualche macchina astratta, il codice intermedio può assomigliare al codice macchina
 
-
 - L’ottimizzazione
     - il programma viene trasformato in codice intermedio ed in uno equivalente per rendere l’esecuzione più veloce o utilizzando meno meno memoria
     - possiamo dire che il termine è improprio, poiché si migliora il codice
