@@ -1,6 +1,6 @@
 # LinguaggidiProgrammazione
 
-<h2>Capitolo 1</h2>
+<center><h2>Capitolo 1</h2></center>
 
 - Due paradigmi di programmazione:
     - imperativo:
@@ -158,5 +158,131 @@ la leggibilità:
     - può essere conservata per poi essere utilizzata da un debugger, anche dopo che la compilazione è stata completata
 
 
-<h2>Capitolo 2</h2>
+<center><h2>Capitolo 2</h2></center>
 
+- Descrizione di un linguaggio di programmazione
+    - sintassi: quali sequedi caratteri costruiscono programmi, la loro struttura
+    - semantica: significato, come si comporta un programma, l'effetto della sua esecuzione
+    - pragmatica: utilizzo pratico, come scrivere buon codice, convenioni, stili nello scrivere i programmi
+    - implementazione: come eseguire il codice sorgente
+- Sintassi linguaggio di programmazione:
+    - quali sequenze di caratteri formano un programma e quali invece non possono essere utilizzate per poter descrivere un programma corretto
+    - la struttura sintattica di un programma, la sua divisione in componenti e sotto-componenti (dichiarazioni, blocchi, cicli, singole istruzioni)
+    - descrizione, completamente formale, ottenuta tramite le grammatiche
+
+- Grammatica costituita da:
+    - un insieme di simboli terminali, elementi base che possono essere:
+        - l'insieme di parole della lingua italiana
+        - l'insieme dei simboli base di un linguaggio di programmazione (simboli di operazione, identificatori, separatori)
+        - lettere di un alfabeto A
+    - un insime di simboli non terminali, categorie sintattiche a seconda dei casi possono essere:
+        - nomi, verbi, articoli, ...
+        - identificatori, costanti, operazioni-aritmetiche, ...
+    - un insime di regole grnerazione: spiegano come sono i composti non-terminali (possono espandere un non terminale)
+    - le grammatiche vengono divise in classi in base alla complessità delle regole ammesse
+    - regole più sofisticate: permettono di definire più linguaggi, linguaggi più complessi (più complesso determinare se appartiene alla grammatica diventa complesso)
+- Definizione: grammatica libera (dal contesto)
+    - è caratterizzata da:
+        - T: un insieme di simboli terminali (alfabeto del linguaggio)
+        - NT: insieme di simboli non terminali (categorie sintattiche)
+        - R: insiemi di regole di produzione
+        - S: simbolo iniziale che appartiene ai non-terminali
+
+        Regole R (libere da contesto) nella forma:
+
+        <center>V->w</center>
+
+        con V appartente a NT e w appartiene a (T unito NT)*
+
+- Grammaiche ambigue
+    - sono le grammatiche per cui esiste una stringa con due alberi di derivazione differeinti
+    - i due alberi di derivazione inducono
+        - due interpretazioni diverse della stessa stringa
+        - due meccanismi di valutazione differenti
+    - Queste ambiguità vanno evitate (come in risoluzione di matematica)
+
+- Disambiguare una grammatica
+    - Due possibili soluzioni:
+        - rendere la grammatica non ambigua:
+            . attraverso nuovi non-terminali, non terminali
+            - ottengo una grammatica che genera lo stesso linguaggio più complessa
+        - convivere con una grammatica ambigua
+            - si forniscono informazioni aggiuntive su come risolvere l'ambiguità
+                - ordine di precendeza degli operatori
+                - per un singolo operatore o per operatori nella stessa classe di equivalenza
+        è una  delle soluzioni usata anche nei parser
+
+- Albero astratto della sintassi
+    - gli alberi di derivazione contengono informazioni utili per interpretare, valutare, dare semantica alle stringe
+    Ma:
+        - A volte è necessario complicare la grammatica ed espressioni per definire la giusta interpretazione
+        (a + b) * c
+            - parentesi () necessarie per definire la precedenza
+            - questi orpelli sono inutili una volta costruito l'albero sintattico dell'espressione
+        - gli alberi di derivazione possono essere rindondanti, contenere informazioni inutili per l'interpretazione dell'espressione
+    - gli alberi astratti della sintassi sono gli alberi ai quali sono rimossi i nodi rindondanti ai fini dell'analisi
+    - danno una rappresentazione più compatta contengono solo le informazioni utili
+        - permettono una computazione più pratica ed efficiente
+        - è la rappresentazione usata dai compilatori
+    - mostrano con maggior chiarezza il significa della stringa di caratteri dall'espressione stessa
+    - forniscono una sintassi minimale con un effetto secondaria, poiché è ambigua, prevedono dei meccaniscmi esterni alla grammatica per risolvere le ambiguità
+
+- Le classi di grammatiche:
+    - oltre alle grammatiche contex free esistono anche grammatiche
+        - a struttura di fra se
+        - dipendenti da contesto
+        - libere da contesto
+        - lineari sinistre e destre
+        - regolari
+
+    - le differenze che si possono evidenziare sono:
+        - i diversi gradi di libertà nella definizione delle regole
+        - grammatiche più generali possono:
+            - descrivere una classe più ampia di linguaggi definibili
+            - è più complesso decidere se una parola appartiene al linguaggio, quindi va creato un albero di derivazione per poter capire se la stringa appartiene o meno al linguaggio
+
+- Le grammatiche nei parser
+    - le grammatiche libere dal contesto sono un compromesso ottimale tra espressività e complessità
+        - ci consentono un ampio insieme di linguaggi definibili da una singola grammatica
+        - nei casi pratici, riconoscimento in tempo lineare sulla lunghezza della stringa (quindi ci consente di vedere, se è appartenete all'insieme delle stringhe accettate della stringa in oggetto)
+
+- Vincoli sintattici contestuali:
+    - tuttavia, non posso eliminare dall'insiseme di programmi riconosciuti (accettati dalla grammatica libera dal contesto), dei programmi che non rispettano alcuni vincoli sintattici (contestuali) come:
+        - identificatori dichiarati prima dell'uso
+        - ugual numero di parametri attuali e formali
+            - controllo non possibile perché un linguaggio non è libero dal contesto
+        - non modificabili le variabili di controllo dei cicli for
+        - vanno sempre rispttati i tipi nelle assegnazioni
+    - La soluzione adottata dai compilatori:
+        - usare grammatiche libere (sono efficienti)
+        - costruisco l'albero sintattico, effettuo una fase di analisi semantica
+        - Viene chiamata semantica statica la fase di analisi semantica
+            - controllo sul codice eseguibile a tempo di compilazione
+            - in contrapposizione alla semantica dinamica che esegue i controlli durante l'esecuzone
+
+- La semantica
+    - la semantica di un programma definisce il suo significato, descrive il suo comportamento a run-time che è più di un semplice controllo deglie errori
+    - la semantica è definita quasi empre informalmente in linguaggio naturale; un suo possibile approccio formale nonstante è possibile:
+        - semantica come operazione strutturata: un programma descritto da un sistema di regole (di riscrittura) descrivono il risultato della valutazione di un qualsiasi programma
+        - semantica come denotazione: descirvo con delle strutture matematiche (funzioni) il comportamente del programma
+
+- Il front end del compilatore:
+    - similmente ai linguaggi naturali nella cui sintassi:
+        - si descrivono l'insieme di parole valide, il dizionario diviso in categorie
+        - le regole per la costruzione delle frasi tramite le parole
+    - nei linguaggi formali, nel compilatore
+        - la descrizione delle parti elementari (lessema), viene eseguita tramite l'analisi lessicale
+        - la descrizione della struttura generale, a partire dai lessemi, eseguita tramite l'analisi sintattica
+    
+    La separazione rende più efficiente l'analisi del testo
+
+- L'analisi lessicale (scanner, lexer): 
+    - Nella stringa di caratteri riconosco i lessemi, per ogni lessema costituisco un token
+        <center> token: (categoria sintattica, valore-attributo)</center>
+
+    - ad esempio:
+        <center> l'equazione x = a + b * 2 </center>
+
+        verrà vista come una serie di token: [(identifier, x), (operator, =), (identifier, a), (operator +), (identifier, b), (operator, *), (literal, 2), (separator, ;)]
+
+        L'insieme dei token generati verrà passato all'analizzatore sintattico (parser)
