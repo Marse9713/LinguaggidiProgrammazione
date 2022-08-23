@@ -190,7 +190,7 @@ la leggibilità:
 
         Regole R (libere da contesto) nella forma:
 
-        <center>V->w</center>
+        <center>V->w
 
         con V appartente a NT e w appartiene a (T unito NT)*
 
