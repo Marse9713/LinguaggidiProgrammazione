@@ -1,6 +1,6 @@
 # LinguaggidiProgrammazione
 
-<center><h2>Capitolo 1</h2></center>
+<h2 align = "center">Capitolo 1</h2>
 
 - Due paradigmi di programmazione:
     - imperativo:
@@ -158,7 +158,7 @@ la leggibilità:
     - può essere conservata per poi essere utilizzata da un debugger, anche dopo che la compilazione è stata completata
 
 
-<center><h2>Capitolo 2</h2></center>
+<h2 align = "center">Capitolo 2</h2>
 
 - Descrizione di un linguaggio di programmazione
     - sintassi: quali sequedi caratteri costruiscono programmi, la loro struttura
@@ -190,7 +190,7 @@ la leggibilità:
 
         Regole R (libere da contesto) nella forma:
 
-        <center>V->w
+        <p align = "center">V->w</p>
 
         con V appartente a NT e w appartiene a (T unito NT)*
 
@@ -278,10 +278,10 @@ la leggibilità:
 
 - L'analisi lessicale (scanner, lexer): 
     - Nella stringa di caratteri riconosco i lessemi, per ogni lessema costituisco un token
-        <center> token: (categoria sintattica, valore-attributo)</center>
+        <p align = "center"> token: (categoria sintattica, valore-attributo)</p>
 
     - ad esempio:
-        <center> l'equazione x = a + b * 2 </center>
+        <p align = "center"> l'equazione x = a + b * 2 </p>
 
         verrà vista come una serie di token: [(identifier, x), (operator, =), (identifier, a), (operator +), (identifier, b), (operator, *), (literal, 2), (separator, ;)]
 
