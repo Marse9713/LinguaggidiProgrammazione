@@ -286,3 +286,36 @@ la leggibilità:
         verrà vista come una serie di token: [(identifier, x), (operator, =), (identifier, a), (operator +), (identifier, b), (operator, *), (literal, 2), (separator, ;)]
 
         L'insieme dei token generati verrà passato all'analizzatore sintattico (parser)
+    
+    - Bisogna definire per ogni categoria sintattica:
+        - identificatori
+        - letterali
+        - parole chiave
+        - separatori
+        - altri costrutti
+
+    - la corrispondente sintassi, ossia quali stringhe di caratteri possono essere: un identicicatore, un letterale, ...
+    - l'espressione della sintassi di una categoria sintattica è definita da una espressione regolare
+
+- Linguaggi e operazioni su linguaggi:
+    - Sia A un alfabeto, un insieme di simboli
+      - un linguaggio con alfabeto A, è definito come
+        - un insieme di stringhe di elementi A (parole su A)
+      - sui linguaggi posso definire le operazioni di:
+        - unione: L u M
+        - concatenazione L M = {s t | s appartiene a L, t appartiene a M}, dove s e t indicano la concatenazione della stringa s con la stringa t
+        - chiusura di Kleene L* = {s1, s2, ..., sn | per ogni i. si appartiene a L}
+      - a partire da queste operazioni (e da un insime di cstanti, costruisco)
+        - l'insime delle espressioni regolari, ossia l'algebra di Kleene
+    - le espressioni regolari, consentono una rappresentazioni sintetica dei linguaggi
+
+- Espressioni regolari, algebra di Kleene:
+  - Espressioni (algebriche), L, M, N, ... costruite a partire da
+    - un insime di costanti:
+      - i simboli di un alfabeto A
+      - dal simbolo E (epsilon) rappresentante la stringa, parola, vuota
+    - l'insime delle operazioni sui linguaggi:
+      - concatenazione: LM o L * M (sarebbe scritto con la motiplicazione classica)
+      - unione: L|M
+      - chiusura di Kleene: L*
+    - Oltre alle oprazioni base 
