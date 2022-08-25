@@ -318,4 +318,36 @@ la leggibilità:
       - concatenazione: LM o L * M (sarebbe scritto con la motiplicazione classica)
       - unione: L|M
       - chiusura di Kleene: L*
-    - Oltre alle oprazioni base 
+    - Oltre alle operazioni base, le espressioni regolari sono formate da
+      - parentesi tonde, (), per determinare l'ordine di applicazione
+    - le convenzioni e le regole dicono però di non abusarne, riducendo la complessità di lettura
+      - concatenazione e unione, associative : L(MN) = (LM)N = LMN
+      - esiste un ordine di precemdeza tra gli operatori
+        - in ordine crescente: *, -, |
+        - ad esempio: a|bc* = a | (b (c*))
+
+- Estensioni:
+  - oltre alle operazioni di base posso definire altre operazioni come:
+    - la chiusura positiva: L+ = LL*
+    - zero o un'istanza: L? = E|L
+    - n concatenazione di parole in L: L{n} = LL...L
+    - uno tra: [acdz] = a |c | d | z
+    - range: [a-z] = a | b | ... | z
+    - opposto: [^a-z] - tutti i caratteri meno le lettere minuscole
+  - ciò genera espressioni più compatte, ma creano la stessa classe di linguaggi
+    - esistono molte altre estensioni
+    - espressioni regolari usate:
+      - in apllicativi per manipolare stringhe, il text-editor, in funzioni di libreria di molti linguaggi di programmazione
+
+- Definizione tramite equazioni
+  - usata in alcuni applicativi, librerie
+  - permette una scrittura più chiara
+    - digit:= [0-9]
+    - simple:= {digit}+
+    - fract:= {simple}.{simple}|.{simple}
+    - exp:= {fract} e (E|+|-) {simple}
+    - num:= {simple}|{fract}|{exp}
+  - al posto di
+    - num:= [0-9]+|[0-9]+.[0-9]+|.[0-9]+|[0-9]+.[0-9]+ e (E|+|-)[0-9]+|.[0-9]+ e (E|+|-)[0-9]+
+    - è possibile notare le parentesi graffe, distinguono
+      - i non terminali, identificatori come {digit}
