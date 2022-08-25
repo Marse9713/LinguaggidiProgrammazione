@@ -1,4 +1,4 @@
-# LinguaggidiProgrammazione
+# Linguaggi di Programmazione
 
 <h2 align = "center">Capitolo 1</h2>
 
