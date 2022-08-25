@@ -468,7 +468,9 @@ la leggibilità:
     - viene inserito nella parte "definizioni"
     - tra le parentesi "%{}%"
     - ad esempio
-    <p align = 'center'>
+    
+    ```
+    
     %{
         int val = 0;
     }%
@@ -479,18 +481,19 @@ la leggibilità:
     0   {val = 2*val;}
     1   {val = 2*val+1;}
     {separatore}    {printf ("%d", val); val=0;}
-    </p>
+    
+    ```
 
     - tale costrutto sostituisce sequenze rappresentanti numeri binari con il loro valore, scritto in decimale
 
 - L'uso standard
-  <p>
+  ```
   cifra             [0-9]
   lettera           [a-zA-Z]
   identificatore    {lettera}({cifra}|{lettera})*
   %%
   {identificatore}  printf("(IDE, %s)", yytext);
-  </p>
+  ```
 
   questo costrutto sostituisce il lessema con i token
 
@@ -502,7 +505,7 @@ la leggibilità:
 
 - Esempio del cifrario di Cesare
 
-<p align='center'>
+```
 %%
 [a-z]   { char ch = yytext[0];
           ch += 3;
@@ -516,11 +519,11 @@ la leggibilità:
           printf ("%C", ch);
         }
 %%
-</p>
+```
 
 - Esempio contacaratteri
   
-<p align='center'>
+```
 %{
     int charcount=0,linecount=0;
 %}
@@ -540,7 +543,7 @@ void main(){
     printf("There were %d characters in %d lines\n", charcount, linecount);
 }
 
-</p>
+```
 
 - Funzioni base
   - devono essere definite le funzioni:
