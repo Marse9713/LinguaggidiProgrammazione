@@ -351,3 +351,221 @@ la leggibilità:
     - num:= [0-9]+|[0-9]+.[0-9]+|.[0-9]+|[0-9]+.[0-9]+ e (E|+|-)[0-9]+|.[0-9]+ e (E|+|-)[0-9]+
     - è possibile notare le parentesi graffe, distinguono
       - i non terminali, identificatori come {digit}
+
+- RIsultati teorici
+  - Teorema di equivalenza
+    - Linguaggi regolari possono essere descritti in molti modi diversi:
+      - espressioni regolari
+      - grammatiche regolari
+      - automi a stati finiti non deterministici, NFA [non-determistic finite automata]
+      - automi a stati finiti deterministici (macchine a stati finiti) DFA [deterministic finite automata]
+  - Teorema di minimalità
+    - Esiste l'automa deterministico minimo (minor numero di stati)
+
+- Per costruire un riconoscitore per un'espressione regolare
+  - Dall'espressione regolare cotruisco:
+    - un NFA equivalente
+    - successivamente un DFA equivalente
+    - per ultimo l'automa minimo (DFA minimo)
+
+    tutte costruizioni effettive
+
+    - Dall'automa minimo costruisco un programma per decidere se una parola appartiene a una espressione regolare
+    - Il programma simula il comportamento dell'automa minimo, contiene una tabella che descrive le transazioni dell'automa minimo e ne simula il comportamento
+
+- Scanner, lexer
+  - Li scanner deve risolvere un problema più complesso del semplice riconoscimento di una singola espressione regolare
+
+    - Dati:
+      - un insime di espressioni regolari, suddivisione in classi di lessemi (es. identificatori, numeri, operazioni, ...)
+      - una stringa di ingresso
+    - lo scanner deve dividere la stringa d'ingresso in lessemi, ciascuno riconosciuto da un'espressione regolare
+
+
+  - Porta però a dei problemi:
+    - quando termina un lessema, la soluzione è standard: la sequenza più lunga che appartiene una qualche espressione regolare
+      - ad esempio la stringa '3.14e+sa' divisa in '3.14' e '+' 'sa'
+      - oppure '3.14e+5a' divisa in '3.14e+5' e 'a', per deciderlo possono essere necessari più simboli di lookahead
+    - cosa fare se un lessema appartiene a più classi
+
+- Costruzione di uno scanner
+  - costruisco un automa per ogni espressione regolare
+  - slla stringa di ingresso
+    - simulo il funzionamento parallelo degli automi
+    - riconosco un lessema quando nessun automa può continuare
+
+- Generatori di scanner (analizzatori lessicali)
+  - La costruzione degli scanner può essere automatizzata
+  - Classi dei programmi che:
+    - Dato un insime di espressioni regolari e delle corrispondenti azioni da compiere (codice da eseguire)
+    - Costruisco un programma che data una stringa, riconosce i lessemi sulla strnga e su ogni lesema esegue l'azione corrispondente (tipicamente costruire un token, ma anche altro)
+
+- (F)LEX
+  - diffuso generatore di scanner per linux (Unix)
+  - prende in input un file di testo con struttura
+
+<h5 align = 'center'>
+
+    definizione (opzionale)
+    %%
+    regole
+    %%
+    funzioni ausiliari (opzionale)
+
+</h5>
+
+  - la parte regole, la più importante, è una serie di regole nella forma
+    - espressione regolare  azione
+      - le espressioni-regolari sono quelle di unix (grep, emacs), ricca di sintassi
+      - l'azione è solitamente una istruzione C, istruzioni multiple appaiono tra {} eseguite quando viene riconosciuta la corrispondente espressione (esistono strumenti equivalenti per gli altri linguaggi di programmazione)
+
+    - ad esempio
+
+    <p align = 'center'>
+    %%
+    aa      printf("2a")
+    bb+     printf("manyb")
+    c       printf("cc")
+    </p>
+
+    - genera un programma che
+      - modifica coppie di a
+      - modifica sequenze di b, lunghe più di due caratteri
+      - raddopia le c
+
+    - i caratteri non riconosciuti da nessuna espressione regolare vengono stampati in uscita (restano inalterati)
+
+- Regole
+  - nel codice delle regole si possono usare le variabili:
+    - yytext: stringa (array) contenente il lessema riconosciuto, con puntatore al primo carattere
+    - yyleng: la lunghezza del lessema
+    - yyval: usate per passare parametri con il parser
+
+- Definizioni
+  - contiene la definizione di alcune espressioni reoglari nella forma
+    - nome      espressione-regolare
+  - ad esempio
+    - letter [a-zA-z]
+    - digit [0-9]
+    - number {digit}+
+  - da notare le parentesi graffe in {digit}+ e i nomi definiti possono essere usati nelle regole
+
+- Sintassi delle espressioni regolari
+  - metacaratteri: * | () + ? [] - ^ . $ {} /\ " % <>
+  - {ide}: identificatore di espressione regolare, va inserito tra {}
+  - e{n,m}: con n e m naturali: da n a m ripetizioni di e (possibile scrivere anche e{n, }, e{,n}, e{n})
+  - [^abc]: tutti i caratteri esclusi a b c
+  - \n: newline, \s:spazio generico, \t:tab
+  - \*: il carattere *, \ trasforma un metacarattere in un carattere standard
+  - "a+b": la sequenza di caratteri a+b (+ non più metacarattere)
+  - . : tutti i caratteri meno newline
+  - ^: inizio riga
+  - $: fine riga
+
+- Funzioni ausiliarie
+  - Nella parte "funzioni ausiliarie", si può inserire del codice C da usare nelle regole
+  - il codice C da inserire in testa al programma generato
+    - viene inserito nella parte "definizioni"
+    - tra le parentesi "%{}%"
+    - ad esempio
+    <p align = 'center'>
+    %{
+        int val = 0;
+    }%
+
+    separatore [\t\n]
+
+    %%
+    0   {val = 2*val;}
+    1   {val = 2*val+1;}
+    {separatore}    {printf ("%d", val); val=0;}
+    </p>
+
+    - tale costrutto sostituisce sequenze rappresentanti numeri binari con il loro valore, scritto in decimale
+
+- L'uso standard
+  <p>
+  cifra             [0-9]
+  lettera           [a-zA-Z]
+  identificatore    {lettera}({cifra}|{lettera})*
+  %%
+  {identificatore}  printf("(IDE, %s)", yytext);
+  </p>
+
+  questo costrutto sostituisce il lessema con i token
+
+- FUnzionamento
+  - si considerano tutte le espressioni regolari e si seleziona quello con il match più lungo, la parte lookahead conta nella misura
+  - a parità di lunghezza, conta l'ordine delle regole
+  - vengono impostate yytext, yyleng e eseguita l'azione
+  - nessun matching: regola di default: copio i caratteri input verso l'output
+
+- Esempio del cifrario di Cesare
+
+<p align='center'>
+%%
+[a-z]   { char ch = yytext[0];
+          ch += 3;
+          if (ch > 'z) ch -= ('z'+1-'a');
+          printf ("%c", ch);
+        }
+
+[A-Z]   { char ch = yytext[0];
+          ch += 3;
+          if (ch > 'Z') ch -= ('Z'+1-'A');
+          printf ("%C", ch);
+        }
+%%
+</p>
+
+- Esempio contacaratteri
+  
+<p align='center'>
+%{
+    int charcount=0,linecount=0;
+%}
+
+%%
+. charcount++;
+\n {linecount++; charcount++;}
+%%
+
+void yyerror(const char *str)
+    {fprintf(stderr,"errore: %s\n", str);}
+
+int yywrap() {return 1;}/*funzioni ausiliarie */
+
+void main(){
+    yylex();
+    printf("There were %d characters in %d lines\n", charcount, linecount);
+}
+
+</p>
+
+- Funzioni base
+  - devono essere definite le funzioni:
+    - yyerror(const char *str) viene chamata in condizioni di errore, tipicamente stampa un messaggio di errore usando la stringa argomento
+    - yywrap() viene chiamata a fine file di input, tipicamente restituisce o 0 o 1
+    - main()
+  - con opportune opzioni, possono essere create le versioni default.
+
+- Uso di Lex
+  - flex sorgente.l
+    - genera un programma C lex.yy.c, compilabile con il comando
+  - gcc lex.yy.c -ll
+  - in lex.yy.c viene creata una funzione yylex()
+    - chiamata dal programma "parser"
+    - legge un lessema, ed esegue l'azione corrispondente
+  - l'opzione '-ll' necessaria per creare un programma stand-alone
+    - collegare alcune librerie
+    - con le definizioni main, yywrap, yyerror
+    - non necessaria se inserisco nel file lex le relative definizioni
+  - Utilizzabile per automatizzare del text editing
+
+- Analisi sintattica (Parsing) - Analizzatore sintattico (Parser)
+  - A partire da
+    - una grammatica libera da contesto
+    - una stringadi token
+  - costruisco
+    - l'albero di derivazione della stringa, a partire dal simbolo iniziale
+
