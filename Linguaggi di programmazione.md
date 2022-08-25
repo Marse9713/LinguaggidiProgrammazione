@@ -571,3 +571,258 @@ void main(){
   - costruisco
     - l'albero di derivazione della stringa, a partire dal simbolo iniziale
 
+- Automi a pila - la teoria
+  - Le grammatiche libere possono essere riconosciute da automi a pila non deterministici
+    - gli automi con un uso limitato di memoria:
+      - insieme finito di stati
+      - una pila, in cui inserire elementi finiti
+      - passo di computazione, in base a:
+        - stato
+        - simbolo in testa alla pila
+        - simbolo in input
+      - decido
+        - il nuovo stato
+        - sequenza di simboli da inserire nella pila, in sostituzione del presente
+        - se è necessario consumare o meno l'input
+    - La parola è accettata se alla fine della scansione, si raggiunge una configurazione di accettazione
+      - pila vuota
+      - stato finale
+
+  - Deterministici - Non deterministici
+    - Per gli automi a pila non vale l'equivalenza tra
+      - deterministici (ad ogni passo una sola azione)
+      - non deterministici (più alternative possibili)
+    - Per le grammatiche libere sono necessari, in generale, automi non-deterministici
+
+  - Complessità del riconoscimento
+    - un automa a pila non deterministico, simulato tramite il backtracking, porta a complessità esponenziali
+    - esistono due algorimti capaci di riconoscere qualsiasi linguaggio libero in tempo O(n^3)
+    - un automa a pila deterministico risolve il problema in tempo lineare
+  - in pratica
+    - la complessità O(n^3) non è accettabile da parte del compilatore
+    - ci si limita ai linguaggi riconoscibili da automi a pila deterministici
+    - la classe è sufficientemente ricca da contenere quasi tutti i linguaggi di programmazione (C++ è un eccezione x*y;)
+  - Vi sono due tipi di automi a pila: LL e LR, due metodi di riconoscimento
+
+- Automi LL(n)
+  - costruisce l'albero di derivazione in modo top-down
+    - a partire dal simbolo iniziale
+    - esaminando al più n simboli della stringa non consumata (lookahead)
+    - si determina la prossima regola (esapnsione) da applicare
+  - (andremo a verificare se la nostra grammatica ci permette di eliminare una definita stringa, se la stringa rimanente è vuota, viene accettata; al contrario, se ha ancora almeno un elemento, viene rifiutata)
+  - più nel dettaglio
+    - il parsing guidato da una tabekka che in base:
+      - al simbolo in testa alla pila
+      - ai primi n simboli di inpu non ancora consumati, normalmente n = 1
+    - determina la prossima azione da svolegere tra queste possibilità:
+      - applicare una regola di riscrittura, espande la pila
+      - consumare un simbolo in input e in testa alla pila (se coincidono)
+      - generare segnale di errore (stringa rifiutata)
+      - accettare la stringa (quando input e pila vuota)
+
+- Analizzatori LL
+  - è relativamente semplice capire la teoria e cotruire automi (anche a mano, se a partire da semplici grammatiche)
+  - la costruzione prevede:
+    - dei passaggi di riformulazione di una grammatica per ottenere una equivalente (determina lo stesso linguaggio)
+    - dalla nuova grammatica, un algoritmo determina:
+      - se è LL(1)
+      - la tabekka dekke transazioni (descrizione dell'automa)
+  - meno generali dell'altra classe di automi LR(n), quelli effettivamente usati nei tool costruttori di parser
+
+- Significato del nome LL(n)
+  - esamina la stringa da sinistra a destra
+  - costruisci la derivazione Leftmost
+  - usa n simboli di lookahead
+  - Una derivazione è sinistra (leftmost) se ad ogni passo espando sempre il non terminale più a sinistra
+    - S -> aAB -> aDB -> adB -> adb
+  - Una derivazione è destra (rightmost) se ad ogni passo espando sempre il non terminale più a destra
+    - S -> aAB -> aAb -> aDb -> adb
+  - gli automi LL(n) generano sempre la derivazione sinistra
+
+- Analizzatori LR
+  - Approccio bottom-up
+    - a partire della stringa di input
+    - applico una serie di contrazioni (regole al contrario)
+    - fino a contrarre tutto l'input nel simbolo iniziale della grammatica
+  - Ad ogni passo si sceglie tra un azione di:
+    - shift, inserisco un token in input nella pila
+    - reduce, riduco la testa della pila applicando una riduzione al contrario
+  - Nella pila introduco una coppia <simbolo della grammatica, stato>, l'azione da compiere viene decisa guardando
+    - la componenete stato in testa alla pila (non serve esaminarla oltre)
+    - n simboli di input, per l'automa LR(n)
+
+- L'automa LR
+  - esiste un algoritmo che a partire da
+    - una grammatica libera L
+  - mi permette di:
+    - stabilire se L è LR
+    - costruire l'automa a pila relativo
+      - insime degli stati
+      - tabella delle transizioni
+    - come deve comportarsi l'automa ad ogni passo
+  - in realtà esistono tre possibili costruzioni
+
+- Varie costruzioni per automi LR
+  - Le costruzioni differiscono per
+    - complessità della costruzione
+    - numero degli stati dell'automa pila generato, con una certa complessità dell'algoritmo
+    - ampiezza dei linguaggi riconoscibili
+  - In ordine crescente per complessità e ampiezza di linguaggi riconosciuto:
+    - SLR(n)
+    - LALR(n)
+    - LR(n)
+  - n parametro, indica il numero di caratteri lookahead, crescndo n si ampia l'insime di linguaggi riconosciuti
+
+- Analizzatori LALR
+  - compromesso ideal tra numero di stati e varietà dei linguaggi riconosciuti
+  - costruzione piuttosto complessa: da spiegare e da implementare
+  - esemprio di applicazione di risultati teorici:
+    - Knuth, parser LR
+    - DeRemer, SLR and LALR
+  - LALR usato dai programmi generatori di parser Yacc, Bison, Happy
+
+- Yacc (Yet Another Compiler-Compiler)
+  - generatore di parser tra i più diffusi
+  - riceve in input una descrizione astratta del parser:
+    - descrizione di una grammatica libera
+    - un insieme di regole da applicare ad ogni riduzione
+  - Restituisce in uscita:
+    - programma C che implementa il parser
+      - l'input del programma sono token generati da uno scanner (f)lex
+      - simula l'automa a pila LALR
+      - calcola ricorsivamente un valore da associare a ogni simbolo inserito nella pila:
+        - albero di derivazione
+        - altri valori
+    - programmi equivalenti per costruire parser in altri linguaggi: ML, Pascal, Jva, Python, Go, Haskell
+
+- Struttura codice Yacc:
+
+```
+%{prologo %}
+definizioni
+%%
+regole
+%%
+
+funzioni ausiliarie
+
+```
+
+- Una produzione della forma
+  - nonterm -> corpo_1 | ... | corpo_k
+- diventa in Yacc con le regole:
+  - nonterm: corpo_1    {azione semantica_1}
+             ...
+             | corpo_k  {azione semantica_k}
+            ;
+
+- Azione semantica
+  - exp : num '*' fact {Ccode}
+  - Ccode Codice C che tipicamente
+    - a partire dai valori, calcolati in precedenza, per num e fact
+    - calcolo il valore da associare ad exp
+
+- Esempio valutaziopne espressioni aritmetiche
+  - costruisco un programma che valuta
+    - una serie espressioni aritmetiche
+    - divise su più righe di input
+  - espressioni composte da:
+    - costanti numeriche: numeri positivi e negativi
+    - le quattro operazioni
+    - parentesi
+  - valgono le usuali regole di precedenza tra operazioni
+
+- Prologo e definizioni
+
+```
+/* PROLOGO */
+%{
+    #include "lex.yy.c"
+
+    void yyerror (const char *str){
+        fprintf(stderr, "errore: %s\n", str);
+    }
+
+    int yywrap(){return 1;}
+    int main() {yyparse();}
+
+%}
+
+/* DEFINIZIONI */
+
+%token NUM
+
+%left '-' '+'
+%left '*' '/'
+%left NEG   /* meno unario */
+
+```
+
+- Esempio - Regole
+
+```
+
+%% /* REGOLE E AZIONI SEMANTICHE */
+    /* si inizia con il simbolo iniziale */
+input:      /* empty */
+      | exp '\n\   {printf ("The value is %d \n", $1); }
+;
+
+exp : NUM {$$=$1;   }
+    | exp '+' exp   {$$=$1+$3;  }
+    | exp '-' exp   {$$=$1-$3;  }
+    | exp '*' exp   {$$=$1*$3;  }
+    | exp '/' exp   {$$=$1/$3;  }
+    |'-' exp %prec NEG {$$=-$2; }
+    |'(' exp ')'    {$$ =$2;    }
+;
+
+```
+
+- Esempio - Codice LEX associato
+
+```
+%{
+    #include <stdio.h>
+    #include "y.tab.h"
+%}
+
+%%
+[ \t]; //ignora gli whitespace
+[0-9]+      {yyval = atoi(yytext); return NUM;}
+\n          {return *yytext;}
+"+"         {return *yytext;}
+[\-\*\/\(\)]{return *yytext;}
+
+```
+
+- Definizione dei token
+  - l'insieme dei possibili token definiti nel file Yacc con la dichiarazione %tokent NUM
+  - singoli caratteri possono essere token
+    - non necessario definirli
+    - codficati con il loro codice ASCII
+    - gli altri token codificati con intero > 257
+  - token diventano i terminali della grammatica libera in Yacc
+  - Yacc crea una tabella y.tab.h
+    - contiene la lista dei token e la loro codifica come interi
+    - lex la dichiarazione (#include "y.tab.h"), viene usata per accerere ai dati in questa tabella
+
+- Funzioni ausiliarie
+  - Nel file Yacc è necessario definire le funzioni
+    - yyerror procedura invocata in caso di errori nelle sintassi dell'input
+      - in input una stringa da usare nel messaggio di errore
+    - yywrap chiamata al termine del file di input
+      - di deafult restituisc l'intero 0 o 1
+      - può essere usata per gerstire più file di input
+    - main per creare un programm stand alone
+  - La compilazione YACC crea una funzione C
+    - yyparser che implementa il parser LALR
+
+- Integrazione tra lex e Yacc (flex e Bison)
+  - lex non crea un programma stand alone ma una funzione 
+    - yylex() chiamata all'interno di yyparser e restituisce un token ad ogni chiamata e, indirettamente, un valore
+      - il token è il valore restituito espicitamente dalla funzione:
+        - intero, codifica la classe del lessema
+      - il token è diventato un terminale della grammatica usata in Yacc
+      - il valore attraverso la variabile yyval globale e condivisa
+
