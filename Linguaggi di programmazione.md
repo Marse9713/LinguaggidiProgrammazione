@@ -404,15 +404,14 @@ la leggibilità:
   - diffuso generatore di scanner per linux (Unix)
   - prende in input un file di testo con struttura
 
-<h5 align = 'center'>
-
+```
     definizione (opzionale)
     %%
     regole
     %%
     funzioni ausiliari (opzionale)
 
-</h5>
+```
 
   - la parte regole, la più importante, è una serie di regole nella forma
     - espressione regolare  azione
@@ -421,12 +420,12 @@ la leggibilità:
 
     - ad esempio
 
-    <p align = 'center'>
+    ```
     %%
     aa      printf("2a")
     bb+     printf("manyb")
     c       printf("cc")
-    </p>
+    ```
 
     - genera un programma che
       - modifica coppie di a
