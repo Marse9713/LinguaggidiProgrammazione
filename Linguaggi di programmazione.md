@@ -1,6 +1,6 @@
 # Linguaggi di Programmazione
 
-<h2 align = "center">Capitolo 1</h2>
+<h1 align = "center">Capitolo 1</h1>
 
 - Due paradigmi di programmazione:
     - imperativo:
@@ -158,7 +158,9 @@ la leggibilità:
     - può essere conservata per poi essere utilizzata da un debugger, anche dopo che la compilazione è stata completata
 
 
-<h2 align = "center">Capitolo 2</h2>
+<h1 align = "center">Capitolo 2</h1>
+
+# Analizzatori lessicali e sintattici
 
 - Descrizione di un linguaggio di programmazione
     - sintassi: quali sequedi caratteri costruiscono programmi, la loro struttura
@@ -826,3 +828,271 @@ exp : NUM {$$=$1;   }
       - il token è diventato un terminale della grammatica usata in Yacc
       - il valore attraverso la variabile yyval globale e condivisa
 
+- Differenze tra YACC e LALR
+  - YACC produce codice C che implementa un automa LALR ma:
+    - non esiste uno stretto controllo che la grammatica sia LALR:
+      - grammatiche non LALR vengono accettate ma:
+        - si costruisce un automa a pila dove per alcuni casi più scelte possibili (automa non-deterministico)
+        - YACC genera codice che ne sceglie una, esegue solo quella
+        - si possono fare scelte sbagliate
+        - si possono rifiutare parole valide
+    - grammatiche ambigue possono essere usate
+      - attraverso la definizione di priorità si possono togliere ambiguità
+      - automi non LALR: attraverso le priorità si indicano le scelte da fare
+  - il codice C, non solo riconosce la stringa ma la "valuta"
+    - valutazione bottom-up, come il riconoscimento
+    - risultati parziali inserite nella pila, $$, $1, $2, ... fanno riferimento alla pila
+    - la parte "azioni" delle regole specificano che valore associare una parola, a partire dai valori delle sotto-parole
+    - attraverso le azioni posso costruire l'albero di derivazione ma anche altro
+
+- Secondo esempio: sintassi di comandi ad un termostato
+
+```
+
+File LEX
+
+%{
+  #include <stdio.h>
+  #include "y.tab.h"
+%}
+
+%%
+[0-9]+           { yyval=atoi(yytext); return NUMERO; }
+riscaldamento    return TOKRISCALDAMENTO;
+acceso|spento    {yyval=strcmp(yytext,"spento");
+                  return STATO;}
+obiettivo        return TOKOBIETTIVO;
+temperatura      return TOKTEMP;
+[ \t\n]+         /* ignora spazi bianchi e fine linea */
+%%
+
+%{
+  #include <stdio.h>
+  #include <string.h>
+
+  void yyerror(const char *str){
+    fprintf(stderr,"errore: %s\n", str);
+  }
+
+  int yywrap(){
+    return 1;
+  }
+
+  int main() {
+    yyparse();
+  }
+
+%}
+
+%token NUMERO TOKRISCALDAMENTO STATO TOKOBIETTIVO TOKTEMP
+
+%%
+
+File YACC: regole
+
+comandi:  /*vuoto */
+        | comandi comando
+        ;
+
+comando: interruttore_riscaldamento
+        | imposta_obiettivo
+        ;
+
+interruttore_riscaldamento: TOKRISCALDAMENTO STATO
+            { if($2)      printf("\t Riscaldamento acceso \n);
+              else        printf("\t Riscaldamento spento \n");}
+            ;
+
+imposta_obiettivo: TOKOBIETTIVO TOKTEMP NUMERO
+                  { printf("\t Temperatura impostata a %d \n", $3); }
+                  ;
+
+```
+
+- Modifica tipo YYSTYPE
+  - Nel file C le variabili yyval, $$, $1, ... hanno tipo YYSTYPE
+    - per default intero
+    - posso YYSTYPE con la dichiarazione
+
+```
+%union {
+  nodeType      *expr;
+  int           value;
+}
+```
+
+  - definisce un tipo union associato alla variabile LEX (yyval) e alla variabile YACC ($$, $1, ...)
+  - con le seguenti dichiarazioni, specifico a che tipi componenti sono associati diversi terminali e non terminali
+  
+```
+%token <value>  INTEGER, CHARCON /* terminali */
+%type <expr>    expression;  /* non terminali */
+  - dichiarazioni da inserire nella parte definizioni (prologo) del file YACC
+```
+
+- Creazione del codice
+
+```
+lex file.l
+yacc -d file.y
+cc lex.yy.c y.tab.c -o fileEseguibile
+
+```
+
+  - in alternativa:
+
+```
+flex file.l
+bison -d file.y
+gcc lex.yy.c y.tab.c -o fileEseguibile
+```
+
+  - in alternativa, inserisco:
+
+```
+#include "lex.yy.c"
+```
+
+  - nel prologo yacc, e uso il comando
+
+```
+cc y.tab.c -o fileEseguibile
+```
+
+    - l'opzione -d forza la creazione del file y.tab.h
+
+
+<h1 align = "center">Capitolo 3</h1>
+
+# Blocchi e regole di scope
+
+- Nomi 
+  - Meccanismi di astrazione
+    - astrarre dalla macchina fisica
+    - nascondere i dettagli, mettere in evidenza le parti importanti
+  - sono fondamentali per gestire la complessità del software
+  - uso dei nomi: un meccanismo di astrazione di base che è già presente in assembly
+  - il nome: è una sequenza di caratteri usata per denotare altri costrutti
+  - permettono una rappresentazione sintetica, astratta, mnemonica di:
+    - valori (costanti)
+    - locazioni di memoria (variabili)
+    - pezzi di codice (procedure)
+    - operatori (funzioni di base)
+    - ...
+
+- Sintassi
+  - i nomi possono essere sequenze di caratteri significativi, non solo identificatori ma anche simboli semplici (+, -, <=, ++, ...)
+  - ad esempio:
+
+```
+const pi = 3.14;
+int x = p + 1;
+void f(){...}
+```
+
+- Nomi e oggetti denotabili
+  - bisogna distinguere tra
+    - il nome (stringa di caratteri)
+    - l'oggetto rappresentato, denotato
+  - in linguistica: significante e significato
+  - oggetto denotabile: oggetto associabile a un nome
+    - linguaggi di programmazione diversi possono avere oggetti denotabili diversi
+
+- Legame, ambiente
+  - legame (biding) : associazione esistente tra nome e oggetto
+  - ambiente (enviroment): insieme dei legami esistenti, dipendente da
+    - uno specifico punto del programma
+  - può dipendere
+    - dal codice eseguito in precedenza, la storia del programma in soldoni
+
+- Creazione del binding:
+  - possiamo separare tra:
+    - nomi definiti dal linguaggio
+      - tipi primitivi, operazioni primitive, costanti predefinite
+    - nomi definiti dal programmatore
+      - variabili, parametri formali, procedure (in senso lato), tipi definiti dall'utente, etichette, moduli, costanti definite dall'utente, eccezioni
+  - il biding può essere creato in vari momenti:
+    - definizione del linguaggio
+    - scrittura del codice
+    - caricamento del programma in memoria
+    - esecuzione
+    - ...
+  - ma la distinzione principale è
+    - biding statico, avviene prima dell'esecuzione della prima istruzione
+    - biding dinamico durante l'esecuzione
+  - Ma anche l'oggetto denotato viene incrementalmente definito in vari momenti
+    - ad essempio la dichiarazione di una variabile: int a
+
+- Ambienete e store:
+  - il valore di una variabile x dipende da due funzioni
+    - ambiente: definisce quale locazione di memoria contiene il dato di x
+    - store (memoria): determina il dato effettivo
+  - accesso al valore in due passaggi
+    - i comandi possono modificare lo store (assegnazione), ma non l'ambiente
+    - l'ambiente è modificabile attraverso la dichiarazione
+  - alcuni linguaggi non prevedono l'esistenza di uno store (funzionali puri)
+
+- Dichiarazione:
+  - nomi e legami sono quasi sempre definiti attraverso una
+    - dichiarazione: meccanismo (implicito o esplicito) col quale si crea un legame (si modifica l'ambiente)
+  
+```
+int x = 0;
+typedef int T;
+int inc (T x) {
+  return x + 1;
+}
+
+```
+
+  - attraverso più dichiarazioni, lo stesso nome può denotare oggetti distinti in punti differenti del programma
+
+- Blocchi
+  - nei linguaggi moderni l'ambiente è strutturato
+    - blocco: regione programma che contiene dichiarazioni locali a quella regione
+  
+```
+{...}           C, Java
+begin ... end   Algol, Pascal
+(...)           Lisp
+let...in...end  Scheme, ML
+```
+  - possono essere
+    - associati ad una procedura
+    - anonimi (o in-line)
+
+- Vantaggi dei blocchi
+  - gestione locale dei nomi (quindi solo in un determinato blocco)
+
+```
+{
+  int tmp = x;
+  x = y;
+  y = tmp;
+}
+```
+    - definire nomi locali indipendenti da altre dichiarazioni
+    - strutturare il programma
+  - con un'opportuna allocazione della memoria:
+    - è possibile ottimizzare l'occupazione della memoria
+    - si permette la ricorsione
+
+- Annidamento
+  - i blocchi possono essere annidati:
+  
+```
+{
+  int x = 0;
+  int y = 2;
+  {
+    int x = 1;
+    x = y;
+  }
+  write(x);
+}
+
+```
+
+  - regola di visibilità
+    - una dichiarazione è visibile nel blocco di definizione e in tutti quelli annidati
+      - a meno di mascheramento: una nuova dichiarazione per lo stesso nome nasconde, maschera, la precedente
