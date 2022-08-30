@@ -1711,4 +1711,89 @@ int fact (int n){
       - resto blocco libero
   - de-allocazione: restituzione del blocco aggiunta alla lista dei blocchi liberi
 
-- Gestione della hea 
+- Gestione della heap
+  - problemi
+    - le operazioni devono essere efficineti 
+    - vanno evitati gli sprechi di memoria
+      - frammentazione interna
+      - frammentazione esterna
+  - frammentazione: è presente anche nella gestione della memoria virtuale tramite segmentazione
+    - su uno spazio di memoria lineare
+    - vengono assegnati blocchi di dimensione varibile
+    - possono essere liberati
+  - le due soluzioni hanno problemi simili
+
+- Frammentazione
+  - frammentazione interna: lo spazio richesto è X
+    - viene allocato un blocco di dimensione Y > X
+    - lo spazio Y - X è sprecato
+    - causa meno problemi della frammentazione esterna
+  - frammentazione esterna
+    - la continua allocazione e deallocazione di blocchi porta alle creazioni di blocchi liberi di piccole dimensioni
+      - differenze tra il blocco libero usato e lo spazio efferttivamente usabili, non è possibile allocare un blocco di grandi dimensioni, anche con tanta memoria libera
+
+- Gestione della lista libera: unica lista
+  - ad ogni richiesta di allocazione: si cerca il blocco di dimensione opportua
+    - first fit: il primo blocco è abbastanza grande
+    - best fit: quello di dimensione più piccola, tra quelli sufficienti
+  - se il blocco scelto è abbastanza più grande di quello che serve viene diviso in due e la parte inutilizzata è aggiunta alla LL
+  - Quando un blocco è de-allocato, viene restituito all LL (se un blocco adiacente è libero i due blocchi sono "fusi" in un unico blocco)
+
+- Best fit o first fit?
+  - Vantaggi - svantaggi
+    - first fit: più veloce, occupazione peggiore della memoria
+    - best fit: più lento, miglior sfruttamento della memoria
+
+- Gestione della lista libera: più liste
+  - con unica LL costo allocazione lineare nel numero di blocchi liberi
+  - liste libere multiple, per migliorare i tempi di ricerca:
+    - ogni lista contiene blocchi liberi di dimensione simile
+    - prendo il primo blocco disponibile nella lista opportuna
+
+- Buddy system: n liste:
+  - la lista k-esima ha blocchi di dimensione 2^k
+  - se si desidera un blocco di dimensione 2^j, e la lista relativa è vuota:
+    - si cerca un blocco, nella lista successiva di dimensione doppia, viene diviso in due parti
+    - se anche la lista successiva è vuota, la procedura si ripete ricorsivamente
+  - quando un blocco di 2^k è dealloccato, viene riunito alla sua altra metà (buddy), se disponibile
+
+- Implementazion delle regole di scope
+  - per il recupero dei dati non locali nello stack di attivazione, ci sono:
+    - scope statico con catena statica e display
+    - scope dinamico con il solo SdA, A-list e la tabella centrale dell'ambiente (CRT)
+
+- Scope statico
+  - considerando il programma:
+
+```
+
+int x = 10;
+
+void incx(){
+
+  x++;
+
+}
+
+void foo(){
+
+  int x = 0;
+  incx();
+
+}
+
+foo();
+incx();
+
+```
+
+  - incx viene chiamato due volte, indirettamente tramite foo e successivamente direttamente
+  - incx accede sempre alla stessa variabile x
+  - x è memorizzato in un certi RdA
+  - il problema sta a determinare di quanti RdA sia necessario scendere nella pila
+
+- Scope statico: legami validi
+  - i legami validi sono quelli definiti
+    - nella procedura corrente
+    - nella procedura genitore
+    - nel genitore del genitore ...
