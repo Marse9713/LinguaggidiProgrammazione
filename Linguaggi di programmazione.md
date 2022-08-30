@@ -1434,4 +1434,157 @@ write(*X);
     - let*
     - letrec
   - con diversa validità delle dichiarazioni
-    - 
+    - let: non ricorsiva, creazione in blocco del nuovo ambiente
+    - let*: non ricorsiva, creazione sequenziale di una serie di ambienti
+    - letrec: ricorsive e mutuamente ricorsive
+    - ad esempio:
+
+```
+
+(let ((a 1))
+  (let ((a 2)
+         (b a))
+         b))
+
+vale 1
+
+(let ((a 1))
+  let ((a 2)
+      (b a))
+      b))
+
+vale 2
+
+```
+
+- Mutua ricorsione (di funzioni)
+  - viene forzato l'utilizzo di un nome prima che questi venga dichiarato, per essere possibile, devo permettere eccezioni al vincolo
+    - un nome deve essere dichiarato prima di essere usato
+- Mutua ricorsione di definizione di tipo
+
+```
+
+type lista = ^elem;
+     elem = record
+          info : integer;
+               next : lista;
+        end
+```
+
+  - posso definire un tipo puntatore prima di aver definito il tipo puntato,
+  - come in c:
+
+```
+
+struct child {
+  struct parent *pParent;
+};
+struct parent{
+  struct child *children[2];
+};
+
+```
+  - in struct posso inserire un campo puntatore a struct non ancora definiti
+
+- Dichiarazioni incomplete di tipo:
+  - in alcuni linguaggi è permesso la mutua ricorsione:
+    - in C ad esempio:
+
+```
+typedef struct elem element;
+struct elem {
+  int info;
+  element *next;
+}
+
+typedef struct child ch;
+struct child {
+  struct parent *pParent;
+};
+struct parent{
+  ch *children[2];
+}
+
+```
+  - in Ada:
+
+```
+
+type elem;
+typel lista is access elem;
+type elem is record
+        info: integer;
+        next: lista;
+    end
+
+```
+
+- Moduli e information hiding
+  - programmi di grosse dimensioni hanno il problema di nascondere parte dei nomi
+    - usando per caso lo stesso nome in due parti del codice porta a comportamenti imprevedibili
+    - serve anche per evitare i conflitti e porta un cognitive overloading
+  - i blocchi annidati (e procedure) risolvono il problema ma non completamente
+
+<h1 align = "center">Capitolo 4</h1>
+
+# Stack di attivazione, Heap
+
+- La gestione della memoria
+  - come il compilatore-interprete, organizza i dati necessari all'esecuzione del programma
+  - null'uso tipico, il codice ARM prevede la divisione della memoria nei seguenti intervalli consecutivi
+  1. 0 - 0xFFF: riservata al sistema operativo
+  2. 0x1000 - ww: codice programma (.text)
+  3. ww - xx: costanti, variabili del programma principale (.data)
+  4. xx - yy: heap per dati dinamici (liste e alberi)
+  5. yy - zz: stack per le chiamate di procedura, stack di attivazione
+
+  - il registro r13, sp (stack pointer) punta alla cima dello stack
+  - il registro r11, fp (frame pointer) punta al "frame" della procedura in esecuzione
+
+- Allocazione delle memoria
+  - tre meccaniscmi di allocazione della memoria:
+    - statica: memoria allocata a tempo di compilazione
+    - dinamica: memoria allocata a tempo di esecuzione, divisa in
+      - pila(stack): oggetti alloccati con la politica LIFO (last in, first out)
+      - heap: oggetti alloccati e de-alloccati in qualsiasi momento
+    - normalmente un programma usati tutti e tre i meccanismi
+
+- Allocazione statica del programma
+  - ad ogni variabile (locale o globale) assegnato un indirizzo univoco
+  - le variabili locali di una procedura mantengono il valore anche dopo la fine della procedura
+
+  - svantaggi della allocazione statica completa:
+    - non permette la ricorsione 
+      - le varie chiamate ricorsive di una stessa procedura devono avere ciascuna uno spazio privato di menoria per:
+        - una copia delle variabili locali, ogni chiamata ricorsiva le può modificare in modo diverso
+        - informazioni di controll (indirizzo di ritorno)
+    - forza ad usare più spazio del necessario:
+      - costringe ad allocare spazio per tutte le variabili di tutto il codice
+      - di volta in volta solo una piccola parte di queste sono attiva (quelle associate alle procedure aperte)
+    - non permette strutture dinamiche
+  - vantaggi: accesso diretto, veloce, a tutte le variabili
+
+- Stack di attivazione
+  - parte della memoria viene gestita come una pila, destinata a contenere i dati locali delle procedure
+    - ad ogni chiamata, dopo aver allocato dello spazio (record di attivazione)
+    - lo spazio alloccato, successivamente viene de-allocato all'uscita dalla procedura
+
+- Allocazione dinamica: record di attivazione
+  - ogni istanza di procedura in esecuzione possiede un record di attivazione (RdA o frame), ovvero dello spazio di memoria per contenere:
+    - variabili locali
+    - parametri in ingrsso ed in uscita
+    - indirizzo di ritorno
+    - link dinamico (al frame della procedura chiamante)
+    - link static (al frame della procedura genitore, non sempre presente)
+    - risultati intermedi
+    - salvataggio dei registri
+
+- Stack di attivazione 
+  - analogamente, ogni blocco, con dichiarazione, può avere un suo record di attivazione (più semplice, meno informazioni di controllo)
+    - variabili locali
+    - risultati intermedi
+    - link dinamico (al frame della procedura chiamante)
+  - stack di attivazione:
+    - una pila (LIFO) contenete i RdA
+    - la struttura dati naturali per gestirli
+
