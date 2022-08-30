@@ -1096,3 +1096,118 @@ let...in...end  Scheme, ML
   - regola di visibilità
     - una dichiarazione è visibile nel blocco di definizione e in tutti quelli annidati
       - a meno di mascheramento: una nuova dichiarazione per lo stesso nome nasconde, maschera, la precedente
+
+- Ad esempio
+
+```
+A:{
+  int a = 1;
+  B:{
+    int b = 2;
+    int c = 3;
+    C:{
+      int c = 4;in
+      int d = a + b +c;
+      write(d);
+    }
+  }
+  D:{
+    int e = a + b + c
+    write(e);
+  }
+}
+
+```
+
+- Utilizzabilità di una dichiarazione
+  - tipicamente a partire dalla sua dichiarazione e fino alla fine del blocco,è utilizzabile una dichiarazione all'interno del blocco
+  - in alcuni linguaggi, come Modula3, Python, in tutto il blocco
+  - dichiarazione come
+
+```
+{
+  const a = b;
+  const b = 3;
+  ...
+}
+```
+  possono generare errore o no
+
+- Validità di una dichiarazione
+  - a partire dalla dichiarazione
+  - in tutto il blocco
+  - istruzioni del tipo:
+
+```
+const a = 1;
+...
+procedure foo;
+  const b = a;
+  const a = 2;
+
+```
+  - generano errore in Pascale, C#, dove validità (tutto il blocco) e utilizzabilità (dalla dichiarazione non coincidono)
+  - tipicamente a b viene assegnato 1 (C, Java)
+  - può essere assegnato 2
+
+- Suddivisione dell'ambiente
+  - ambiente locale : assciazioni create all'ingresso del blocco
+    - variabili locali
+    - parametri formali
+  - ambiente globale relativa al programma principale
+    - dichiarazioni esplicite di variabili globali
+    - associazioni esportate da moduli, ecc
+  - ambiente non-locale, non-globale:
+    - associazione ereditate da altri blocchi
+
+- Operazioni sull'ambiente
+  - creazione associazione nome-oggetto denotato (naming)
+    - entrata in un blocco, dichiarazione locale in blocco
+  - distruzione associazione nome-oggetto denotato (unnaming)
+    - uscita da blocco con dichiarazione locale
+  - riferimento oggetto denotato mediante il suo nome (referencing)
+    - uso di un nome, nel codice
+  - disattivazione associazione nome-oggetto denotato
+    - entrata in un blocco con dichiarazione che maschera
+  - riattivazione associazione nome-oggetto denotato  uscita da  blocco con dichiarazione che maschera
+
+- Operazioni sugli oggetti denotabili
+    - creazione 
+    - accesso
+    - modifica (se l'oggetto è modificabile)
+    - distruzione
+  - creazione e distruzione di un oggetto non coincidono con la creazione e la distruzione dei legami per esso
+  - alcuni oggetti denotabili come costanti, tipi, non vengono ne creati ne distrutti
+    - creazione, distruzione fanno riferimento a dati in memoria (variabili), codice (procedure)
+
+- Eventi base in un biding
+  1. creazione di un oggetto
+  2. creazione di un legame per l'oggetto
+  3. riferimento all'oggetto, tramite il legame
+  4. disattivazione di un legmae
+  5. riattivazione di un legame
+  6. distruzione di un legame
+  7. distruzione di un oggetto
+    - (1-7) tempo di vita dell'oggetto
+    - (2-6) tempo di vita dell'associazione
+
+- Tempo di vita
+  - la vita di un oggetto non necessariamente coincide con la vita dei legami per quell'oggetto
+  - vita dell'oggetto più lunga di quella del legame
+    - passaggio per riferimento, di una variabile, in una procedura
+  
+```
+var A: integer;
+
+procedure P (var X:integer);
+
+  begin 
+  ...
+  end;
+
+P(A);
+
+```
+
+  - l'esecuzione di P crea un legame tra X e un oggetto esistente prima e dopo l'esecuzione
+  - 
