@@ -1588,3 +1588,127 @@ type elem is record
     - una pila (LIFO) contenete i RdA
     - la struttura dati naturali per gestirli
 
+- Esempio di gesione della memoria con blocchi anonimi:
+
+```
+{
+  int x = 0;
+  int y = x + 1;
+  {
+    int z = (x + y) * (x - y);
+  };
+};
+
+```
+
+  - push record con spazio per x, y
+  - settare valori di x, y
+    - push record blocco interno, allocazione per z ed eventualmente per risultati intermedi
+    - settare il valore per z
+    - pop record per blocco interno
+  - pop record per blocco esterno
+  - //Nota: nel blocco interno l'accesso alle variabili non locali x e y, vanno cercate in blocchi esterni (va necessariamente risalita la catena dinamica)
+
+- Accesso ai dati nello stack di attiavazione (versione semplificata per blocchi anonimi)
+  - dati (variabili, risultati intermedi) locali del blocco in esecuzione, si usa
+    - il Frame Pointer (FP): 
+      - punta all'indirizzo base dell'ultimo frame (RdA)
+      - i dati dell'ultimo frame sono accessibili per offset rispetto allo FP:
+        - indirizzo_dato = FP + offset
+        - offset determinabile staticamente, a tempo di compilazione
+  - i dati non locali al blocco in esecuzione invece:
+    - necessitano la derminazione dell'indirizzo base del Rda del dato
+    - link dinamico (o control link, puntatore di catena dinamica)
+      - puntatore al precedente record sullo stack
+    - risalgo la catena dei link
+
+- Gestione della pila
+  - per la gestione dello stack di attivazione uso anche
+    - Stack Pointer (SP)
+      - punta alla fine della pila, primo spazio di memoria disponibile
+
+- Gestione dei blocchi in-line
+  - operazioni per la gestione (aggiornamento di FP, SP, elink dinamici)
+    - Ingresso nel blocco: Push, allocazione dello spazio e scrittura dei link
+      - link dinamico del novo RdA := FP
+      - FP = SP
+      - SP = SP + dimensione nuovo del RdA
+    - Uscita dal blocco: Pop, Elimina l'ultimo RdA, recupera spazio e ripristina i puntatori
+      - SP = FP
+      - FP := link dinamico del RdA tolto dallo stack
+
+- Nella pratica
+  - in molti linguaggi si preferisce evitare l'implementazione a pila per i blocchi anonimi
+    - tutte le dichiarazioni dei blocchi annidati sono raccolte dal compilatore
+    - viene allocato spazio per tutti i blocchi
+    - spreco minore di memori
+    - maggiore velocità: meno azioni sulla pila
+
+- Esempio di corsione, stack di attivazione indispensabile
+
+```
+int fact (int n){
+
+  if (n <= 1)
+    return 1;
+  else
+    return n * (fact ( n - 1 ));
+
+}
+```
+  - nel RdA troviamo:
+    - i parametri di ingrsso: n
+    - parametri in uscita - risultato: fact(n)
+    - link statici, dinamici e indirizzo di ritorno, back_up registri processore
+  - tanti RdA quanto il valore iniziale di n
+
+- gestione dello stack di attivazione
+  - chiamata procedura
+    - allocazione RdA
+    - passaggio parametri
+    - inizializzaione varibili locali 
+    - gestione inrmazione di controllo: link statici, dinamici
+    - registri: salvataggio
+  - uscita procedura
+    - passaggio risultato
+    - gestione informazione di controllo
+    - registri: ripristino
+    - deallocazione RdA
+
+- Gestione dello stack di attivazione
+  - la gestione della pila è compiuta mediante:
+    - sequenza di chiamate - chiamate
+    - prologo - chiamato
+    - epilogo - chiamato
+    - sequenza di ritorno - chiamante
+  - la ripartizione tra chiamante e chiamato è in parte arbitraria
+    - inserire il codice nella procedura chiamata porta a generare meno codice
+      - le istruzioni sono presenti una volta sola, al posto di tante volte quante sono le chiamate alla procedura
+
+- Allocazione dinamica con heap
+  - Heap: zona di memoria le cui parti (blocchi) possono essere allocate (e de-allocate) a seconda della necessità
+  - necessario quando il linguaggio permette:
+    - tipi di dato dinamici
+    - oggetti di dimensioni variabili
+    - oggetti che sopravvivono alla prcedura che gli ha creati
+  - la gestione della heap, avendo i problemi con:
+    - la gestione efficiente dello spazio: porta a frammentazione
+    - velocità di ricerca spazi liberi
+
+- Heap suddivisa in blocchi di dimensione fissa
+  - in originie: tutti i blocchi collegati nella lista libera
+  - allocazione di uno o più blocchi
+  - deallocazione: restituzione alla lista libera
+  - il vincolo della dimensione fissa, rende il meccaniscmo troppo rigido:
+    - non fornisce blocchi di elevata dimensione per strutture dati contigue di dimensione elevata
+    - non posso implementare malloc di c
+
+- Heap: blocchi di dimensione variabile
+  - inizialmente: la lista è libera e costituita ad unico blocco, poi la lista viene formata da blocchi di dimensione variabile
+  - allocazione: determinare un blocco libero della dimensione opportuna
+    - che viene diviso in:
+      - parte assegnata
+      - resto blocco libero
+  - de-allocazione: restituzione del blocco aggiunta alla lista dei blocchi liberi
+
+- Gestione della hea 
