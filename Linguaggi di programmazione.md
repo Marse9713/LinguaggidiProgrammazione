@@ -1210,4 +1210,228 @@ P(A);
 ```
 
   - l'esecuzione di P crea un legame tra X e un oggetto esistente prima e dopo l'esecuzione
-  - 
+
+  - La vita dell'oggetto è più breve di quella del legame
+    - il puntatore, punta ad un'area di memoria dinamica dealloccata
+    - Dangling reference: riferimenti pendenti, causano errori dato che la zona di memoria è dealloccata
+
+- Regole di scope
+  - in presenza di procedure, le rogeole di scope diventano più complesse
+
+```
+
+int x = 10;
+
+void incx(){
+
+  x++;
+
+}
+
+void foo(){
+
+  int x = 0;
+  incx();
+
+}
+
+int main(){
+
+  foo();
+  write(x);
+
+}
+
+```
+
+  - due alternative:
+    - un nome non-locale all procedura incx fa rifermineto a:
+      - all prima dichiarazione in blocco che include sintatticamente incx
+      - all'ultima dichiarazione "eseguita" prima di incx
+
+- Scope statico
+  - un nome non locale è risolto nei blocchi che testualmente lo racchiudono a partire da quelli più interni:
+  
+```
+
+int x = 0;
+
+void foo (int n){
+
+  x = x + n;
+
+}
+
+foo(2);
+write(x);
+
+{
+
+  int x = 0;
+  foo(3);
+  write(x);
+
+}
+
+write (x);
+
+Output: 2,0,5
+
+```
+
+- Scope dinamico:
+  - un nome non-locale è risolto nei blocchi che testualmente lo racchiudono a partire da quelli più interni
+
+```
+
+int x = 0;
+
+void foo (int n){
+
+  x = x + n;
+
+}
+
+foo(2);
+write(x);
+
+{
+
+  int x = 0;
+  foo(3);
+  write(x);
+
+}
+
+write (x);
+
+Output: 2,3,5
+
+```
+
+- Scope statico: indipendenza dalla posizione
+
+```
+
+int x = 10;
+
+void incx(){
+
+  x++;
+
+}
+
+void foo(){
+
+  int x = 0;
+  incx();
+
+}
+
+foo();
+
+```
+
+  - incx è dichiarato nello scope della x più esterna
+  - incx è chiamato nello scope della x più esterna
+  - incx può essere chiamata in molti contesti diversi
+  - l'unico modo per incx di comportarsi in modo uniforme è che il riferimento a x nelle due chiamate di incx sia sempre quello più esterno (scope statico)
+
+(con una modifica al codice, al posto di x, y)
+
+  - in questa versione foo usa una diversa variabile locale
+    - appunto, y invece di x
+  - la modifica di nomi di variabili locali, modifica il comportamento del programma con lo scope dinamico, mentre sullo scope statico non ha alcun effetto
+
+- Scope dinamico: specializzare una funzione
+  - supponiamo che "visualizza" sia una procedura che
+    - rende a colore sul video un certo testo
+    - usa come parametro un costante non-locale (colore)
+  - con lo scope dinamico posso modificare il suo comportamento con:
+
+```
+{
+  const colore = rosso;
+  visualizza(testo);
+}
+```
+
+  - tutte le variabili non locali diventano parametri impliciti della procedura:
+    - maggiore flessibilità nell'uso delle procedure
+      - simulo il meccaniscmo dei "valori di default"
+    - maggior difficoltà nel determinare il comportamento della procedura
+
+- Differenze tra scope statico e dinamico
+  - Scope statico (lexical scope):
+    - informazione completa dal testo del programma
+    - le associazioni sono note a tempo di compilazione
+    - principi di indipendenza
+    - più complesso da implementare ma più efficiente
+    - ad esempio viene fatto da Java, Scheme, C, ...
+  - Scope dinamico:
+    - informazione derivata dall'eseguzione
+    - spesso causa di programmi meno "leggibili"
+    - più felssibile: modificare il comportamento di una procedura è possibile farlo in un attimo
+    - più semplice da implementare ma meno efficiente
+      - esistono implementazioni efficienti ma piuttosto complesse
+    - ad esempio viene fatto su alcune versioni di Lisp, Perl, APL, ...
+
+- Aliasing
+  - nomi diversi denotano lo stesso oggetto, causato da:
+    - passaggio dei parametri a una procedura per riferimento
+
+```
+
+int x = 2;
+int foo (ref int y){
+
+  y = y + 1;
+  x = x + y;
+
+}
+
+foo(x);
+write(x);
+
+```
+
+  - puntatori:
+  
+```
+
+int *X, *Y;
+
+X = (int *) malloc (sizeof (int ));
+*X = 0;
+Y = X;
+*Y = 1;
+
+write(*X);
+
+```
+
+- Overloading
+  - lo stesso nome può avere siginificati diversi a seconda del contesto (accade spesso nei linguaggi naturali)
+  - normalmente, per i nomi di alcune funzioni predefinite:
+    - somm '+' è classico esempio:
+      - somma tra interi
+      - somma tra floating-point
+      - concatenazione tra strighe
+  - il contesto, gli argomento, determinano il significato corretto, overloading costituisce una forma di polimorfismo
+
+- Determinare l'ambiente
+  - l'ambiente è dunque determinato da:
+    - regole di scope (statico o dinamico)
+    - regole specifiche, p.e.
+      - quando è visibile una dichiarazione nel blocco in cui compare
+    - regole per il passaggio dei parametri
+    - regole di biding (shallow o deep)
+      - intervengono quando una procedura P è passata come parametro ad un'altra prcedura mediante il formale X
+
+- Costrutto let in Scheme
+  - Scheme permette dichiarazioni attraverso diversi costrutti:
+    - let
+    - let*
+    - letrec
+  - con diversa validità delle dichiarazioni
+    - 
