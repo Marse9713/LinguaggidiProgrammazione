@@ -2319,3 +2319,167 @@ while (p <> nil) and (p^.valore <> 3) do
     - (a == b) ? x = 1 else x = 0; //legito
     - (a == b) ? {x = 1} else {x = 0}; //genera errore
     - un singolo comando può essere visto come una espressione un blocco o no
+
+- Il pre e post incremento
+  - il comando di incremento, ++ può essere visto come un espressione con effetti collaterali,
+    - distinguo tra due versioni delle espressione di incremento, pre e post incremento
+      - ++x: pre-incremento, esegue x = x + 1 restituisce il valore incrementato
+      - x++: post-incremento, esegue x = x + 1 restituisce il valore originario
+    - eseguono la stessa assegnazione ma restituiscono un diverso valore
+    - similmente esistono: (x--) (--x)
+
+- Algol68, tutto è un'espressione
+  - in Algol68: expression oriented
+    - non c'è nozione separata di comando
+    - ogni procedura restituisce un valore
+
+```
+begin
+  a := begin f(b); g(c) end;
+  g(d);
+  2 + 3
+end
+```
+
+- scelta opposta - Pascal:
+  - comandi separati da espressioni
+  - un comando non può comparire dove è richiesta un'espressione e viceversa
+
+- Comandi per il controllo sequenza
+  - comandi per il controllo sequenza esplicito
+    - ;
+    - blocchi
+    - goto
+  - comandi condizionali
+    - if
+    - case
+  - comandi iterativi
+    - iterazione indeterminata (while)
+    - iterazione determinata (for, foreach)
+
+- Comando sequenziale
+  - C1; C2;
+    - è il costrutto di base dei linguaggi imperativi
+    - sintassi, due possibile scelte:
+      - ; separatore di comandi, non serve inserirlo nell'ultimo comando
+      - ; terminatore di comandi, devo inserirlo anche nell'ultimo comando C e derivati usano questa sintassi
+  - Algol68, C: quando un comando composto è visto come espressione il valore è quello dell'ultimo comando
+
+- Blocco
+  - sintassi
+    - {   begin
+    - ... ...
+    - }   end
+  - trasformo una sequenza di comandi in un singolo comando, raggruppo una sequenza di comandi
+  - posso usarlo per introdurre variabili locali
+
+- GOTO - istruzioni di salto
+  - if a< b goto 10
+  - ...
+  - 10: ...
+    - costrutto base in assembly
+    - permette una notevole flessibilità
+    - ma rende programmi poco leggibili e nasconde gli errori
+    - interazione complessa con chiamate di funzioni e stack di attivazione
+  - Accesso dibattito negli anni 60/70 sulla utilità del goto
+  - alla fine considerato dannoso, contrario ai principi della programmazione strutturata
+
+- Sostituibilità del GOTO
+  - teoria
+    - teorema di Boehm-Jacopini
+      - GOTO sostituibile da costrutti cicli while - test
+  - pratica:
+    - la rimozione del GOTO non porta a una grossa perdita di flessibilità
+      - espressività
+    - istruzioni di salto giustificabili e utile solo in particolari contesti, con costrutti appositi
+      - uscita alternativa da un loop: break
+      - ritorno da sottoprogramma: return
+      - gestione eccezioni: raise exeption
+  - Nei linguaggi che prediligono la sicurezza, chiarezza (Java) il Goto non è presente
+
+- Programmazione strutturata
+  - metodologia introdotta negli anni 70, per gestire la complessità del software
+    - progettazione gerarchica, top-down
+    - modularizzare il codice
+    - uso di nomi significativi
+    - uso estensivo dei commenti
+    - tipi di dati strutturati
+    - uso dei costrutti strutturati per il controllo
+      - ogni costrutto, pezzo di codice, un unico punto di ingresso e di uscita
+      - le singole parti della procedura modularizzate
+      - diagrammi di flusso non necessari
+
+- Comando condizionale
+    - if(B) {C_1};
+    - if(B) {C_1} else {C_2};
+  - introdotto in Algol 60
+  - varie regole per evitare ambiguità
+    - if b1 then if b2 then c1 else c2 ì
+    - if (i == 2) if (i == 1) printf ("%d \n", i); else printf("%d \n, i)
+  - Pascal, C: else associa con il then non chiuso più vicino
+  - Algol 68, FOrtran 77: parole chiave `endif` o `fi` marcano la fine dell'if e la fine del programma
+  - Rami multipli espliciti con comando else if
+
+```
+if (Bexp1) {C1}
+  else if (Bexp2) {C2}
+  ...
+  else if (Bexpn) {Cn}
+  else {Cn + 1}
+```
+
+- Espressione condizionale in scheme
+    - (if test-expr then-expr else-expr)
+    - valuta il test-expr
+    - se il risultato un valore diverso da #f
+      - allora viene valutata then-expr
+      - altrimenti si valuta else-expr
+  - esempi:
+    - (if (positive? - 5) (error "doesn't get here") 2) >> 2
+    - (if (positive? 5) 1 (error "doesn'get here")) >> 1
+    - (if 'we-have-no-bananas' "yes" "no") >> "yes"
+
+- Comando condizionale in scheme
+  - in alternativa
+
+```
+(cond
+  [(positive? -5) (error "doesn't get here ")])
+  [(zero? -5) (error "doesn't get here, either")]
+  [(positive? 5) 'here'])
+```
+
+  - argomenti (in numero arbitrario)
+    - coppie [guardia_booleana,   valore_restituito]
+
+- Case
+  - estensione del if then else a tipi non booleani
+
+```
+case exp of //exp: espressione a valori discreti
+|   const_1 : C_1
+|   const_2 : C_2
+...         //const valori costanti, disgiunti
+|   const_n : C_n // di tipo compatibile con exp
+else          C_n + 1
+```
+
+  - molte versioni nei vari linguaggi
+  - possibilità di definire range case 0 ... 9 : C2
+    - non presente in: Pascal, C (vecchie versioni)
+    - presente C, Visual Basic, ammettono range:
+  - ramo di default: C, Modula, Ada, Fortran
+    - senza default e con nessuna opzione valida: non si esegue nulla
+
+- Pattern matching
+  - ML, Haskell: possibilità usare pattern complessi all'interno di case
+
+```
+case(n, xs) of
+  (0, _) => []
+| (_, []) => []
+| (n, (y:ys)) => y : take (n - 1) ys
+```
+  - casi non mutualmente esclusivi, si sceglie il primo
+  - casi non esaustivi, si genera errore
+  - istanziazione di variabili, meccaniscmo piuttosto sofisticato
