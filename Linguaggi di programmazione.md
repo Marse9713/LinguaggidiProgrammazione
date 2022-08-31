@@ -2042,3 +2042,280 @@ incx();
   - il risultato della valutazione da sinistra a destra può essere diverso di quello da destra a sinistra
 
 - Ordine di valutazione
+  - in Java è specificato chiaramente l'ordine (da sinistra a destra)
+  - C non specifica l'ordine di valutazione, compilatori diversi si comportano in modo diverso
+
+```
+int x = 1;
+printf("%d \n", (x++) * (++x));
+x = 1;
+printf("%d \n", (++x) * (x++));
+```
+  - L'ordine di valutazione ha influenza sul tempo di esecuzione, specie nei processori attuali (computazione parallela, accesso lento alla memoria)
+    - C preferisce l'efficienz alla chiarezza, affidabilità
+    - Java il contrario
+
+- Ottimizzazione e ordine di valutazione
+  - alcuni compilatori possono modificare l'ordine di valutazione per ragioni di efficienza;
+    - a = b + c
+    - d = c + e + b
+  - può essere riarrangiato in
+    - a = b + c
+    - d = b + c + e
+  - ed eseguito come
+    - a = b + c
+    - d = a + e
+  - in alcuni casi, queste modifiche portano a modifiche nel risultato finale
+
+- Evitare le ambiguità dovute all'ordine di valutazione
+  - in alcuni linguaggi non sono ammesse funzioni con effetti collaterali nelle espressioni (Haskell)
+  - altri linguaggi specificano l'ordine di valutazione (Java)
+  - in altri linguaggi, per evitare che il risultato dipenda da scelte del compilatore, forzando un ordine di valutazione, possono spezzare l'espressione
+    - y = (a + f(b)) * (c + f (d))
+    - riscritta come
+    - x = a + f(b);
+    - y = x * (c + f(d));
+
+- Effetti collaterali
+  - svantaggi: senza effetti collaterali la valutazione delle espressioni diventa
+    - indipendente dall'ordine di valutazione
+    - più vicina alla intuizione matematica
+    - spesso più facile da capire
+    - più facile verificare, provare, correttezza
+    - più facile da ottimizzare per il compilatore (preservando il significato originale)
+  - gli effetti collaterali possono essere utili:
+    - gestire strutture dati di grandi dimensioni, funzioni che operano su matrici
+    - definire funzione che generano numeri casuali rand()
+
+- Linguaggi funzionali puri
+  - in linguaggi funzionali puri, la computazioni si riduce a:
+    - la solo valutazione di espressioni
+    - senza effetti collaterali
+
+- Aritmetica finita
+    - numeri interi: limitati
+    - numeri floating point: valori limitati e precisione limitata
+  - conseguenze: errori di overflox, errori di arrotondamento ma anche le usuali identità matematiche non valgono per l'aritmetica dei calcolatori
+    - a + (b + c) != (a + b) +c
+    - interi: la prima espressione genera errore di overflow la seconda no
+      - a = -2; b = maxint; c = 2;
+    - floating point: l'errore nelle due valutazioni è differente
+      - a = 10 ** 15; b = -10 ** 15; c = 10 ** (-15)
+
+- Valutazione eager - lazy, operandi non definiti
+  - non sempre tutte le sottoespressioni sono valutate, ad esempio le espressioni if then else
+    - C, Java     a == 0 ? b : b/a
+    - Scheme      (if (= a 0) b (/ b a))
+    - Python      b if a == 0 else b/a
+  - presuppone una valutazione lazy: si valutano solo gli operandi strettamente necessari
+
+- Valutazione corto circuito
+  - alcuni operatori booleani (and, or) ammettono una valutazione lazy
+    - detta corto-circuito
+    - se la valutazione del primo argomento è sufficiente a determinare il risultato non valuto il secondo
+    - ordine di valutazione fondamentale per determinare il risultato, di solito da sinistra a destra, a == 0 || b/a > 2
+  - se uguale a 0
+    - con la valutazione corto circuito restituisce true
+    - valutazione eager genera errore
+    - anche una valutazione corto circuito da destra a sinistra genera errore
+  - restituisce immediatamente il risultato
+    - se il primo argomento di un or (||) è true restituisce true
+    - se il primo argomento di un and (&&) è false restituisce false
+  - alcuni linguaggi, Ada, hanno due versioni degli operatori booleani
+    - short circuit: and then or else
+    - eager: and or
+    - sono utili se la valutazione delle espressioni ha un effetto collaterale necessario alla computazione
+  - stesso codice (ricerca valore 3 in una lista)
+  - si comporta in maniera diversa a seconda del linguaggio
+    - C, valutazione corto circuito: corretto
+  
+```
+p = lista
+while (p && p -> valore != 3)
+  p = p -> next
+
+```
+  - pascal, valutazione eager: genera errore
+
+```
+
+p := lista;
+while (p <> nil) and (p^.valore <> 3) do
+  p := p^.prossimo;
+
+`p -> next` equivalente a `*p.next`
+
+```
+
+- Comandi
+  - parti del codice la cui valutazione tipicamente
+    - non restituisce un valore
+    - ha un effetto collaterale (modifica dello stato)
+  - i comandi
+    - sono tipici del paradigma imperativo
+    - non sono presenti (o pochissimo usati) nei linguaggi funzionali e logici
+    - in alcuni casi restituiscono un valore (ad esempio = in C)
+
+- Assegnamento
+  - comando base dei linguaggi imperativi
+  - inserisce in una locazione, cella, un valore ottenuto valutando un'espressione
+    - X = 2
+    - Y = X + 1
+  - notare il diverso ruolo svolto da X ne i due assegnamenti:
+    - nel primo, X denota una locazione, è una l-value
+    - nel secondo, X denota il contenuto della locazione precedente, è un r-value
+  - in generale
+    - exp1 := exp2
+      - valuto exp1 per ottenere un l_value (locazione)
+      - valuto exp2 per ottenere un r-value, valore memorizzabile
+      - inserisco il valore nella locazione
+  - l-value può essere definito da un espressione complessa
+    - esempio (in C)
+      - (f(a) + 3) - > b[c] = 2
+        - f(a) puntatore ad un elemento in un array di puntatori a strutture A
+        - la struttura A ha un campo b che un array
+        - inserisco 2 nel campo c-esimo dell'array
+
+- Diversi significati del termine
+  - la parte sinistra di un assegnazione è tipicamente una variabile
+  - tralasciando l'uso matematico del termine "variabile", in informatica, a seconda dei contesti, esistono più significati:
+    - linguaggi imperativi: identificatore a cui è associata una locazione, dove troviamo il valore modificabile
+    - linguaggi funzionali (Lisp, ML, Haskell, Smalltalk): un identificatore a cui è associato un valore, non modificabile, coincidente con la nozione di costante per linguaggi imperativi
+    - linguaggi locici: una variabile rappresenta un valore indefinito, la computazione cerca le corrette istanziazioni delle variabili, quelle che rendono vero un certo predicato
+
+- Modello a valore
+  - diversi modi per:
+    - implementare le variabili
+    - implementare l'assegnamento
+    - definire cosa denotano le variabili
+  - nel modello a valore:
+    - alle variabili l'ambiente (il compilatore) associa una locazione di memoria
+      - il valore contenuto nella locazione, denota il valore associato
+      - ma alcuni tipi di dato, il valore associato può essere a sua volta una locazione
+      - un esempio sono: es. tipi array in C X[Y] = 3
+  - l'assegnazione modifica il valore associato
+
+- Modello a riferimento:
+    - l'ambiente associa ad una variabile una locazione di memoria
+    - nella locazione troviamo un riferimento (una seconda locazione)
+    - contenente il valore
+  - per accedere al valore
+    - devo dereferenziare la variabile
+    - dereferenzazione implicita
+  - l'assegnazione modifica:
+    - il riferimento
+    - non il contenuto dello store
+  - dopo l'assegnamento X = Y, X e Y fanno riferimento alla stessa locazione di memoria, contenente un valore condiviso
+    - ogni variabile è, in un certo senso, un puntatore
+    - usata con una sintassi diversa dai puntatori
+
+- In alcuni linguaggi i due modelli si possono mischiare
+  - a seconda del tipo della variabile
+    - Java
+      - tipi primitivi (interi, booleani, ecc.):
+        - modello a variabile
+        - assegnamento copia un valore nella memoria
+      - tipi riferimento (tipi classe, array)
+        - modello a riferimento
+        - aseegnamento crea una condivisione dell'oggetto
+
+- Python
+  - due categorie di tipi
+    - immutabili: tipi semplici: interi, booleani, enuple
+    - mutabili: tipi complessi: vettori, liste, insiemi
+  - assegnamento:
+    - immutabili: viene creata una nuova istanza dell'oggetto, non si modifica la memoria, ma analogo l'effetto
+    - mutabili: viene condivisa, eventualmente modificata, l'istanza esistente
+      - esempi in python
+        - tupla1 = (1, 2, 3) //le tuple sono immutabili
+        - lista1 = [1, 2, 3] //liste sono mutabili
+        - tupla2 = tupla1
+        - lista2 = lista1
+        - tupla2 += (9, 9, 9)
+        - lista2 += [9, 9, 9]
+        - print 'tupla1 = ', tupla1 // output (1, 2, 3)
+        - print 'tupla2 = ', tupla2 // output (1, 2, 3, 9, 9, 9)
+        - print 'lista1 = ', lista1 // output [1, 2, 3, 9, 9, 9]
+        - print 'lista2 = ', lista2 // output [1, 2, 3, 9, 9, 9]
+
+- Vantaggi - svantaggi modello a riferimento
+  - vantaggi
+    - non duplico strutture dati complesse
+    - tutte le variabili sono puntatori
+      - utile nelle funzioni polimorfe, la stessa funzione agisce su una varietà di tipi di dato, come ad esempio: la funzione che ordina un vettore
+  - svantaggi
+    - si creano aliasing che oscurano il comportamento del programma
+    - accesso ai dati indiretto
+
+- Linguaggi funzionali (non puri come ML)
+  - distinguo locazioni da contentu:
+    - concettualmente più chiaro ma più prolisso
+    - accedo al contenuto esplicitamente
+      - val x = ref 2 (* x denota una locazione contenente 2 *)
+      - val x2 = x (* x e x2 denotano la stessa locazione *)
+      - val x3 = !x (* x3 denota 2 *)
+      - val _ = x := (!x) + 7 (* il contenuto di x, x2 è ora 9, x3 denota sempre 2 *)
+
+- Ambienete e memorai
+  - nei linguaggi imperativi distinguiamo tra:
+    - ambiente: nomi -> valori denotabili
+      - definito, modificato dalle dichiarazioni
+    - memoria: locazione -> valori memorizzabili
+      - modificato dalle istruzioni di assegnamento
+  - distinguiamo tra tre classi di valori:
+    - valori denotabili (quelli a cui si può associare un nome)
+    - valori memorizzabili (si possono inserire nello store esplicitamente con assegnamento)
+    - valori esprimibili (risultato della valutazione di una espressione)
+
+- Valori denotabili, demorizzabili, esprimibili
+  - le tre classi si sovrappongono ma non coincidono
+    - procedure: denotabili, a volte esprimibili, quasi mai memorizzabili
+    - locazioni: denotabili, esprimibili, memorizzabili con l'uso esplicito dei puntatori
+  - linguaggi imperativi, i valori denotabili includono le locazioni
+    - variabili nomi che denotano locazioni
+  - linguaggi funzionali puri:
+    - non esistono valori memorizzabili 
+    - le locazioni non sono dentabili o esprimibili
+  - linguaggi funzionali
+    - le funzioni sono valori esprimibili
+    - Java, C#, Python, Ruby permettono la programmazione funzionale
+
+- Operazioni di assegnamento
+  - A[index(i)] := A[index(i)] + 1
+  - realizzate in maniera standard pongono i seguenti problemi
+    - scarsa leggibilità
+    - efficienza: doppio computazione dell'indice index(i), doppio accesso alla locazione
+    - side-effect: se index(i) causa un effetto collaterale, questo viene ripetuto
+  - si definiscono degli operatori di assegnamento, più sintetici
+    - X = X + 1 diventa     X += 1 (C, Java, ...)
+    - X := X + 1 diventa    X +:= 1 (Algol, Pascal, ...)
+  - in C, Java, ... una pletora operatori di assegnamento, incremento/decremento
+    - +=, -=, *=, /=, %=, &=, |=
+    - somma, sottrazione, moltiplicazione, divisione, resto, bit-wise and, bit-wise or
+  - incremento, decremento di una unità
+    - x++, x--
+  - nel caso la variabile incrementata sia un puntatore C ad un array di oggetti
+    - l'incremento viente moltiplicato per la dimensione degli oggetti puntati
+
+- Espressione e comandi
+  - sintatticamente si distingue tra comandi ed espressioni
+    - comandi: è importante l'effetto collaterale
+    - espressioni: è importante il valore restituito
+  - in alcuni linguaggi la distinzione comando, espressione risulta sfumata:
+  -   i due aspetti, effetto collaterale e risultato coesistono
+  -   dove è previsto un comando posson inserire un'espressione e viceversa
+
+- C, Java, C#
+  - comandi separati da espressioni:
+    - if (a == b) {x = 1} else {x = 0};
+    - x = (a == b) ? 1 : 0;
+  - ma
+    - espressioni possono comparire dove ci si aspetta un comando
+    - assegnamento (=) permesso nelle espressioni
+      - l'assegnamento restituisce il valore assegnato, posso scrivere:
+        - a = b = 5 interpretato come a = (b = 5)
+        - if (a == b) { ... } naturalmente, ma anche
+        - if (a = b) { ... } che può generare errore di tipo
+    - (a == b) ? x = 1 else x = 0; //legito
+    - (a == b) ? {x = 1} else {x = 0}; //genera errore
+    - un singolo comando può essere visto come una espressione un blocco o no
