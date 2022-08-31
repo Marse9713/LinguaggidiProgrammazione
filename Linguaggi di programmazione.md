@@ -1797,3 +1797,248 @@ incx();
     - nella procedura corrente
     - nella procedura genitore
     - nel genitore del genitore ...
+  - a tempo di compilazione, per ogni variabile x in ogni procedura P si:
+    - quale procedura antenato Q contiene la dichiarazione di x a cui far riferimento
+    - di quanti Q è antenato di P
+    - la posizione relativa di x nei record di attivazione di Q
+  - A tempo di esecuzione, nella procedura P per accedere a x devo
+    - accedere all'ultimo RdA di Q attivo
+    - partendo dall'indirizzo base del RdA di Q, determino la posizione di x
+
+- Link statico
+  - per poter accedere ai RdA degli antenati:
+    - ogni RdA contiene un puntatore all'ultimo RdA del genitore
+    - chiamato link statico:
+  - attraverso il link statici definiscono catena statica: la lista dei RdA degli antenati
+    - a tempo di compilazione si determina la posizione
+    - non serve memorizzare il nome delle variabili negli RdA
+
+- Riassumendo:
+  - link dinamico (procedura chiamante) dipende dalla sequenza di esecuzione del progemma, definisce la catena dinamica
+  - link statico (procedura genitore) dipende dalla struttura delle dichiarazioni di procedure, definisce la catena statica
+
+- Creazione di un link statico
+  - la procedura chiamante Ch determinare il link statico della procedura chiamata S
+    - lo passa ad S, che lo inserisce nel suo RdA
+    - come Ch determina il link statico da passare a S?
+      - quando Ch chiama S sa se la definizione di S è:
+        - nelle dichiarazioni di Ch (profondità k = 0), passa il Frame pointer come link statico
+        - nelle dichiarazioni di un n-esimo avo di Ch (profondità k = n) percorre la catena statica per n passi, per determinare il link statico da passare
+        - in altre posizioni S non sarebbe visibile
+
+- Tentativo di ridurre i costi: il display
+  - l'accesso a variabili non locali, comporta la scansione della catena di link statici
+    - costo proporzionale alla profondità
+    - si può ridurre questo costo ad un singolo accesso usando il display:
+  - un unico array contenente il link ai RdA visibili al momento attuale
+    - i-esimo elemento dell'array: il puntatore al RdA sottoprogramma
+      - di livello di annidamento statico i
+        - programma principale: annidamento statico 0
+        - procedura definita nel programma principale: annidamento statico 1
+        - ...
+      - ultima istanza attiva (se, per ricorsione, ci sono più istanze)
+  - per accedere ad una variabile x con annidamento statico i, l'i-esimo elemento nel display determina il RdA contenente x
+
+- Come si aggiorna il display
+  - la procedura chiamata P, nel preambolo
+    - sa la posizione nel display dove inserire il puntatore al suo RdA
+    - salva (nel suo RdA) il valore originario
+    - inserisce nel display il puntatore al suo RdA
+    - al termine della chiamata, P ripristina il valore originario
+  - l'algoritmo è semplice ma la correttezza non è banale:
+    - ogni procedura, all'ingresso aggiorno il display, in un unica posizione; il display modificato corretto per l'ambiente della procedura
+    - alla sua uscita ripristina il valore originario, il display torna ad essere corretto per il chiamante
+    - anche se chiamate, una sequenza di chiamate di procedura
+      - modifica il display in molte posizione
+      - al loro termine viene ripristinato il valore originario
+
+- Nella pratica
+  - Nella statistica del codice la catena statica è raramente di lunghezza > 3, è raramente usato nelle implementazioni moderne
+
+- Scope dinamico
+  - con lo scope dinamico l'associazione nome-oggetto denotabili dipendono
+    - dal flusso del controllo a run-time
+    - dall'ordine con cui i sottoprogrammi sono chiamati
+  - la regola generale è semplice:
+    - il legame valido per il nome n
+    - è determinato dall'ultima dichiarazione del nome n eseguita
+
+- Implementazione ovvia
+  - memorizzare i nomi negli RdA
+    - a differenza dello scope statico dove non è necessario memorizzarli
+  - ricerca per nome scendendo nello stack di attivazione
+
+- Variante: Association List (A-List)
+  - le associazioni sono raggruppate in una struttura apposita
+    - una lista di legami validi
+    - aggiornata con lo SdA
+  - costi delle A-List
+    - molto semplice da implementare
+    - occupazione memoria:
+      - nomi presenti esplicitamente
+    - costo di gestione
+      - ingresso/uscita da blocco
+        - inserzione/rimozione di blocchi sulla pila
+    - tempo di accesso
+      - sempre lineare nella profondità della A-List
+  - possiamo ridurre il tempo d'accesso medio, aumentando il tempo di ingresso/uscita da blocco
+
+- Tabella centrale dei riferimenti, CRT
+  - Evita le lunghe scansioni della A-list
+  - Una tabella mantiene tutti i nomi distinti del programma
+    - se nomi noti, accesso staticamente in tempo costante
+    - altrimenti, accesso tramite hash
+  - ad ogni nome è associata la lista delle associazioni di quel nome
+    - la più recente è la prima
+    - le altre, disattivate e per uso futuro
+  - accesso agli identificatori, in tempo costante
+
+- Pila nascosta
+  - seconda possibile implementazione
+    - tabella attuale
+    - pila dei legami sospesi, una singola pila in cui inserisco i legami nascosti da aggiornare in ingresso uscita dai blocchi
+
+- Costi della CRT
+  - Gestione più complessa di A-list
+  - costo di gestione
+    - ingresso/uscita da blocco
+      - manipolazione delle liste dei nomi dichiarati nel blocco
+  - tempo di accesso
+    - costante (due accessi indiretti)
+  - confronto con A-list
+    - si riduce il tempo d'accesso medio
+    - si aumenta il tempo di ingresso/uscita dal blocco
+
+- Ottimizzazione
+  - posso inserire in CRT solo i nomi locali usati esternamente alla procedura
+  - ai nomi locali, si accede direttamente tramite RdA
+
+<h1 align = "center">Capitolo 5</h1>
+
+# trutture di controllo (espressioni, assegnazione, costrutti per il controllo di flusso, ricorsione)
+
+- Strutturare il controllo
+  - codice macchina: sequenza di istruzioni elementari, istruzioni di salto
+  - linguaggi di programmazione: si vuole astrarre su controllo
+  - definizioni più
+    - strutturate
+    - compatte
+    - leggibili
+
+- Strutture per il controllo del flusso
+    - espressioni
+      - notazioni
+      - meccaniscmi di valutazione
+    - comandi
+      - assegnamento
+    - sequenzializzazione di comandi
+    - test, condizionali
+    - comandi iterativi
+    - ricorsione
+    - chiamate di funzione
+    - gestione delle eccezioni
+    - esecuzione concorrente
+    - scelta non deterministica
+  - i paradigmi di programmazione (imperativo, funzionale) differiscono principalmente nei meccaniscmi di controllo adottati
+    - imperativo: assegnazione, sequenzializzazione, iterazione
+    - dichiarativo: valutazione di espressioni, ricorsione
+
+- Espressioni
+  - espressioni conteneti: identificatori, letterali, operatori, funzioni valutate dalla macchina producono:
+    - un valore
+    - un possibile effetto collaterale
+    - possono divergere
+
+- Notazioni
+  - principali differenze:
+    - posizione dell'operatore: infissa, prefissa, postfissa
+    - uso delle parentesi
+    - alcuni esempi:
+      - infissa: a + b * c
+      - funzione matematica: add(a, mult(b, c))
+      - linguaggi funzionali (Cambridge polish): (+ a(* b c))
+      - omissione di alcune parentesi (come in haskell): + a (* b c)
+
+- Notazione
+  - Parentesi
+    - Scheme (cambridge polish): parentesi necessarie per forzare la valutazione, non possono essere aggiunte arbitrariamente
+    - Haskell: parentesi usate per definire un ordine di valutazione
+  - Zucchero sintattico:
+    - scrittura alternativa di un espressione (comando) per migliorare la leggibilità
+      - Haskell: a + b al posto di '+' a b    '+'(a, b)
+      - C++: a + b al posto di a. + b         a.operator+ (b)
+
+- Notazione polacca
+  - esistono notazioni che non necessitano di parentesi
+    - prefissa (polacca diretta) + a * b c
+    - postfissa (polacca inversa) a b c * +
+  - ottenuto tramite una visita anticipata, o differita, dell'albero sintattico
+  - le parentesi possono essere omesse solo se l'arità delle funzioni è prefissata
+  - esempi di arità variabile:
+    - Scheme: (+ 1 2 3)
+    - Erlang: funzioni diverse, con stesso nome, distinte per l'arità
+  - funzioni di arità arbitraria, parentesi indispensabili
+
+- Notazione polacca
+  - poco leggibili e poco usate nei linguaggi di programmazioni: calcolatrici tascabili, Forth
+    - polacca diretta, giustificazione: nella notazione a funzione argomenti f(x, y) si possono omettere ( , ) se conosciamo l'arità di ogni funzione
+    - polacca inversa: descrive la valutazione di un'espressione con lo stack degli operandi, presente in java bytecode, e in altri linguaggi intermedi: CLI 2 + 3 * 5 diventa: 2 3 5 * +
+      - push 2; push 3; push 5; mult; add;
+
+- Sintassi delle espressioni: notazione infissa
+  - i linguaggi di programmazione tendono a usare le notazioni della scrittura matematica:
+    - notazione infissa
+    - regole di precedenza tra gli operatori per risparmiare parentesi ma non sempre ovvio il risultato della valutazione:
+      - a + b * c ** d ** e / f     ??
+      - A < B and C < D             ??
+      - in Pascal Errore (se A, B, C, D non sono tutti booleani)
+
+- Regole di precedenza
+  - ogni linguaggio di programmazione fissa le sue regole di precedenze tra operatori
+    - di solito operatori aritmetici hanno la precedenza su quelli di confronto che hanno precedenza su quelli logici (non in Pascal)
+    - numerose regole e 15 livelli di precedenze in C e i suoi derivati (C++, Java, C#)
+    - 3 livelli di precedenze in Pascal
+    - APL, Smalltalk: tutti gli operatori hanno eguale precedenze: si devono usare le parentesi
+    - Haskell permette di definire nuove funzioni con la notazione infissa e specificarne precedenza e associatività infixr 8 ^
+
+- Regole di associatività
+  - oltre al livello di precedenze, bisogna specificare in che ordine eseguire le operazioni di uno stesso livello
+    - normalmente a sinistra: 15 + 4 - 3      (15 + 4) - 3
+    - in alcuni casi a destra: 5 ** 2 ** 3    5 ** (2 ** 3)
+  - non sempre ovvie: in APL, tutto associato a destra, ad esempio
+    - 15 + 4 - 3
+  - è interpretato come
+    - 15 + (4 - 3)
+
+- Ricapitolando
+  - le regole di precedenza e associatività
+  - poco uniformi tra i vari linguaggi
+  - in alcuni casi piuttosto complesse
+- nella pratica: se non si conoscono bene le regole, o si è insicuri, meglio inserire parentesi
+
+- Rappresentazione ad albero
+  - la rappresentazione naturale di un espressione è un albero
+  - le espressioni vengono linearizzate per necessità di scrittura
+    - (a + f(b)) * (c + f(b))
+  - la rappresentazione ad albero generata dall'analizzatore sintattico, per poter poi lavorare sull'espressione
+  - a partire dall'albero sintattico il compilatore produce il codice oggetto, oppure l'interprete valuta l'espressione
+
+- L'ordine di valutazione delle sttoespressioni
+  - le regole di precedenze, parentesi, o rappresentazione ad albero
+    - definiscono precedenze e associatività
+    - non definiscono un ordine temporale di valutazione delle sottoespressioni
+      - (a + f(b)) * (c + f(d))
+  - ordine importante per
+    - effetti collaterali
+    - ottimizzazione
+
+- Effetti collaterali
+  - la valutazione di un'espressione restituisce un valore ma modifica lo stato del programma
+  - esempio tipico: la valutazione di un'espressione
+    - porta a chiamate di funzioni
+    - le funzioni modificano la memoria
+  - nell'esempio
+    - (a + f(b)) * (c + f(d))
+  - il risultato della valutazione da sinistra a destra può essere diverso di quello da destra a sinistra
+
+- Ordine di valutazione
