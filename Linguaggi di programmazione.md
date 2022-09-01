@@ -2876,3 +2876,166 @@ int foo (int n){
 
 - Ricorsione in coda (tail recursion)
   - una chiamata di g in f si dice "in coda" (o tail call) se f restituisce il valore restituito da g senza nessuna ulteriore computazione
+  - f è tail recursive se contiene solo chiamate in coda a se stessa
+
+```
+function tail_rec (n: integer, m): integer
+begin ...; return tail_rec(n - 1, m1) end
+
+function non_tail rec (n: integer): integer
+begin ...; x:= non_tail_rec(n - 1); return g(x) end
+
+```
+  - non serve allocazione dinamica della memoria con pila: basta un unico RdA
+    - dopo la chiamata ricorsiva, il chiamante non deve fare nulla, attende il risultato, e lo passa al suo rispettivo chiamante
+    - record di attivazione del chiamante inutile, spazio riutilizzato dal chiamato
+
+- Più efficiente, esempio: il caso del fattoria
+
+```
+int fatt(int n){
+  if(n <= 1)
+    return 1;
+  else
+    return n * fatt(n - 1);
+}
+
+```
+
+- Una versione tail-recursive del fattoriale
+
+```
+int fattrc(intn, int res){
+
+  if(n <= 1)
+    return res;
+  else
+    return fattrc(n - 1, n * res);
+
+}
+
+int fatt(int n){
+
+  fattrc(n, i);
+
+}
+```
+
+    - abbiamo aggiunto un parametro che rappresenta il valore da passare al "il resto della computazione"
+    - fattrc(n, res) calcola il valore res * n!
+  - basta un unico RdA
+    - dopo ogni chiamata il RdA della funzione chiamante può essere eliminato
+    - il suo spazio usato per il RdA della chiamata
+
+- Un altro esempio:
+  - Definizione:
+
+```
+
+Fib(0) = 1;
+Fib(1) = 1;
+Fib(n) = Fib(n - 1) + Fib(n - 2)
+
+```
+
+  - in scheme si può vedere come:
+
+```
+
+(define (fib n)
+  (if (< n 2)
+      1
+      (+ (fib (- n 1)) (fib (- n 2)))))
+
+```
+
+  - complessità in tempo e spazio esponenziale in n
+    - ad ogni chiamata due nuove chiamate
+    - più precisamente il numero delle chiamate ha una crescita alla Fibonacci
+
+- Una versione efficiente per Fibonacci
+  - fibHelper(n, a, b) una funzione che nell'ipotesi:
+    - a = Fib(i - 1)
+    - b = Fib(i)
+  - fibHelper(n, a, b) = Fib(i + n)
+  - in scheme:
+
+```
+(define (fibHelper n a b)
+  (if (= n 0)
+      b
+      (fibHelper (n - 1 b (+ a b)))
+(define (fib n)
+  (if (= n 0)
+      1
+      (fibHelper (- n 1) 1 1))
+
+```
+
+- Analisi
+  - invariante:
+    - se a e b sono l'(m - 1)-esimo e l'm-esimo elementi nella serie di Fibonacci
+    - allora (fibHelper n a b) è (m + n)-esimo elemento nella serie
+  - Complessità:
+    - in tempo, lineare in n
+    - in spazio, costante (un solo RdA)
+
+- Chiave di lettura della ricorsione di coda
+  - simulo l'esecuzione di un ciclo(while) dentro un linguaggio funzionale:
+    - per ogni funzione f che in un linguaggio imperativo avre implementato tramite un ciclo
+    - definisco una funzione f-helper avente parametri extra
+    - questi parametri extra svolgono il ruolo delle variabili modificabili nel ciclo
+    - f-helper chiama se stessa aggiornando i parametri extra, come avviene in un ciclo
+    - f chiama f-helper inizializzando i parametri extra (come la funzione imperativa)
+  - simulo uno stato in maniera locale e controllata, senza introdurre uno stato globale
+  - uso della ricorsione di coda
+    - ottimizzazione: solo le funzioni ricorsive più critiche (per la velocità d'esecuzione globale del programma) vengono riscritte usando la ricorsione di coda
+
+- Continuation passing style
+  - stile di programmazione funzionale
+    - genera programmi tail-recursive
+    - può migliorare la complessità computazionale
+    - introduce un controllo esplicito sull'ordine di esecuzione
+  - trasformo ogni funzione, aggiungendo ai suoi argomenti, un argomento k, continuazione
+    - k rappresenta il resto del programma
+      - prende il valore, generato dalla funzione, restituisce un risultato del programma
+    - la computazione viene ridotta ad eseguire operazioni semplici e passare il risultato ad una continuazione
+
+- Ccontinuation passing style
+
+```
+(define (pyth x y)
+  (sqrt (+ (* x x) (* y y))))
+
+(define (*& x y k)
+  (k (* x y))
+
+(define (pyth& x y k)
+  (*& x x (lambda (x2)
+          (*& y y (lambda (y2)
+                  (+& x2 y2 (lambda (x2py2)
+                            (sqrt& x2py2 k)))))))
+
+```
+
+- Fattoriale
+
+```
+(define (fattoriale n)
+  (if (= n 0)
+      1
+      (* n (fattoriale (- n 1)))))
+
+  - diventa:
+
+(define (factorial& n k )
+  (=& n 0 (lambda (b)
+          (if b
+              (k 1)
+              (-& n 1 (lambda (nm1)
+                      (factorial& nm1 (lambda (f)
+                                      (*& n f k)))))))))
+
+<h1 align = "center">Capitolo 6</h1>
+
+# Astrarre sul controllo: procedure, passaggio dei parametri, eccezioni
