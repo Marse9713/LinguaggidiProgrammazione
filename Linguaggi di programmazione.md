@@ -2483,3 +2483,396 @@ case(n, xs) of
   - casi non mutualmente esclusivi, si sceglie il primo
   - casi non esaustivi, si genera errore
   - istanziazione di variabili, meccaniscmo piuttosto sofisticato
+
+- Sintassi di C, C++ e Java
+
+```
+int i ...
+switch (i)
+{
+  
+  case 3:
+    printf("Case3 ");
+    break;
+  case 5:
+    printf("Case5 ");
+    break;
+  default;
+    printf("Default ");
+
+}
+
+```
+
+- Estensioni con range
+
+```
+switch (arr[i])
+  {
+    case 1 ... 6:
+      printf("%d in range 1 to 6\n", arr[i]);
+      break;
+    case 19 ... 20:
+      printf("%d in range 19 to 20\n", arr[i]);
+      break;
+    default:
+      printf("%d not in range\n", arr[i]);
+      break;
+  }
+
+```
+
+- Compilazione del case
+  - più efficiente di if multipl se compilato in modo astuto ...
+
+```
+case exp of
+    |   label_1 : C_1
+    |   label_2 : C_2
+    ...
+    |   label_n : C_n
+    else C_n + 1
+
+```
+  - con il valore di exp accedo
+  - una tabella di istruzione di salto
+  - che porta al codice macchina del ramo corrispondente al valore
+
+- Versione per range ampi
+  - lo schema precedente funziona bene
+    - tempo di esecuzione e non lineare sul numero di possibilità
+    - occupazione di memoria limitata
+    - se i range di valori sono limitati
+  - con range ampi, troppa occupazione di memoria, devo ripetere la stessa istruzione di salto per ogni valore nel range
+  - è possibile ridurre l'occupazione di memoria con
+    - ricerca binaria
+    - tabella di hash
+  - codice assembly più complesso, tempo di esecuzione: logaritmico o costante
+
+- Iterazione
+  - iterazione e ricorsione sono i due meccanisimi che permettono di ottenere tutte le funzioni computabili
+    - formalismi di calcolo Turing completi
+  - senza iterazione: nessuna istruzione ripetuta, tutto termina in un numero limitato di passi
+  - iterazione:
+    - indeterminata: cicli controllati logicamente
+      - (while, repeat, ...)
+    - determinata da cicli controllati numericamente
+      - (do, for, foreach, ...) con numero di ripetizioni del ciclo determinate al momento dell'inizio del ciclo
+
+- Iterazione indeterminata
+  - while condizione do comando
+    - sintassi più usata Java, ...
+
+```
+
+while (counter > 1)
+{
+  factorial *= counter--;
+}
+
+
+```
+  - in altri linguaggi: Pascal
+
+```
+
+while Counter > 0 do
+begin
+  Factoria := Factorial * Counter;
+  Counter := Counter - 1;
+end;
+
+```
+  - introdotta in Algol-W
+
+- Versione post-test, ripetuto almeno una volta
+    - tipicamente C, C++, Java
+
+```
+
+do {
+
+  factorial *= counter--; //multiply, then decrement
+  
+} while (counter > 0);
+
+```
+    - Ruby
+
+```
+
+begin
+  factorial *= counter
+  counter -= 1
+end while counter > 1
+
+```
+
+    - Pascal
+
+```
+
+repeat
+  Factorial := Factorial * Counter;
+  Counter -:= 1
+until Counter = 0
+
+```
+
+- Equivalenza
+  - facile sostituire un tipo di ciclo con l'altro
+
+```
+
+do{
+  do_work();
+} while (condition);
+
+```
+  - equivalente a:
+
+```
+
+do_work();
+while (condition) {
+  do_work();
+}
+```
+
+  - a seconda dei casi, una versione risulta più sintetica dell'altra
+
+- Interazione indeterminata
+  - indeterminata perché il numero di iterazioni non è noto a prori
+  - l'iterazione indeterminata permette di ottenere tutte le funzioni calcolabili
+  - facile da tradurre in codice assembly
+
+- Iterazione determinata
+```
+FOR indice := inizio TO fine STEP passo DO
+...
+END
+```
+  - al momento dell'inizio dell'esecuzione del ciclo, è determinato il numero di ripetizioni del ciclo
+    - all'interno del loop, non si possono modificare, gli indice
+    - inizio, fine, passo valutati e salvati a inizio esecuzione
+  - il potere espressivo è minore rispetto all'iterazione indeterminata, non si possono esprimere computazioni che non terminano
+  - da preferire perché
+    - garantisce la terminazione
+    - ha una scrittura più leggibile e compatta
+  - in C, e suoi derivati, il for non è costrutto di iterazione determinata, posso modificare l'indice
+
+- Semantica del for
+
+```
+
+FOR indice := inizio TO fine BY passo DO
+...
+END
+
+```
+
+  - nell'ipotesi di passo positivo:
+    1. valuta le espressioni inizio e fine e salva i valori ottenuti
+    2. inizializza indice con il valore di inizio;
+    3. se indice > fine termina l'esecuzione del for, altrimenti
+        - si esegue corp
+        - si incrementa indice del valore di passo
+        - si torna a (3)
+
+- Diverse realizzazioni
+
+```
+
+FOR indice := inizio TO fine BY passo DO
+...
+END
+
+```
+
+  - i vari linguaggi differiscono nei seguenti aspetti:
+    - possibilità di modificare indice, valore finale, passo nel loop (se si, non si tratta di vera iterazione determinata)
+    - numero di iterazioni (dove avviene il controllo indice < fine)
+    - possibilità incremento negativo
+    - valore indice al termine del ciclo: indeterminato, fine, fine + 1
+
+- Iterazione determinata in C, C++, Java
+
+```
+
+for (initialization; condition; increment/decrement)
+  statement
+
+```
+  - dove statemenet è spesso un blocco
+
+```
+
+int sum = 0;
+for (int i = 1; i < 6; ++i){
+
+  sum += i;
+
+}
+
+```
+
+- Altri linguaggi
+  - Python
+```
+for counter in range (1, 6): #range(1, 6) gives values from 
+# statements
+```
+
+  - Ruby:
+
+```
+for counter in 1..5
+# statements
+end
+```
+
+- Foreach
+  - ripeto il ciclo su tutti gli elementi di un oggetto enumerabile:
+    - array
+    - lista
+  - presente in vari linguaggi sotto diverse forme
+  - limitato potere espressivo, ma utile per
+    - chiarezza
+    - compattezza
+    - prevedibilità
+  - Java alla versione 5
+
+```
+
+int[] numbers = {10, 20, 30, 40, 50};
+
+for(int x : numbers){
+  System.out.print( x + ",");
+}
+
+```
+  - vengono separati
+    - algoritmo di scansione della struttura:
+      - implicito nel foreach
+      - generato automaticamente nel compilatore
+    - operazioni da svolgere sul singolo elemento
+      - definito esplicitamente nel codice
+    - può essere svolto su un tipo di dato strutturato che metta a disposizione funzioni implicite per determinare
+      - primo elemento
+      - passo ad elemento successivo
+      - test di terminazioni
+    - esempi
+      - liste, array, insiemi
+      - alberi
+    - altri esempi di foreach
+
+```
+- Python:
+
+pets = ['cat', 'dog', 'fish']
+for f in pets:
+  print f
+
+```
+    - ciclo for per Pythone: un caso particolare di questo meccanismo
+
+```
+- Ruby: 
+
+pets = ['cat', 'dog', 'fish']
+pets.each do |f|
+  f.print
+end
+
+for f in pets
+  f.print
+end
+```
+```
+
+- JavaScript
+
+var numbers = [4, 9, 16, 25];
+function myFunction(item, index){
+  ...;
+}
+numbers.forEach(myFunction)
+```
+
+- Ricorsione
+  - modo alternativo all'iterazione per ottenere il potere espressivo delle MdT
+  - scelta obbligata nei linguaggi puramente funzionali
+  - intuizione: una funzione (procedura) è ricorsiva se definita in termini si se stessa
+  - riflette la natura induttiva di alcune funzioni
+
+```
+fattoriale (0) = 1
+fattoriale (n) = n * fattoriale(n - 1)
+```
+
+  - diventa
+
+```
+int fatt(int n){
+  if(n <= 1)
+    return 1;
+  else
+    return n * fatt (n - 1);
+}
+```
+
+- Definizioni induttive (intermezzo)
+  - numeri naturali 0, 1, 2, 3, ... minimo insieme X che soddisfa i due assiomi seguenti (Peano):
+    - 0 è in X;
+    - se n è in X allora succ(n) è X;
+  - principio di induzione, una proprietà P(n) è vera su tutti i numeri naturali se
+    - P(0) è vera;
+    - per ogni n, se P(n) è vera allora è vera anche P(n + 1)
+  - definizioni induttive(ricorsive): se g(Nat x A) -> totale allora esiste una unica funzione totale f: Nat -> A tale che
+    - f(0) = a;
+    - f(n + 1) = g(n, f(n))
+  - fattoriale segue lo schema di sopra
+
+- Definizioni induttive
+  - garanzia di buona definizione (definisco univocamente una funzione totale)
+  - schema piuttosto rigido:
+    - la definizione induttiva della divisione div(n, m) è non ovvia
+    - si può generalizzare: well founded induction, per avere
+      - schema più flessibile
+      - garanzia di buona definizione
+
+- Ricorsione e definizioni induttive
+  - funzione ricorsiva F analoga alla definizione induttiva di F:
+    - il valore di F su n è definito in termini dei valori di F su m < n
+  - tuttavia nei programmi sono possibili definizioni non "corrette":
+    - la seguente scrittura non definisce alcuna funzione
+
+```
+foo(0) = 1
+foo(n) = foo(n + 1) - 1
+```
+    - invece i seguenti porgrammi sono possibili
+
+```
+int foo (int n){
+  if(n == 0)
+    return 1;
+  else
+    return foo(n + 1) - 1
+}
+```
+
+- Ricorsione ed iterazione
+  - la ricorsione è possibile in ogni linguaggio che permetta
+    - la funzione (o procedura) che può chiamare se stessa
+    - gestione dinamica della memoria (pila)
+  - ogni programma ricorsivo può essere tradotto in uno equivalente iterativo e viceversa
+  - confronto:
+    - ricorsione è più naturale su strutture dati ricorsive (alberi), quando la natura del problema è ricorsiva, l'iterazione è più efficiente su matrici e vettori
+    - ricorsione scelta obbligata nei linguaggi funzionali, iterazione scelta preferita nei linguaggi imperativi
+  - in caso di implementazioni naif ricorsione molto meno efficiente di iterazione tuttavia
+    - optimizing compile può produrre codice efficiente
+    - tail-recursion
+
+- Ricorsione in coda (tail recursion)
+  - una chiamata di g in f si dice "in coda" (o tail call) se f restituisce il valore restituito da g senza nessuna ulteriore computazione
