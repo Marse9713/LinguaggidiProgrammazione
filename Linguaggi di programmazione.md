@@ -3036,6 +3036,486 @@ Fib(n) = Fib(n - 1) + Fib(n - 2)
                       (factorial& nm1 (lambda (f)
                                       (*& n f k)))))))))
 
+```
+
 <h1 align = "center">Capitolo 6</h1>
 
 # Astrarre sul controllo: procedure, passaggio dei parametri, eccezioni
+
+- Argomenti
+  - procedure e funzioni: astrazione sul controllo
+  - modalità di passaggio dei parametri
+  - funzioni di ordine superiore
+    - funzioni come parametro
+    - funzioni come risultato
+  - gestione delle eccezioni
+    - identifica proprietà importanti di cosa si vuole descrivere
+    - nasconde, ignora gli aspetti secondari
+    - permette di descrivere e concentrarsi solo sulle questioni rilevanti
+  - permette di:
+    - evidenziare tratti comuni in strutture diverse (matematica)
+    - gestire la complessità
+      - spezzare un sistema complesso in sottosistemi, descritti astrattamente, senza entrare nel dettaglio
+  - in informatica:
+    - astrazione sul controllo (istruzioni)
+    - astrazione sui dati
+
+- Astrazione sul controllo
+  - definizione di procedura-funzione principale meccanismo di astrazione
+
+```
+float log (float x) {
+  double z;
+  /* corpo della funzione */
+  return expr;
+}
+```
+  - possiamo:
+    - usare log
+      - conoscendo le sue specifiche
+      - senza conoscerne nei dettagli l'implementazione
+    - specificare log
+      - senza conoscere l'implementazione
+    - implementare log (scriverne il codice)
+      - rispettando le specifiche
+      - senza conoscere il contesto in cui verrà usato
+
+- Parametri
+  - terminologia:
+    - dichiarazione/definizione
+
+```
+int f(int n){
+  return n + 1;
+}
+
+n parametro formale
+```
+    - uso/chiamata
+      - x = f(y + 3);
+        - y + 3 parametro attuale
+    - distinguiamo tra:
+      - funzioni: restituiscono un valore
+      - procedure: non restituiscono nulla
+      - inc C e derivati: procedure viste come funzioni che restituiscono un valore di tipo void (avente un unico elemento) distinzione sfumata
+
+- Come una funzione (chiamata) comunica col chiamante
+  - valore restituito
+    - int f() { return 1; }
+  - passaggio di parametri, varie modalità di passaggio
+  - modifiche ambiente non locale
+    - in questo caso il meccanismo di astrazione meno efficace
+    - chi usa la funzione deve coneoscere anche quali modifiche sono svolte
+    - nei linguaggi funzionali questa possibilità è non presenete, più astratti
+
+- Modalità di passaggio dei parametri
+  - come avviene l'intenzione chiamante - chiamato attraverso i parametri
+  - distinguo tra:
+    - parametri d'ingresso: main -> proc
+    - parametri d'uscita: main <- proc
+    - parametri d'ingresso - uscita: main <- >proc
+  - varie modalità di passaggio con diversea:
+    - semantica
+    - implementazione
+    - costo
+  - due modi principali:
+    - per valore (call by value):
+      - il parametro formale è una variabile locale
+      - il valore del parametro attuale è assegnato al formale
+      - parametro in ingresso: main -> proc, le modifiche al formale non passano all'attuale
+      - attuale: r-value, una qualsiasi espressione
+    - per riferimento (call by reference)
+      - è passato un riferimento (indirizzo) all'attuale
+      - i riferimenti al formale sono riferimenti all'attuale (aliasing)
+      - parametro di ingresso-uscita: main <-> proc, modifiche al formale passano all'attuale
+      - attuale: l-value, deve rappresentare una locazione
+
+- Passaggio per valore
+
+```
+void foo (int x){
+  x = x + 1;
+}
+...
+y = 1;
+foo(y + 1);
+foo(y);
+```
+
+    - il formale x è una var locale (nel RdA)
+    - alla chiamata, l'attuale y + 1 è valutato e assegnato a x
+      - viene fatta un'operazione di assegnamento x = y + 1
+    - nessun legame tra x nel corpo di foo e y nel chiamante
+      - se x ha tipo semplice (modello a valore)
+  - la sua semantica definita in termini della semantica dell'assegnamento
+  - può essere costoso per dati di grande dimensione, se l'operazione di assegnazione lo è
+  - Pascal (default), Scheme, C (unico modo)
+  - implementazione:
+    - nel RdA allocco una variabile associata al parametro formale
+    - al momento della chiamata, il parametro attuale viene valutato e nel RdA inserito il suo valore
+
+- Passaggio per riferimento (per variabile)
+
+```
+void foo (reference int x) {
+  x = x + 1;
+}
+...
+y = 1;
+foo(y);
+foo(V[y + 1]);
+```
+
+  - viene passato un riferimento (indirizzo, puncatore)
+  - l'attuale deve essere un l-value (un riferimento)
+  - il formale, x, diventa un alias dell'attuale, y 
+    - considerato a basso livello, non presente nei linguaggi più recenti
+  - trasmissione bidirezionale tra chiamante e chiamato
+
+- Implementazione passaggio per riferimento
+  - nello stack di attivazione inserisco un puntatore
+    - efficiente nel passaggio
+  - ma un diverso accesso ai dati nel chiamato
+    - mascherato nell'uso del codice
+    - il parametro formale è memorizzato come puntatore
+    - ma trattato come una variabile nel codice
+
+- Nei linguaggi di programmazione
+  - raramente meccaniscmo di default: Fortran
+  - in alcuni linguaggi offerto come opzione:
+    - C++, PHP, Visual Basi, .NET, C#, REALbasic, Pascal
+    - foo(ref int x)
+    - foo(var x: int)
+  - in altri simulabile:
+    - C, ML, Rust simulato passando un puntatore, riferimento, indirizzo di memoria (call by address)
+    - Java simulato usando i tipi riferimento, o il call by sharing
+
+- Simulazione in C
+
+```
+
+  - tramite puntatori:
+
+  void foo (int *x){
+    *x = *x + 1;
+  }
+  ...
+  y = 1;
+  foo(&y);
+
+  ```
+
+  - Call-by-sharing
+    - nei linguaggi con modello a riferimento: python, Java, Ruby, JavaScript, il passaggio, nominalmente per valore, crea una condivisione (sharing) dell'argomento tra chiamato e chiamante
+      - argomento x tipo riferimento (assegnazione usa il modello a riferimento): strutturato, array, class
+      - le modifiche nella funzione del parametro formale si ripercuotono sul parametro attuale
+      - formale riferimenti ad una signola copia dello stesso oggetto
+
+- Vall-by-sharing: esempi in Python
+
+```
+def f(a_list):
+    a_list.append(1)
+
+m = []
+f(m)
+print(m)
+
+stampa [1], ma
+
+def f(a_list):
+    a_list = [1]
+
+m = []
+f(m)
+print(m)
+
+stampa [], nella procedura un nuovo vettore viene creato e assegnato a a_list
+```
+
+- Call-by-sharing: esempi in Jav
+  - le classi sono un tipo riferimento, l'assegnamento avviene copiando il riferimento (puntatore)
+
+```
+class A {
+  int v;
+}
+
+A y = new A(3)
+...
+foo(y);
+
+```
+  - lo stesso esempio con la classe Integer avrebbe un comportamento diverso, x = x + 1; crea un nuovo interp e lp assegna a x
+
+- Call-by-sharing
+  - il nome "call-by-sharing" non standard, in ambito Java, si parla di call-by-value
+  - il nome call-by-sharing mette in evidenza che
+    - il passaggio del parametro crea una copia condivisa
+    - eventuali modifiche nel chiamato si possono ripercuotere sul chiamante
+
+- Riassumento
+  - è importante sapere:
+    - se il passaggio del parametro crea una copia condivisa o una nuova copia
+    - se l'assegnamento modifica l'oggetto puntato o crea un nuovo oggetto
+      - copia condivisa e oggetti modificati, comportamento call-by-reference
+      - copia condivisa e oggetti non modificabili (l'assegnazione crea una nuova istanza), comportamento call-by-value
+
+- Value, reference, sharing
+  - passaggio per valore:
+    - semantica semplice: si crea una copia locale
+    - implementazione abbastanza semplice
+    - costoso il passaggio per dati di grande dimensione
+    - efficiente il riferimento al parametro formale
+    - necessità di altri meccaniscmi per comunicare main <- proc
+  - passaggio per riferimento:
+    - semantica complessa: si crea aliasing
+    - implementazione semplice
+    - efficiente il passaggio
+    - un po' più costoso il riferimento al parametro formale (indiretto)
+  - Call-by-sharing
+    - a seconda dei casi, simile a call-by-value o call-by-reference
+
+- Passaggio per costante (o read-only)
+  - il passaggio per valore garantisce la pragmatica: main -> proce a spese dell'efficienza
+    - a dati grandi sono copiati anche quando non sono modificati
+  - passaggio read-only (Modula-3, C, C++: const)
+    - il formale tratto come una costante
+    - nella procedura non è permessa la sua modifica:
+      - no all'assegnamento
+      - no al passaggio ad altre procedure che possono modificarlo (per riferimento)
+    - controllo statico del compilatore:
+      - vincolo blando in C
+      - forte in Java
+
+- Passaggio per costante
+  - implementazione a discrezione del compilatore
+    - parametri "piccoli" passati per valore
+    - parametri "grandi" passati per riferimento
+  - in C:
+
+```
+int foo(const char *a1, const char *a2){
+  /* le stringhe a1 a2 non possono essere modificate */
+}
+
+In Java: final
+
+void foo (final A a){
+  //qui a non può essere modificato
+}
+
+```
+
+- Passaggio per risultato
+  - duale del passaggio per valore: main <- proc
+
+```
+
+vodi foo (result int x) {
+  x = 8;
+}
+...
+y = 1;
+foo(y);
+foo(V[y + 1]);
+
+```
+
+  - l'attuale deve essere un l-value, y o V[y + 1]
+  - al ritorno da foo, il valore di x è assegnato all'attuale y0 V[y + 1]
+  - nessun legame tra y iniziale del chiamante e x nel corpo di foo
+    - non è possibile trasmettere dati alla procedura mediante il parametro
+  - pragmatica: usato quando una funzione deve restituire più di un singolo risultato
+  - Ada: out
+
+- Passaggio per valore/risultato
+  - insieme valore + risultato, pragmatica: main <-> proc evitanto aliasing
+
+```
+
+void foo (value - result int x){
+  x = x + 1;
+}
+...
+y = 8;
+foo(y);
+
+```
+  - l'attuale deve essere un l-value
+  - il formale x è una var locale (sulla pila)
+  - alla chiamata, il valore del formale è assegnato all'attuale
+  - nessun legame tra x nel corpo di foo e y nel chiamante
+  - costoso per dati grandi: copia
+  - Ada: in  out (ma solo per dati piccoli; per dati grandi passa riferimento)
+
+- Passaggio per nome
+  - l'espressione del parametro attuale viene passata,non valutata, alla procedura
+  - Regola di copia:
+    - non si forza la valutazione del paramentro attuale al moemnto della chiamata
+    - una chiamata alla procedura P produce l'effetto di
+      - eseguire il corpo di P valutando, ogni volta che il parametro formale viene usato nel ropo l'espressione attuale
+
+```
+
+int sel (name int x, y) {
+  return ( x == 0 ? 0 : y);
+}
+...
+z = sel(w, z/w);
+
+```
+  - Introdotto Algol-W è default, può simulare il passaggio per riferimento:
+
+```
+int y;
+void foo (name int x){
+  x = x + 1;
+}
+...
+y = 1;
+foo(y);
+
+```
+  - se il parametro formale appare a sinistra dell'assegnamento, il compilatore controlla che il parametro attuale sia un l-value
+
+- Cattura delle variabili
+
+```
+int y = 1;
+void fie (name int x){
+  int y = 2;
+  x = x + y;
+}
+fie(y);
+```
+
+  - conflitto (e "cattura") di variabili
+  - nell'ambiente della chiamata fie(y)
+  - si realizza una "macro espansione", in modo semanticamente corretto con una macro espansione può esserci in un fenomeno di cattura delle variabili
+
+- Valutazione multipla
+  - se un parametro formale appare più volte nel codice, il parametro attuale viene valutato più volte
+
+```
+int V[] = {0, 1, 2, 3};
+int y = 1;
+void fie (name int x){
+  int y = 2;
+  x = x + y;
+}
+fie(V[y++]);
+```
+
+- Implementazione: chiusura
+  - al momento della chiamata:
+    - oltre all'espressione, del parametro attuale devo fornire
+    - il suo ambiente di valutazione
+  - La coppia <exp, env> prende il nome di chiusura
+    - exp: un puntatore al testo di exp
+    - env: un puntatore di catena statica (sullo stack) al record di attivazione del blocco di chiamata
+
+- Implementazione
+  - complesso da implementare
+  - Algol 60 e W: implementazioni storiche
+  - non utilizzato nei linguaggi imperativi attuali
+  - linguaggi funzionali lazy: Haskell, ma in una versione più efficiente
+  - call-by-need, valuto l'argomento al più una volta
+    - con l'assenza dei side-effect, valutazioni multiple restituisco sempre lo stesso valore
+    - call-by-need e call-by name stesso comportamento
+    - call-by-need più efficiente
+  
+- Simulazione del passaggio per nome
+  - parametro per nome = funzione fittizia, senza argomenti, in corpo viene valutato nell'ambiente del chiamante (un thunk, nel gergo Algol)
+  - Esempio in Scheme:
+
+```
+(define (doublePlusOne e)
+(+ (e) (e) 1))
+
+(define x 2)
+
+(doublePlustONe (lambda () (+ x 3)))
+
+```
+  - thunk: meccanismo denerale per simulare la valutazione lazy (per nome) in un linguaggio con valutazione eager (per valore)
+
+- Parametri di default
+  - in alcuni linguaggi, come ad, C++, C#, Fortran, Python
+  - possibili procedure con valori di default per alcuni argomenti
+    - è possibile fornire meno argomenti
+    - nel qual caso la procedura usa gli argomenti di default
+
+- Esempio in Python
+
+```
+def printFata(firstname, lastname = 'Mark', subject = 'Math'):
+  print(firstname, lastname, 'studies', subject)
+
+# 1 positional argument
+printData('John')
+# 2 positional arguments
+printData('John', 'Gates')
+printData('John', 'Physics')
+
+#Output:
+John Mark studies Math
+John Gates studies Math
+John Physics studies Math
+
+```
+
+- Parametri con nome:
+  - l'accoppiamento parametri attuali - parametri formali viene determinato dalla posizione, in alternativa, in alcuni linguaggi, possibile specificare esplicitamente il ruolo svolto dai parametri attuali:
+
+```
+def printData(firstname, lastname = 'Mark, subject = 'Math'):
+  print(firstname, lastname, 'studies', subject)
+
+#Mixed passing is possibile
+printData(firstname = 'John', subject = 'Physics')
+printData('John', subject = 'Physics')
+
+#Output:
+John Mark studies Physics
+John Mark studies Physics
+```
+
+- Funzioni di ordine superiore
+  - alcuni linguaggi permettono di:
+    - passare funzioni come argomenti di altr funzioni (procedure)
+      - caso relativamente semplice
+      - presente in diversi linguaggi imperativi
+      - funzioni come oggetti di secondo livello
+    - restituire funzioni come risultato di funzioni
+      - caso più complesso
+      - presente nelle versioni più recenti di linguaggi imperativi
+      - tipico dei linguaggi funzionali
+      - funzioni come oggetti di primo livello
+
+- Funzioni come argomento, semantica
+  - caso standard:
+    - il chiamante main passa una funzione f
+    - funzione f che verrà valutata, eventualmente più volte, nel chiamato g
+  - problema principale:
+    - in quale ambiente non locale viene valutata f
+    - politiche di scope: (statico, dinamico)
+    - ma non solo, politiche di binding: (deep, shallow)
+
+- Ambiente esterno del parametro funzione: esempio
+  
+```
+int x = 1;
+int f (int y){
+  return x + y;
+}
+int g (int h (int i)){
+  int x = 2;r
+  return h(3) + x;
+}
+...
+int x = 4;
+int z = g(f);
+
+```
+
