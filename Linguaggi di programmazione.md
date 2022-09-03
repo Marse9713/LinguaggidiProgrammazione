@@ -3519,3 +3519,61 @@ int z = g(f);
 
 ```
 
+  - tre momenti della funzione f
+    - definizione di f: int f (int y)
+    - passaggio di f come argomento: int z = g(f)
+    - chiamata di f, tramite il nome h: h(3) + x
+  - tre possibili alternative per l'ambiente esterno di f
+
+- Politiche di binding
+  - politiche di binding
+    - scope statico: uso l'ambiente della definizione (come sempre)
+    - scope dinamico: due alternative:
+      - ambiente al moemento della creazione del legame h -> f, ossia della chiamata di g con parametro f
+        - deep binding
+      - ambiente al momento della chiamata di f, in g, via h?
+        - shallow binding
+
+- Politiche di biding: esempio
+
+```
+int x = 1;
+
+int f (int y){
+  return x + y;
+}
+
+int g (int h (int i)){
+  int x = 2;
+  return h(3) + x;
+}
+...
+
+int x = 4;
+int z = g(f);
+
+```
+  - tre dichiarazioni di x
+  - quando f sarà chiamata (tramite h)
+    - quale x (non locale) sarà usata?
+  - in scope statico, la x = 1 esterna
+  - in scope dinamico
+    - deep biding: le x = 4 del blocco di chiamata
+    - shallow binding: la x = 2 interna
+
+- Implementazione uso delle chiusure
+  - analoga alla chiamata per nome: alla chiamata di una procedura g con parametro attuale una procedura f
+    - si inserisce nel RdA di g, in corrispondenza ad f, una closure <code, env>
+      - un riferimento al codice della procedura f
+      - un riferimento al suo ambiente non locale di h
+    - alla chiamata della procedura f dentro g
+      - si alloca (come sempre) il record di attivazione
+      - usa come puntatore alla cantena statica il riferimento (ambiente) fornito dalla chiusura env
+
+- Scope dinamico, tipiche implementazioni
+  - shallow binding
+    - non necessita chiusure
+      - al parametro funzione si associa solo il codice
+      - per accedere a x, risali la pila
+      - uso delle strutture dati solite (A-list, CRT)
+  - deep 
