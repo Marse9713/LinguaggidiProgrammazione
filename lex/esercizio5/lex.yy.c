@@ -665,8 +665,7 @@ YY_DECL
 	{
 #line 6 "5.l"
 
-
-#line 670 "lex.yy.c"
+#line 669 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -725,20 +724,20 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 8 "5.l"
-{printf("%d ", atoi (yytext));}
+#line 7 "5.l"
+{printf(" %d ", atoi (yytext));}                        
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 9 "5.l"
+#line 8 "5.l"
 {}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 10 "5.l"
+#line 9 "5.l"
 ECHO;
 	YY_BREAK
-#line 742 "lex.yy.c"
+#line 741 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1743,7 +1742,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 10 "5.l"
+#line 9 "5.l"
 
 
 int main (){
