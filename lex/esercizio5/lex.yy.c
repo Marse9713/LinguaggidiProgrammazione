@@ -360,10 +360,11 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[15] =
+static const flex_int16_t yy_accept[31] =
     {   0,
-        0,    0,    4,    2,    3,    2,    2,    1,    2,    1,
-        0,    0,    0,    0
+        0,    0,    4,    2,    2,    2,    2,    2,    1,    2,
+        2,    2,    1,    2,    1,    0,    0,    0,    1,    0,
+        0,    0,    1,    0,    0,    1,    0,    1,    0,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -373,11 +374,11 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    3,    4,    5,
-        4,    6,    4,    5,    4,    6,    4,    1,    1,    1,
+        6,    7,    8,    9,   10,   11,   12,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    7,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
 
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -398,35 +399,42 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[8] =
+static const YY_CHAR yy_meta[13] =
     {   0,
-        1,    1,    2,    3,    3,    2,    3
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1
     } ;
 
-static const flex_int16_t yy_base[17] =
+static const flex_int16_t yy_base[31] =
     {   0,
-        0,    0,   14,   18,   18,    0,    8,    0,    4,   18,
-        0,    5,    8,   18,    7,   14
+        0,    0,   24,   32,   10,   20,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,    0,   32
     } ;
 
-static const flex_int16_t yy_def[17] =
+static const flex_int16_t yy_def[31] =
     {   0,
-       14,    1,   14,   14,   14,   15,   14,   15,   16,   14,
-       15,   14,   16,    0,   14,   14
+       30,    1,   30,   30,   30,    5,    5,    6,    5,    6,
+        5,    6,    5,    6,    5,    6,    5,    6,    5,    6,
+        5,    6,    5,    6,    5,    5,    5,    5,    5,    0
     } ;
 
-static const flex_int16_t yy_nxt[26] =
+static const flex_int16_t yy_nxt[45] =
     {   0,
-        4,    5,    6,    7,    6,    8,    9,   12,   10,   10,
-       13,   12,   10,   14,   13,   11,   11,    3,   14,   14,
-       14,   14,   14,   14,   14
+        4,    4,    5,    6,    7,    8,    9,   10,   11,   12,
+       13,   14,   15,   16,   17,   18,   19,   20,   21,   22,
+       23,   24,   25,   30,   26,   30,   27,   30,   28,   30,
+       29,    3,   30,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30
     } ;
 
-static const flex_int16_t yy_chk[26] =
+static const flex_int16_t yy_chk[45] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    9,   15,   12,
-        9,   13,    7,    3,   13,   16,   16,   14,   14,   14,
-       14,   14,   14,   14,   14
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    6,    3,    6,    0,    6,    0,    6,    0,
+        6,   30,   30,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -447,8 +455,8 @@ char *yytext;
 /*stampa a monitor gli elementi che sono all'interno del file se sono multipli di 4, compreso lo 0*/
 #line 3 "5.l"
     #include <stdio.h>
-#line 451 "lex.yy.c"
-#line 452 "lex.yy.c"
+#line 459 "lex.yy.c"
+#line 460 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -665,9 +673,9 @@ YY_DECL
 		}
 
 	{
-#line 6 "5.l"
+#line 9 "5.l"
 
-#line 671 "lex.yy.c"
+#line 679 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -694,13 +702,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 15 )
+				if ( yy_current_state >= 31 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 18 );
+		while ( yy_base[yy_current_state] != 32 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -726,20 +734,21 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 7 "5.l"
-{printf(" %d ", atoi(yytext));}                        
+#line 10 "5.l"
+{printf(" %s ", yytext);}
 	YY_BREAK
 case 2:
+/* rule 2 can match eol */
 YY_RULE_SETUP
-#line 8 "5.l"
-{}
+#line 11 "5.l"
+{}                        
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 9 "5.l"
+#line 12 "5.l"
 ECHO;
 	YY_BREAK
-#line 743 "lex.yy.c"
+#line 752 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1036,7 +1045,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 15 )
+			if ( yy_current_state >= 31 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1064,11 +1073,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 15 )
+		if ( yy_current_state >= 31 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 14);
+	yy_is_jam = (yy_current_state == 30);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1744,10 +1753,10 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 9 "5.l"
+#line 12 "5.l"
 
 
-int main (){
+int main (int argc, const char *aArgv[]){
 
     extern FILE *yyin;
  
@@ -1756,4 +1765,9 @@ int main (){
     yylex();
     return 0;
 
+}
+
+int yywrap()
+{
+   return(1);
 }
