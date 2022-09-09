@@ -2,12 +2,10 @@
     #include <stdio.h>
     #include <string.h>
     #include <stdlib.h>
-    #define ARIETA 6 /*6 argomenti */
+    #define ARIETA 6
 
     void yyerror (char *s);
     int yylex();
-
-    /*definisco l'albero di parsing */
 
     struct Tree;
     typedef struct Tree Tree;
@@ -33,8 +31,6 @@
         return res;
 
     }
-
-    /*procedura per la stampa dell'albero */
 
     void printTree (Tree* T, int s){
 
@@ -66,13 +62,12 @@
 %token	 	WHILE
 %token     	'(' ')'
 %token	 	'{' '}'
-%token	 	ENDASS
+%token	 	FINERIGA
 
-%type 		<txt> NUMERO IF ELSE WHILE ID ASSIGNAZIONE INCREMENTO '(' ')' '{' '}'  FINERIGA
-%type       <tp> input blocks statement com elsE rval lval
+%type 		NUMERO IF ELSE WHILE ID ASSIGNAZIONE INCREMENTO '(' ')' '{' '}'  FINERIGA
 
 %nonassoc IF
-%nonassoc ELSE /*tolgo ambiguità di if else*/
+%nonassoc ELSE
 
 %%
 
@@ -88,18 +83,18 @@ dichiarazione   : comparazione					{$$ = makeTree("DICHIARAZIONE", $1, NULL, NUL
 	   		| '{' blocco '}' 	 				{$$ = makeTree("DICHIARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
 	   		;
 
-comparazione: lval ASSEGNAZIONE rval FINERIGA	{$$ = makeTree("COMPARAZIONE", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-	   | lval INCREMENTO rval FINERIGA			{$$ = makeTree("COMPARAZIONE", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-	   | WHILE '(' lval ')' dichiarazione		{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
-	   | IF '(' lval ')' dichiarazione %prec IF	{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
-	   | IF '(' lval ')' dichiarazione Else 	{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, $6);}
+comparazione:  ASSEGNAZIONE  FINERIGA	{$$ = makeTree("COMPARAZIONE", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
+	   |  INCREMENTO  FINERIGA			{$$ = makeTree("COMPARAZIONE", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
+	   | WHILE '('  ')' dichiarazione		{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
+	   | IF '('  ')' dichiarazione %prec IF	{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
+	   | IF '('  ')' dichiarazione Else 	{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, $6);}
 	   ;
 
 Else   : ELSE dichiarazione						{$$ = makeTree("ELSE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, NULL, NULL, NULL, NULL);}
 	   ;
 	   
 vald   : vals 									{$$ = makeTree("VALD", $1, NULL, NULL, NULL, NULL, NULL);}
-	   | NUM									{$$ = makeTree("VALD", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
+	   | NUMERO									{$$ = makeTree("VALD", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
 	   ;
 	               
 vals   : ID 									{$$ = makeTree("VALS", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
