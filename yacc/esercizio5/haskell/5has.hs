@@ -349,7 +349,7 @@ happyReduction_14 (_ `HappyStk`
 	_ `HappyStk`
 	happyRest)
 	 = HappyAbsSyn8
-		 (Ifelse happy_var_3 happy_var_6 happy_var_10
+		 (IfElse happy_var_3 happy_var_6 happy_var_10
 	) `HappyStk` happyRest
 
 happyNewToken action sts stk [] =

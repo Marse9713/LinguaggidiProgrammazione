@@ -8,9 +8,9 @@ import ExpressionToken
 %error { parseError }
 
 %token
-    "if"                     {TokenIf}
+    "if"                   {TokenIf}
     "while"                {TokenWhile}
-    "else"                   {TokenElse}
+    "else"                 {TokenElse}
     "+="                   {TokenInc}
     '='                    {TokenAseg}
     '('                    {TokenSPAREN}
@@ -48,7 +48,7 @@ Inc : identificatore "+=" int ';'                                {IncInt $1 $3}
 
 While : "while" '(' Esp ')' '{' Esp '}'                        {While $3 $6}    
 If : "if" '(' Esp ')' '{' Esp '}'                              {IfA $3 $6}
-    | "if" '(' Esp ')' '{' Esp '}' "else"  '{' Esp '}'        {Ifelse $3 $6 $10}
+    | "if" '(' Esp ')' '{' Esp '}' "else"  '{' Esp '}'        {IfElse $3 $6 $10}
 {
 
 parseError :: [Token] -> a
