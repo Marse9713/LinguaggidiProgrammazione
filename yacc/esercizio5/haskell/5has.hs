@@ -319,7 +319,7 @@ happyReduction_12 (_ `HappyStk`
 	_ `HappyStk`
 	happyRest)
 	 = HappyAbsSyn7
-		 (While happy_var_3 happy_var_6
+		 (WhilE happy_var_3 happy_var_6
 	) `HappyStk` happyRest
 
 happyReduce_13 = happyReduce 7 8 happyReduction_13
@@ -417,7 +417,7 @@ data Esp
     | Float Float
     | Blo NumCon 
     | Inc Inc
-    | While While
+    | While WhilE
     | If If
     deriving (Eq, Show)
 
@@ -431,7 +431,7 @@ data Inc
     | IncFloat String Float
     deriving (Eq, Show)
 
-data While
+data WhilE
     = WhilE Esp Esp
     deriving (Eq, Show)
 

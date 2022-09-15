@@ -46,7 +46,7 @@ NumCon : "int" identificatore '=' int ';'                    {AsegInt $2 $4}
 Inc : identificatore "+=" int ';'                                {IncInt $1 $3}
     | identificatore "+=" float ';'                              {IncFloat $1 $3}
 
-While : "while" '(' Esp ')' '{' Esp '}'                        {While $3 $6}    
+While : "while" '(' Esp ')' '{' Esp '}'                        {WhilE $3 $6}    
 If : "if" '(' Esp ')' '{' Esp '}'                              {IfA $3 $6}
     | "if" '(' Esp ')' '{' Esp '}' "else"  '{' Esp '}'        {IfElse $3 $6 $10}
 {
@@ -60,7 +60,7 @@ data Esp
     | Float Float
     | Blo NumCon 
     | Inc Inc
-    | While While
+    | While WhilE
     | If If
     deriving (Eq, Show)
 
@@ -74,7 +74,7 @@ data Inc
     | IncFloat String Float
     deriving (Eq, Show)
 
-data While
+data WhilE
     = WhilE Esp Esp
     deriving (Eq, Show)
 

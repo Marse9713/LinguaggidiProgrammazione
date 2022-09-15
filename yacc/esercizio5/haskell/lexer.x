@@ -15,18 +15,18 @@ $alpha               = [a-zA-Z]
 @identificatore      = ($alpha+|$underscore+|$dollar+)+   
 
 tokens :-
-    "if"             {\s -> TokenIf}
+    "if"             {\s -> TokenIf }
     "while"          {\s -> TokenWhile }
     "else"           {\s -> TokenElse }
     "+="             {\s -> TokenInc }
     \=               {\s -> TokenAseg }
-    \(               {\s -> TokenSPAREN}
-    \)               {\s -> TokenDPAREN}
-    \{               {\s -> TokenSGraffa}
-    \}               {\s -> TokenDGraffa}
-    "int"            {\s -> TokenASInt}
-    "float"          {\s -> TokenASFloat}   
-    \;               {\s -> TokenPuntoe}
+    \(               {\s -> TokenSPAREN }
+    \)               {\s -> TokenDPAREN }
+    \{               {\s -> TokenSGraffa }
+    \}               {\s -> TokenDGraffa }
+    "int"            {\s -> TokenASInt }
+    "float"          {\s -> TokenASFloat }   
+    \;               {\s -> TokenPuntoe }
     @int             {\s -> TokenInt (read s)}
     @float           {\s -> TokenFloat (read s)}
     @identificatore  {\s -> TokenIdent s}
