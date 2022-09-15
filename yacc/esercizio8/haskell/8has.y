@@ -11,7 +11,7 @@ import ExpressionToken
     let                    {TokenLet}
     cond                   {TokenCond}
     else                   {TokenElse}
-    '='                    {TokenEq}
+    '='                    {TokenEqu}
     '('                    {TokenSPAREN}
     ')'                    {TokenDPAREN}
     '['                    {TokenSQuadra}
@@ -33,7 +33,7 @@ import ExpressionToken
 
 Esp : int                                               {Intero $1}
     | identificatore                                    {ID $1}
-    | '(' Parentesi ')'                                 {Blk $2}
+    | '(' Parentesi ')'                                 {Blo $2}
 
 Parentesi : '+' Esp Esp                                 {Som $2 $3}
           | '-' Esp Esp                                 {Sott $2 $3}
@@ -48,7 +48,7 @@ parseError _ = error "Parse error"
 data Esp
     = Intero Int        
     | ID String         --dico che è una stringa
-    | Blk Parentesi     --gestisci il caso delle parentesi
+    | Blo Parentesi     --gestisci il caso delle parentesi
     deriving (Eq, Show)
 
 data Parentesi 

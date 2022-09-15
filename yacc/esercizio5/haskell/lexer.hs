@@ -3636,17 +3636,17 @@ data Token = TokenIf
             | TokenWhile
             | TokenElse
             | TokenInc
-            | TokenAsg
-            | TokenLPAREN
-            | TokenRPAREN
-            | TokenFwGRBracket
-            | TokenBwGRBracket
-            | TokenKWInt
-            | TokenKWFloat
+            | TokenAseg
+            | TokenSPAREN
+            | TokenDPAREN
+            | TokenSGraffa
+            | TokenDGraffa
+            | TokenASInt
+            | TokenASFloat
             | TokenInt Int
             | TokenFloat Float
-            | TokenIdentifier String
-            | TokenSemiCol
+            | TokenIdent String
+            | TokenPuntoe
         deriving (Eq, Show)
 
 lexer = alexScanTokens
@@ -3655,17 +3655,17 @@ alex_action_0 = \s -> TokenIf
 alex_action_1 = \s -> TokenWhile 
 alex_action_2 = \s -> TokenElse 
 alex_action_3 = \s -> TokenInc 
-alex_action_4 = \s -> TokenAsg 
-alex_action_5 = \s -> TokenLPAREN
-alex_action_6 = \s -> TokenRPAREN
-alex_action_7 = \s -> TokenFwGRBracket
-alex_action_8 = \s -> TokenBwGRBracket
-alex_action_9 = \s -> TokenKWInt
-alex_action_10 = \s -> TokenKWFloat
-alex_action_11 = \s -> TokenSemiCol
+alex_action_4 = \s -> TokenAseg 
+alex_action_5 = \s -> TokenSPAREN
+alex_action_6 = \s -> TokenDPAREN
+alex_action_7 = \s -> TokenSGraffa
+alex_action_8 = \s -> TokenDGraffa
+alex_action_9 = \s -> TokenASInt
+alex_action_10 = \s -> TokenASFloat
+alex_action_11 = \s -> TokenPuntoe
 alex_action_12 = \s -> TokenInt (read s)
 alex_action_13 = \s -> TokenFloat (read s)
-alex_action_14 = \s -> TokenIdentifier s
+alex_action_14 = \s -> TokenIdent s
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 -- -----------------------------------------------------------------------------
 -- ALEX TEMPLATE

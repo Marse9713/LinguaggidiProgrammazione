@@ -19,17 +19,17 @@ tokens :-
     "while"          {\s -> TokenWhile }
     "else"           {\s -> TokenElse }
     "+="             {\s -> TokenInc }
-    \=               {\s -> TokenAsg }
-    \(               {\s -> TokenLPAREN}
-    \)               {\s -> TokenRPAREN}
-    \{               {\s -> TokenFwGRBracket}
-    \}               {\s -> TokenBwGRBracket}
-    "int"            {\s -> TokenKWInt}
-    "float"          {\s -> TokenKWFloat}   
-    \;               {\s -> TokenSemiCol}
+    \=               {\s -> TokenAseg }
+    \(               {\s -> TokenSPAREN}
+    \)               {\s -> TokenDPAREN}
+    \{               {\s -> TokenSGraffa}
+    \}               {\s -> TokenDGraffa}
+    "int"            {\s -> TokenASInt}
+    "float"          {\s -> TokenASFloat}   
+    \;               {\s -> TokenPuntoe}
     @int             {\s -> TokenInt (read s)}
     @float           {\s -> TokenFloat (read s)}
-    @identificatore  {\s -> TokenIdentifier s}
+    @identificatore  {\s -> TokenIdent s}
     $white+          ;
 
 
@@ -38,17 +38,17 @@ data Token = TokenIf
             | TokenWhile
             | TokenElse
             | TokenInc
-            | TokenAsg
-            | TokenLPAREN
-            | TokenRPAREN
-            | TokenFwGRBracket
-            | TokenBwGRBracket
-            | TokenKWInt
-            | TokenKWFloat
+            | TokenAseg
+            | TokenSPAREN
+            | TokenDPAREN
+            | TokenSGraffa
+            | TokenDGraffa
+            | TokenASInt
+            | TokenASFloat
             | TokenInt Int
             | TokenFloat Float
-            | TokenIdentifier String
-            | TokenSemiCol
+            | TokenIdent String
+            | TokenPuntoe
         deriving (Eq, Show)
 
 lexer = alexScanTokens
