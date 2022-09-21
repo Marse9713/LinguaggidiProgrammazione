@@ -1,106 +1,96 @@
-%{
-    #include <stdio.h>
-    #include <string.h>
-    #include <stdlib.h>
-    #define ARIETA 6
 
-    void yyerror (char *s);
-    int yylex();
+%{ 
+	#include <stdio.h> 
+	#include <string.h>
+	#include <stdlib.h>
+	#define ARITY 6
 
-    struct Tree;
-    typedef struct Tree Tree;
+	void yyerror (char *s);
+	int yylex();
+	
+	/* definizione dell'albero di parsing */
+	struct Tree;
+	typedef struct Tree Tree;
+	struct Tree {
+		char* top;
+		Tree* subTrees[ARITY];
+	};
 
-    struct Tree {
+	Tree* makeTree (char* top, Tree* t1, Tree* t2, Tree* t3, Tree* t4, Tree* t5, Tree* t6) {
+		Tree* res = (Tree*) malloc(sizeof(Tree));
+		res->top = top;
+		res->subTrees[0] = t1;
+		res->subTrees[1] = t2;
+		res->subTrees[2] = t3;
+		res->subTrees[3] = t4;
+		res->subTrees[4] = t5;
+		res->subTrees[5] = t6;
 
-        char* top;
-        Tree* subTrees[ARIETA];
+		return res;
+	}
 
-    };
-
-    Tree* makeTree (char* top, Tree* T1, Tree* T2, Tree* T3, Tree* T4, Tree* T5, Tree* T6) {
-
-        Tree* res = (Tree*) malloc(sizeof(Tree));
-        res->top = top;
-        res->subTrees[0] = T1;
-        res->subTrees[1] = T2;
-        res->subTrees[2] = T3;
-        res->subTrees[3] = T4;
-        res->subTrees[4] = T5;
-        res->subTrees[5] = T6;
-
-        return res;
-
-    }
-
-    void printTree (Tree* T, int s){
-
-        printf("%*s%s\n", s, "", T->top);
-
-        for(int i = 0; i < ARIETA; i++){
-
-            if (!t->subTrees[i]) 
-            continue;
-
-            printTree(t->subTrees[i], s + 3);
-
-
-        }
-
-    }
-
-
+	/* procedura che stampa l'albero, incrementando l'indentazione per distinguere i vari livelli */
+	void printTree (Tree* t, int sp) {
+		printf("%*s%s\n", sp, "", t->top);
+		for (int i = 0; i < ARITY; i++) {
+			if (!t->subTrees[i]) continue;
+			printTree(t->subTrees[i], sp + 3);
+		}
+	}
 %} 
 
 %union 		{char* txt; struct Tree* tp;}
 
 %start		input
-%token     	ID 
+%token     	IDENT 
 %token     	NUMERO
-%token 		ASSEGNAZIONE
-%token	 	INCREMENTO
+%token 		ASSEGN
+%token	 	INCREM
 %token     	IF ELSE
 %token	 	WHILE
 %token     	'(' ')'
 %token	 	'{' '}'
-%token	 	FINERIGA
+%token	 	FINECOM
 
-%type 		NUMERO IF ELSE WHILE ID ASSIGNAZIONE INCREMENTO '(' ')' '{' '}'  FINERIGA
+%type 		<txt> NUMERO IF ELSE WHILE IDENT ASSEGN INCREM '(' ')' '{' '}'  FINECOM
+%type       <tp> input blocks statement com elsE rval lval
 
+/* per gestire l'ambiguità dell'if-else, anche se yacc gestisce già in maniera corretta di default */
 %nonassoc IF
 %nonassoc ELSE
 
 %%
 
-Sinput  :							            {}
-	   | blocco  								{printf("\n"); printTree($1, 0); printf("\n");} 					 
+input  : /* epsilon */							{}
+	   | blocks  								{printf("\n"); printTree($1, 0); printf("\n");} 					 
 	   ;
 	   
-blocco : dichiarazione                    		{$$ = makeTree("BLOCCO", $1, NULL, NULL, NULL, NULL, NULL);}  
-	   | dichiarazione blocco          			{$$ = makeTree("BLOCCO", $1, $2, NULL, NULL, NULL, NULL);}
+blocks : statement                      		{$$ = makeTree("BLOCK", $1, NULL, NULL, NULL, NULL, NULL);}  
+	   | statement blocks              			{$$ = makeTree("BLOCK", $1, $2, NULL, NULL, NULL, NULL);}
 	   ;  
 	   
-dichiarazione   : comparazione					{$$ = makeTree("DICHIARAZIONE", $1, NULL, NULL, NULL, NULL, NULL);}
-	   		| '{' blocco '}' 	 				{$$ = makeTree("DICHIARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
+statement   : com 								{$$ = makeTree("STAT", $1, NULL, NULL, NULL, NULL, NULL);}
+	   		| '{' blocks '}' 	 				{$$ = makeTree("STAT", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
 	   		;
 
-comparazione:  ASSEGNAZIONE  FINERIGA	{$$ = makeTree("COMPARAZIONE", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-	   |  INCREMENTO  FINERIGA			{$$ = makeTree("COMPARAZIONE", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-	   | WHILE '('  ')' dichiarazione		{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
-	   | IF '('  ')' dichiarazione %prec IF	{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
-	   | IF '('  ')' dichiarazione Else 	{$$ = makeTree("COMPARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, $6);}
+com    : lval ASSEGN rval FINECOM				{$$ = makeTree("COM", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
+	   | lval INCREM rval FINECOM					{$$ = makeTree("COM", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
+	   | WHILE '(' lval ')' statement			{$$ = makeTree("COM", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
+	   | IF '(' lval ')' statement %prec IF		{$$ = makeTree("COM", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
+	   | IF '(' lval ')' statement elsE			{$$ = makeTree("COM", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, $6);}
 	   ;
 
-Else   : ELSE dichiarazione						{$$ = makeTree("ELSE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, NULL, NULL, NULL, NULL);}
+elsE   : ELSE statement							{$$ = makeTree("ELSE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, NULL, NULL, NULL, NULL);}
 	   ;
 	   
-vald   : vals 									{$$ = makeTree("VALD", $1, NULL, NULL, NULL, NULL, NULL);}
-	   | NUMERO									{$$ = makeTree("VALD", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
+rval   : lval 									{$$ = makeTree("RVAL", $1, NULL, NULL, NULL, NULL, NULL);}
+	   | NUMERO									{$$ = makeTree("RVAL", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
 	   ;
 	               
-vals   : ID 									{$$ = makeTree("VALS", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
+lval   : IDENT 									{$$ = makeTree("LVAL", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
 	   ;
         
-%%
+%% 
 
 int main (void) {
 	yyparse();
