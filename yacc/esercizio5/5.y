@@ -8,7 +8,6 @@
 	void yyerror (char *s);
 	int yylex();
 	
-	/* definizione dell'albero di parsing */
 	struct Tree;
 	typedef struct Tree Tree;
 	struct Tree {
@@ -29,7 +28,6 @@
 		return res;
 	}
 
-	/* procedura che stampa l'albero, incrementando l'indentazione per distinguere i vari livelli */
 	void printTree (Tree* t, int sp) {
 		printf("%*s%s\n", sp, "", t->top);
 		for (int i = 0; i < ARITY; i++) {
@@ -50,37 +48,36 @@
 %token	 	WHILE
 %token     	'(' ')'
 %token	 	'{' '}'
-%token	 	FINECOM
+%token	 	SEPARATORE
 
-%type 		<txt> NUMERO IF ELSE WHILE IDENT ASSEGN INCREM '(' ')' '{' '}'  FINECOM
-%type       <tp> input blocks statement com elsE rval lval
+%type 		<txt> NUMERO IF ELSE WHILE IDENT ASSEGN INCREM '(' ')' '{' '}'  SEPARATORE
+%type       <tp> input blocco dichiarazione com elsE rval lval
 
-/* per gestire l'ambiguità dell'if-else, anche se yacc gestisce già in maniera corretta di default */
 %nonassoc IF
 %nonassoc ELSE
 
 %%
 
 input  : /* epsilon */							{}
-	   | blocks  								{printf("\n"); printTree($1, 0); printf("\n");} 					 
+	   | blocco  								{printf("\n"); printTree($1, 0); printf("\n");} 					 
 	   ;
 	   
-blocks : statement                      		{$$ = makeTree("BLOCK", $1, NULL, NULL, NULL, NULL, NULL);}  
-	   | statement blocks              			{$$ = makeTree("BLOCK", $1, $2, NULL, NULL, NULL, NULL);}
+blocco : dichiarazione                     		{$$ = makeTree("BLOCCO", $1, NULL, NULL, NULL, NULL, NULL);}  
+	   | dichiarazione blocco          			{$$ = makeTree("BLOCCO", $1, $2, NULL, NULL, NULL, NULL);}
 	   ;  
 	   
-statement   : com 								{$$ = makeTree("STAT", $1, NULL, NULL, NULL, NULL, NULL);}
-	   		| '{' blocks '}' 	 				{$$ = makeTree("STAT", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
-	   		;
+dichiarazione : com 							{$$ = makeTree("DICHIARAZIONE", $1, NULL, NULL, NULL, NULL, NULL);}
+	   		  | '{' blocco '}' 	 				{$$ = makeTree("DICHIARAZIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
+	   		  ;
 
-com    : lval ASSEGN rval FINECOM				{$$ = makeTree("COM", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-	   | lval INCREM rval FINECOM					{$$ = makeTree("COM", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-	   | WHILE '(' lval ')' statement			{$$ = makeTree("COM", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
-	   | IF '(' lval ')' statement %prec IF		{$$ = makeTree("COM", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
-	   | IF '(' lval ')' statement elsE			{$$ = makeTree("COM", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, $6);}
-	   ;
+com : lval ASSEGN rval SEPARATORE			{$$ = makeTree("COMANDO", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
+	| lval INCREM rval SEPARATORE			{$$ = makeTree("COMANDO", $1, makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
+	| WHILE '(' lval ')' dichiarazione		{$$ = makeTree("COMANDO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
+	| IF '(' lval ')' dichiarazione %prec IF	{$$ = makeTree("COMANDO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL);}
+	| IF '(' lval ')' dichiarazione elsE		{$$ = makeTree("COMANDO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL), $5, $6);}
+	;
 
-elsE   : ELSE statement							{$$ = makeTree("ELSE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, NULL, NULL, NULL, NULL);}
+elsE   : ELSE dichiarazione						{$$ = makeTree("ELSE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, NULL, NULL, NULL, NULL);}
 	   ;
 	   
 rval   : lval 									{$$ = makeTree("RVAL", $1, NULL, NULL, NULL, NULL, NULL);}

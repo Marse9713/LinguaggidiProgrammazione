@@ -74,7 +74,7 @@
 %left '*'
 %left NEG
 
-%type <txt> NUMERO CASE LET DIFFERENZA ID ASSIGNAZIONE SOMMA '[' ']' '(' ')' '{' '}'  FINERIGA
+%type <txt> NUMERO CASE LET DIFFERENZA ID ASSEGN SOMMA '[' ']' '(' ')' '{' '}'  FINERIGA
 
 %%
 
@@ -93,7 +93,7 @@ coppia: ID ID
    |  NUMERO NUMERO
    ;
 
-assegnamento:
+assegn:
    | '(' ID NUMERO ')'      {printf("'(' ID NUMERO ')'\n");}
    ;
 
@@ -103,8 +103,8 @@ lista_di_coppie:
    | coppia
    ;
 
-lista_di_coppie: lista_di_coppie assegnamento 
-   | assegnamento
+lista_di_coppie: lista_di_coppie assegn 
+   | assegn
    ; 
 
 definizione:

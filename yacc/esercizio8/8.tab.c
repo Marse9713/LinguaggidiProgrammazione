@@ -67,47 +67,63 @@
 
 
 /* First part of user prologue.  */
-#line 2 "5.y"
- 
-	#include <stdio.h> 
-	#include <string.h>
-	#include <stdlib.h>
-	#define ARITY 6
+#line 1 "8.y"
 
-	void yyerror (char *s);
-	int yylex();
-	
-	/* definizione dell'albero di parsing */
-	struct Tree;
-	typedef struct Tree Tree;
-	struct Tree {
-		char* top;
-		Tree* subTrees[ARITY];
-	};
+    #include <stdio.h>
+    #include <string.h>
+    #include <stdlib.h>
+    #define ARIETA 6 /* l'arità dell'albero è nota a priori ed è pari alla lunghezza della regola più lunga */
 
-	Tree* makeTree (char* top, Tree* t1, Tree* t2, Tree* t3, Tree* t4, Tree* t5, Tree* t6) {
-		Tree* res = (Tree*) malloc(sizeof(Tree));
-		res->top = top;
-		res->subTrees[0] = t1;
-		res->subTrees[1] = t2;
-		res->subTrees[2] = t3;
-		res->subTrees[3] = t4;
-		res->subTrees[4] = t5;
-		res->subTrees[5] = t6;
+    void yyerror (char *s);
+    int yylex();
 
-		return res;
-	}
+    /*definisco l'albero di parsing */
 
-	/* procedura che stampa l'albero, incrementando l'indentazione per distinguere i vari livelli */
-	void printTree (Tree* t, int sp) {
-		printf("%*s%s\n", sp, "", t->top);
-		for (int i = 0; i < ARITY; i++) {
-			if (!t->subTrees[i]) continue;
-			printTree(t->subTrees[i], sp + 3);
-		}
-	}
+    struct Tree;
+    typedef struct Tree Tree;
 
-#line 111 "5.tab.c"
+    struct Tree {
+
+        char* top;
+        Tree* subTrees[ARIETA];
+
+    };
+
+    Tree* makeTree (char* top, Tree* T1, Tree* T2, Tree* T3, Tree* T4, Tree* T5, Tree* T6) {
+
+        Tree* res = (Tree*) malloc(sizeof(Tree));
+        res->top = top;
+        res->subTrees[0] = T1;
+        res->subTrees[1] = T2;
+        res->subTrees[2] = T3;
+        res->subTrees[3] = T4;
+        res->subTrees[4] = T5;
+        res->subTrees[5] = T6;
+
+        return res;
+
+    }
+
+    /*procedura per la stampa dell'albero */
+
+    void printTree (Tree* T, int s){
+
+        printf("%*s%s\n", s, "", T->top);
+
+        for(int i = 0; i < ARIETA; i++){
+
+            if (!t->subTrees[i]) 
+            continue;
+
+            printTree(t->subTrees[i], s + 3);
+
+
+        }
+
+    }
+    
+
+#line 127 "8.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -130,7 +146,7 @@
 #  endif
 # endif
 
-#include "5.tab.h"
+#include "8.tab.h"
 /* Symbol kind.  */
 enum yysymbol_kind_t
 {
@@ -138,26 +154,37 @@ enum yysymbol_kind_t
   YYSYMBOL_YYEOF = 0,                      /* "end of file"  */
   YYSYMBOL_YYerror = 1,                    /* error  */
   YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
-  YYSYMBOL_IDENT = 3,                      /* IDENT  */
-  YYSYMBOL_NUMERO = 4,                     /* NUMERO  */
-  YYSYMBOL_ASSEGN = 5,                     /* ASSEGN  */
-  YYSYMBOL_INCREM = 6,                     /* INCREM  */
-  YYSYMBOL_IF = 7,                         /* IF  */
-  YYSYMBOL_ELSE = 8,                       /* ELSE  */
-  YYSYMBOL_WHILE = 9,                      /* WHILE  */
+  YYSYMBOL_ID = 3,                         /* ID  */
+  YYSYMBOL_LET = 4,                        /* LET  */
+  YYSYMBOL_NUMERO = 5,                     /* NUMERO  */
+  YYSYMBOL_MOLTIPLICAZIONE = 6,            /* MOLTIPLICAZIONE  */
+  YYSYMBOL_SOMMA = 7,                      /* SOMMA  */
+  YYSYMBOL_CASE = 8,                       /* CASE  */
+  YYSYMBOL_DIFFERENZA = 9,                 /* DIFFERENZA  */
   YYSYMBOL_10_ = 10,                       /* '('  */
   YYSYMBOL_11_ = 11,                       /* ')'  */
-  YYSYMBOL_12_ = 12,                       /* '{'  */
-  YYSYMBOL_13_ = 13,                       /* '}'  */
-  YYSYMBOL_SEPARATORE = 14,                /* SEPARATORE  */
-  YYSYMBOL_YYACCEPT = 15,                  /* $accept  */
-  YYSYMBOL_input = 16,                     /* input  */
-  YYSYMBOL_blocco = 17,                    /* blocco  */
-  YYSYMBOL_dichiarazione = 18,             /* dichiarazione  */
-  YYSYMBOL_com = 19,                       /* com  */
-  YYSYMBOL_elsE = 20,                      /* elsE  */
-  YYSYMBOL_rval = 21,                      /* rval  */
-  YYSYMBOL_lval = 22                       /* lval  */
+  YYSYMBOL_EQUIVALENZA = 12,               /* EQUIVALENZA  */
+  YYSYMBOL_FINERIGA = 13,                  /* FINERIGA  */
+  YYSYMBOL_14_ = 14,                       /* '['  */
+  YYSYMBOL_15_ = 15,                       /* ']'  */
+  YYSYMBOL_BREAK = 16,                     /* BREAK  */
+  YYSYMBOL_17_ = 17,                       /* '*'  */
+  YYSYMBOL_NEG = 18,                       /* NEG  */
+  YYSYMBOL_19_ = 19,                       /* '{'  */
+  YYSYMBOL_20_ = 20,                       /* '}'  */
+  YYSYMBOL_21_n_ = 21,                     /* '\n'  */
+  YYSYMBOL_22_ = 22,                       /* '='  */
+  YYSYMBOL_YYACCEPT = 23,                  /* $accept  */
+  YYSYMBOL_input = 24,                     /* input  */
+  YYSYMBOL_linea = 25,                     /* linea  */
+  YYSYMBOL_coppia = 26,                    /* coppia  */
+  YYSYMBOL_assegn = 27,                    /* assegn  */
+  YYSYMBOL_lista_di_coppie = 28,           /* lista_di_coppie  */
+  YYSYMBOL_definizione = 29,               /* definizione  */
+  YYSYMBOL_lista_di_definizioni = 30,      /* lista_di_definizioni  */
+  YYSYMBOL_espressione = 31,               /* espressione  */
+  YYSYMBOL_blocco = 32,                    /* blocco  */
+  YYSYMBOL_blocco_lista = 33               /* blocco_lista  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -483,21 +510,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  13
+#define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   29
+#define YYLAST   124
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  15
+#define YYNTOKENS  23
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  8
+#define YYNNTS  11
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  16
+#define YYNRULES  39
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  33
+#define YYNSTATES  87
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   265
+#define YYMAXUTOK   268
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -512,18 +539,18 @@ union yyalloc
 static const yytype_int8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+      21,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+      10,    11,    17,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      10,    11,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,    22,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,    14,     2,    15,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    12,     2,    13,     2,     2,     2,     2,
+       2,     2,     2,    19,     2,    20,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -537,15 +564,17 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    14
+       5,     6,     7,     8,     9,    12,    13,    16,    18
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    64,    64,    65,    68,    69,    72,    73,    76,    77,
-      78,    79,    80,    83,    86,    87,    90
+       0,    81,    81,    82,    85,    86,    90,    91,    92,    93,
+      96,    97,   101,   102,   103,   106,   107,   110,   111,   112,
+     113,   115,   118,   119,   123,   124,   125,   126,   127,   128,
+     129,   130,   131,   134,   135,   136,   137,   138,   141,   142
 };
 #endif
 
@@ -561,10 +590,12 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "\"end of file\"", "error", "\"invalid token\"", "IDENT", "NUMERO",
-  "ASSEGN", "INCREM", "IF", "ELSE", "WHILE", "'('", "')'", "'{'", "'}'",
-  "SEPARATORE", "$accept", "input", "blocco", "dichiarazione", "com",
-  "elsE", "rval", "lval", YY_NULLPTR
+  "\"end of file\"", "error", "\"invalid token\"", "ID", "LET", "NUMERO",
+  "MOLTIPLICAZIONE", "SOMMA", "CASE", "DIFFERENZA", "'('", "')'",
+  "EQUIVALENZA", "FINERIGA", "'['", "']'", "BREAK", "'*'", "NEG", "'{'",
+  "'}'", "'\\n'", "'='", "$accept", "input", "linea", "coppia", "assegn",
+  "lista_di_coppie", "definizione", "lista_di_definizioni", "espressione",
+  "blocco", "blocco_lista", YY_NULLPTR
 };
 
 static const char *
@@ -574,7 +605,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-15)
+#define YYPACT_NINF (-39)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -588,10 +619,15 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,   -15,    -9,    -5,    -3,    19,   -15,    -3,   -15,    12,
-      17,    17,     9,   -15,   -15,    10,    10,    13,    14,   -15,
-     -15,     7,   -15,    15,    -3,    -3,   -15,   -15,    18,   -15,
-      -3,   -15,   -15
+     -39,    34,   -39,    50,    89,   -39,   -39,   -39,   -39,     5,
+       0,   -39,     2,    35,   108,    77,     5,    77,    46,    20,
+      11,    57,   -39,   -39,    95,   -39,    19,    20,    56,     5,
+      96,    81,    91,    21,     5,    98,     2,    41,     5,   103,
+      49,    58,   -39,   -39,    65,   -39,    46,    46,     5,     5,
+       5,    20,    78,    90,    90,    74,   -39,   -39,   -39,   -39,
+     -39,   -39,   100,   -39,   105,   -39,   109,   -39,   -39,    64,
+     -39,   -39,   -39,   -39,    87,    89,   -39,   -39,   -39,   -39,
+     110,    89,   112,   -39,   113,   -39,   -39
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -599,22 +635,29 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       2,    16,     0,     0,     0,     0,     3,     4,     6,     0,
-       0,     0,     0,     1,     5,     0,     0,     0,     0,     7,
-      15,     0,    14,     0,     0,     0,     8,     9,    11,    10,
-       0,    12,    13
+       2,     0,     1,     0,    17,    32,     4,     3,    23,    17,
+       0,    39,    25,     0,    17,    17,    17,    17,     0,    10,
+       0,     0,    22,     5,     0,    38,     0,    10,     0,    17,
+       0,     0,     0,     0,    17,     0,    33,     0,    17,     0,
+       0,     0,    14,    16,     0,    37,     0,     0,    17,    17,
+      17,    10,     0,    17,    17,     0,    28,     6,     7,     8,
+       9,    18,     0,    26,     0,    19,     0,    27,    20,     0,
+      12,    13,    21,    15,     0,    17,    36,    34,    31,    35,
+       0,    17,     0,    11,     0,    29,    30
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -15,   -15,     8,   -14,   -15,   -15,    11,    -8
+     -39,   -39,   -39,   -14,   -38,   -16,    -7,   -39,    -4,   -11,
+       3
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     5,     6,     7,     8,    31,    21,     9
+       0,     1,     7,    33,    43,    44,     8,     9,    10,    11,
+      12
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -622,40 +665,69 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,    10,    17,    18,     2,    11,     3,    22,    22,     4,
-      28,    29,    12,     1,    20,    14,    32,    15,    16,    13,
-       1,    26,    19,     0,    24,    25,    30,    23,     0,    27
+      20,    25,    22,    37,    40,    42,    73,    29,    34,    36,
+      38,    52,    24,    42,    73,    21,     4,    30,    35,    25,
+      39,    23,    55,    31,    25,    32,    45,    62,    25,    51,
+      41,    66,    61,    37,     2,    74,    73,    42,    26,    64,
+      37,    29,    34,    38,     3,    27,    34,    38,     4,    31,
+       5,    32,    65,    25,    13,     6,    14,    15,    16,    17,
+      68,    69,    48,    53,    46,    54,    47,    18,    70,    80,
+      71,    82,    19,    18,    18,    41,    72,    84,    19,    19,
+      31,    70,    32,    71,    57,    76,    58,    28,    41,    75,
+      70,     4,    71,    31,    59,    32,    60,    41,    81,     3,
+      21,    48,    49,     4,    50,     5,    24,    56,    24,    63,
+       4,    77,     4,    24,    67,    24,    78,     4,    28,     4,
+      79,    83,     4,    85,    86
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,    10,    10,    11,     7,    10,     9,    15,    16,    12,
-      24,    25,     4,     3,     4,     7,    30,     5,     6,     0,
-       3,    14,    13,    -1,    11,    11,     8,    16,    -1,    14
+       4,    12,     9,    17,    18,    19,    44,    14,    15,    16,
+      17,    27,    10,    27,    52,    10,    14,    14,    15,    30,
+      17,    21,    29,     3,    35,     5,    15,    34,    39,    10,
+      10,    38,    11,    47,     0,    51,    74,    51,     3,    36,
+      54,    48,    49,    50,    10,    10,    53,    54,    14,     3,
+      16,     5,    11,    64,     4,    21,     6,     7,     8,     9,
+      11,     3,     6,     7,     7,     9,     9,    17,     3,     5,
+       5,    75,    22,    17,    17,    10,    11,    81,    22,    22,
+       3,     3,     5,     5,     3,    11,     5,    10,    10,    11,
+       3,    14,     5,     3,     3,     5,     5,    10,    11,    10,
+      10,     6,     7,    14,     9,    16,    10,    11,    10,    11,
+      14,    11,    14,    10,    11,    10,    11,    14,    10,    14,
+      11,    11,    14,    11,    11
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     7,     9,    12,    16,    17,    18,    19,    22,
-      10,    10,    17,     0,    17,     5,     6,    22,    22,    13,
-       4,    21,    22,    21,    11,    11,    14,    14,    18,    18,
-       8,    20,    18
+       0,    24,     0,    10,    14,    16,    21,    25,    29,    30,
+      31,    32,    33,     4,     6,     7,     8,     9,    17,    22,
+      31,    10,    29,    21,    10,    32,     3,    10,    10,    29,
+      33,     3,     5,    26,    29,    33,    29,    26,    29,    33,
+      26,    10,    26,    27,    28,    15,     7,     9,     6,     7,
+       9,    10,    28,     7,     9,    29,    11,     3,     5,     3,
+       5,    11,    29,    11,    33,    11,    29,    11,    11,     3,
+       3,     5,    11,    27,    28,    11,    11,    11,    11,    11,
+       5,    11,    31,    11,    31,    11,    11
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    15,    16,    16,    17,    17,    18,    18,    19,    19,
-      19,    19,    19,    20,    21,    21,    22
+       0,    23,    24,    24,    25,    25,    26,    26,    26,    26,
+      27,    27,    28,    28,    28,    28,    28,    29,    29,    29,
+      29,    29,    30,    30,    31,    31,    31,    31,    31,    31,
+      31,    31,    31,    32,    32,    32,    32,    32,    33,    33
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     0,     1,     1,     2,     1,     3,     4,     4,
-       5,     5,     6,     2,     1,     1,     1
+       0,     2,     0,     2,     1,     2,     2,     2,     2,     2,
+       0,     4,     2,     2,     1,     2,     1,     0,     4,     4,
+       4,     4,     2,     1,     1,     1,     4,     4,     4,     7,
+       8,     5,     1,     0,     5,     5,     5,     3,     2,     1
 };
 
 
@@ -1118,98 +1190,104 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2: /* input: %empty  */
-#line 64 "5.y"
-                                                                        {}
-#line 1125 "5.tab.c"
+  case 11: /* assegn: '(' ID NUMERO ')'  */
+#line 97 "8.y"
+                            {printf("'(' ID NUMERO ')'\n");}
+#line 1197 "8.tab.c"
     break;
 
-  case 3: /* input: blocco  */
-#line 65 "5.y"
-                                                                                {printf("\n"); printTree((yyvsp[0].tp), 0); printf("\n");}
-#line 1131 "5.tab.c"
+  case 18: /* definizione: '(' SOMMA coppia ')'  */
+#line 111 "8.y"
+                                                                        {printf("'(' + SOMMA + COPPIA + ')'\n");}
+#line 1203 "8.tab.c"
     break;
 
-  case 4: /* blocco: dichiarazione  */
-#line 68 "5.y"
-                                                        {(yyval.tp) = makeTree("BLOCCO", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1137 "5.tab.c"
+  case 19: /* definizione: '(' DIFFERENZA coppia ')'  */
+#line 112 "8.y"
+                                                                         {printf("'(' + DIFFERENZA + coppia +  ')'\n");}
+#line 1209 "8.tab.c"
     break;
 
-  case 5: /* blocco: dichiarazione blocco  */
-#line 69 "5.y"
-                                                                {(yyval.tp) = makeTree("BLOCCO", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL);}
-#line 1143 "5.tab.c"
+  case 20: /* definizione: '(' '*' coppia ')'  */
+#line 113 "8.y"
+                                                                  {printf("'(' '*' coppia ')'\n");}
+#line 1215 "8.tab.c"
     break;
 
-  case 6: /* dichiarazione: com  */
-#line 72 "5.y"
-                                                                        {(yyval.tp) = makeTree("DICHIARAZIONE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1149 "5.tab.c"
+  case 21: /* definizione: '(' '=' lista_di_coppie ')'  */
+#line 115 "8.y"
+                                                                      {printf("'(' = lista_di_coppie ')'\n");}
+#line 1221 "8.tab.c"
     break;
 
-  case 7: /* dichiarazione: '{' blocco '}'  */
-#line 73 "5.y"
-                                                                                {(yyval.tp) = makeTree("DICHIARAZIONE", makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
-#line 1155 "5.tab.c"
+  case 26: /* espressione: '(' SOMMA blocco_lista ')'  */
+#line 125 "8.y"
+                                                                          { printf("( + espressione '')'\n"); }
+#line 1227 "8.tab.c"
     break;
 
-  case 8: /* com: lval ASSEGN rval SEPARATORE  */
-#line 76 "5.y"
-                                                        {(yyval.tp) = makeTree("COMANDO", (yyvsp[-3].tp), makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-#line 1161 "5.tab.c"
+  case 27: /* espressione: '(' DIFFERENZA blocco_lista ')'  */
+#line 126 "8.y"
+                                                                               { printf("'(' - espressione '')'\n"); }
+#line 1233 "8.tab.c"
     break;
 
-  case 9: /* com: lval INCREM rval SEPARATORE  */
-#line 77 "5.y"
-                                                        {(yyval.tp) = makeTree("COMANDO", (yyvsp[-3].tp), makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-#line 1167 "5.tab.c"
+  case 28: /* espressione: '(' MOLTIPLICAZIONE blocco_lista ')'  */
+#line 127 "8.y"
+                                                                                    { printf("'(' MOLTIPLICAZIONE espressione ')'\n"); }
+#line 1239 "8.tab.c"
     break;
 
-  case 10: /* com: WHILE '(' lval ')' dichiarazione  */
-#line 78 "5.y"
-                                                        {(yyval.tp) = makeTree("COMANDO", makeTree((yyvsp[-4].txt), NULL, NULL, NULL, NULL, NULL, NULL), makeTree((yyvsp[-3].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-2].tp), makeTree((yyvsp[-1].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[0].tp), NULL);}
-#line 1173 "5.tab.c"
+  case 29: /* espressione: '(' LET '(' lista_di_coppie ')' espressione ')'  */
+#line 128 "8.y"
+                                                                        {printf("'(' LET '(' lista_di_coppie ')' espressione ')'\n");}
+#line 1245 "8.tab.c"
     break;
 
-  case 11: /* com: IF '(' lval ')' dichiarazione  */
-#line 79 "5.y"
-                                                        {(yyval.tp) = makeTree("COMANDO", makeTree((yyvsp[-4].txt), NULL, NULL, NULL, NULL, NULL, NULL), makeTree((yyvsp[-3].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-2].tp), makeTree((yyvsp[-1].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[0].tp), NULL);}
-#line 1179 "5.tab.c"
+  case 30: /* espressione: '(' LET ID '(' lista_di_coppie ')' espressione ')'  */
+#line 129 "8.y"
+                                                               {printf("'(' LET ID '(' lista_di_coppie ')' espressione ')'\n");}
+#line 1251 "8.tab.c"
     break;
 
-  case 12: /* com: IF '(' lval ')' dichiarazione elsE  */
-#line 80 "5.y"
-                                                        {(yyval.tp) = makeTree("COMANDO", makeTree((yyvsp[-5].txt), NULL, NULL, NULL, NULL, NULL, NULL), makeTree((yyvsp[-4].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-3].tp), makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), (yyvsp[0].tp));}
-#line 1185 "5.tab.c"
+  case 31: /* espressione: '(' CASE definizione blocco_lista ')'  */
+#line 130 "8.y"
+                                                                      { printf("'(' CASEdefinizione espressione ')'\n");}
+#line 1257 "8.tab.c"
     break;
 
-  case 13: /* elsE: ELSE dichiarazione  */
-#line 83 "5.y"
-                                                                        {(yyval.tp) = makeTree("ELSE", makeTree((yyvsp[-1].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[0].tp), NULL, NULL, NULL, NULL);}
-#line 1191 "5.tab.c"
+  case 32: /* espressione: BREAK  */
+#line 131 "8.y"
+                                                                             {exit(0);}
+#line 1263 "8.tab.c"
     break;
 
-  case 14: /* rval: lval  */
-#line 86 "5.y"
-                                                                                {(yyval.tp) = makeTree("RVAL", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1197 "5.tab.c"
+  case 34: /* blocco: '(' SOMMA definizione definizione ')'  */
+#line 135 "8.y"
+                                                                    { printf("'(' + definizione definizione ')'\n"); }
+#line 1269 "8.tab.c"
     break;
 
-  case 15: /* rval: NUMERO  */
-#line 87 "5.y"
-                                                                                        {(yyval.tp) = makeTree("RVAL", makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
-#line 1203 "5.tab.c"
+  case 35: /* blocco: '(' DIFFERENZA definizione definizione ')'  */
+#line 136 "8.y"
+                                                                         { printf("'(' - definizione definizione ')'\n"); }
+#line 1275 "8.tab.c"
     break;
 
-  case 16: /* lval: IDENT  */
-#line 90 "5.y"
-                                                                                {(yyval.tp) = makeTree("LVAL", makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
-#line 1209 "5.tab.c"
+  case 36: /* blocco: '(' MOLTIPLICAZIONE definizione definizione ')'  */
+#line 137 "8.y"
+                                                                             { printf("'(' * definizione definizione ')'\n"); }
+#line 1281 "8.tab.c"
+    break;
+
+  case 37: /* blocco: '[' espressione ']'  */
+#line 138 "8.y"
+                                                             { printf("'[' espressione ']'\n"); }
+#line 1287 "8.tab.c"
     break;
 
 
-#line 1213 "5.tab.c"
+#line 1291 "8.tab.c"
 
       default: break;
     }
@@ -1402,8 +1480,9 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 93 "5.y"
- 
+#line 145 "8.y"
+
+
 
 int main (void) {
 	yyparse();

@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_5_TAB_H_INCLUDED
-# define YY_YY_5_TAB_H_INCLUDED
+#ifndef YY_YY_8_TAB_H_INCLUDED
+# define YY_YY_8_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -54,14 +54,17 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    IDENT = 258,                   /* IDENT  */
-    NUMERO = 259,                  /* NUMERO  */
-    ASSEGN = 260,                  /* ASSEGN  */
-    INCREM = 261,                  /* INCREM  */
-    IF = 262,                      /* IF  */
-    ELSE = 263,                    /* ELSE  */
-    WHILE = 264,                   /* WHILE  */
-    SEPARATORE = 265               /* SEPARATORE  */
+    ID = 258,                      /* ID  */
+    LET = 259,                     /* LET  */
+    NUMERO = 260,                  /* NUMERO  */
+    MOLTIPLICAZIONE = 261,         /* MOLTIPLICAZIONE  */
+    SOMMA = 262,                   /* SOMMA  */
+    CASE = 263,                    /* CASE  */
+    DIFFERENZA = 264,              /* DIFFERENZA  */
+    EQUIVALENZA = 265,             /* EQUIVALENZA  */
+    FINERIGA = 266,                /* FINERIGA  */
+    BREAK = 267,                   /* BREAK  */
+    NEG = 268                      /* NEG  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -70,10 +73,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 42 "5.y"
+#line 57 "8.y"
 char* txt; struct Tree* tp;
 
-#line 77 "5.tab.h"
+#line 80 "8.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -88,4 +91,4 @@ extern YYSTYPE yylval;
 int yyparse (void);
 
 
-#endif /* !YY_YY_5_TAB_H_INCLUDED  */
+#endif /* !YY_YY_8_TAB_H_INCLUDED  */

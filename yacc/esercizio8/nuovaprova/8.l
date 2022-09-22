@@ -17,25 +17,14 @@ let                             {yylval.txt = strdup(yytext); return LET;}
 case                            {yylval.txt = strdup(yytext); return CASE;}
 else                            {yylval.txt = strdup(yytext); return ELSE;}
 "("                             {yylval.txt = strdup(yytext); return '(';}
-")"                             {yylval.txt = strdup(yytext); return FINERIGA;}
+")"                             {yylval.txt = strdup(yytext); return ')';}
 "["                             {yylval.txt = strdup(yytext); return '[';}
 "]"                             {yylval.txt = strdup(yytext); return ']';}
-[a-zA-Z]+([a-zA-Z0-9]|"-"|"_")* {yylval.txt = strdup(yytext); return ID;}
+[0-9]*                          {yylval.txt = strdup(yytext); return NUMERO;}
+[a-zA-Z]+[a-zA-Z0-9]*           {yylval.txt = strdup(yytext); return IDENTIFICATORE;}
 "="                             {yylval.txt = strdup(yytext); return EQUIVALENZA;}
-[0-9]+                          {yylval.txt = strdup(yytext); return NUMERO;}
 
 %%
-
-int main(){
-    
-    extern FILE *yyin, *yyout;
- 
-    yyin = fopen("Input.txt", "r");
-
-    yylex();
-    return 0;
-
-}
 
 int yywrap (void){
 
