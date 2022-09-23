@@ -71,7 +71,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 40 "8.y"
+#line 41 "8.y"
 char* txt; struct Tree* tp;
 
 #line 78 "8.tab.h"
