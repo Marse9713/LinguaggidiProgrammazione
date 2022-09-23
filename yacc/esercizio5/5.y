@@ -32,7 +32,7 @@
 		printf("%*s%s\n", sp, "", t->top);
 		for (int i = 0; i < ARITY; i++) {
 			if (!t->subTrees[i]) continue;
-			printTree(t->subTrees[i], sp + 3);
+			printTree(t->subTrees[i], sp + 1);
 		}
 	}
 %} 

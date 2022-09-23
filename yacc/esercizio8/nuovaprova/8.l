@@ -1,11 +1,9 @@
 %{
-
     #include "8.tab.h"
     #include <string.h>
 
     struct Tree;
     typedef struct Tree Tree;
-
 %}
 
 %%
@@ -23,6 +21,7 @@ else                            {yylval.txt = strdup(yytext); return ELSE;}
 [0-9]*                          {yylval.txt = strdup(yytext); return NUMERO;}
 [a-zA-Z]+[a-zA-Z0-9]*           {yylval.txt = strdup(yytext); return IDENTIFICATORE;}
 "="                             {yylval.txt = strdup(yytext); return EQUIVALENZA;}
+.                               ;
 
 %%
 

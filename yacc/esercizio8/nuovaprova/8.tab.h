@@ -62,8 +62,7 @@ extern int yydebug;
     MOLTIPLICAZIONE = 263,         /* MOLTIPLICAZIONE  */
     SOMMA = 264,                   /* SOMMA  */
     DIFFERENZA = 265,              /* DIFFERENZA  */
-    EQUIVALENZA = 266,             /* EQUIVALENZA  */
-    NEG = 267                      /* NEG  */
+    EQUIVALENZA = 266              /* EQUIVALENZA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -72,10 +71,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 57 "8.y"
+#line 40 "8.y"
 char* txt; struct Tree* tp;
 
-#line 79 "8.tab.h"
+#line 78 "8.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

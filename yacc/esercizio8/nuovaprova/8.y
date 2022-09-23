@@ -1,58 +1,41 @@
-%{
-    #include <stdio.h>
-    #include <string.h>
-    #include <stdlib.h>
-    #define ARIETA 6 /* l'arità dell'albero è nota a priori ed è pari alla lunghezza della regola più lunga */
 
-    void yyerror (char *s);
-    int yylex();
+%{ 
+	#include <stdio.h> 
+	#include <string.h>
+	#include <stdlib.h>
+	#define ARITY 6
 
-    /*definisco l'albero di parsing */
+	void yyerror (char *s);
+	int yylex();
+	
+	struct Tree;
+	typedef struct Tree Tree;
+	struct Tree {
+		char* top;
+		Tree* subTrees[ARITY];
+	};
 
-    struct Tree;
-    typedef struct Tree Tree;
+	Tree* makeTree (char* top, Tree* t1, Tree* t2, Tree* t3, Tree* t4, Tree* t5, Tree* t6) {
+		Tree* res = (Tree*) malloc(sizeof(Tree));
+		res->top = top;
+		res->subTrees[0] = t1;
+		res->subTrees[1] = t2;
+		res->subTrees[2] = t3;
+		res->subTrees[3] = t4;
+		res->subTrees[4] = t5;
+		res->subTrees[5] = t6;
 
-    struct Tree {
+		return res;
+	}
 
-        char* top;
-        Tree* subTrees[ARIETA];
-
-    };
-
-    Tree* makeTree (char* top, Tree* T1, Tree* T2, Tree* T3, Tree* T4, Tree* T5, Tree* T6) {
-
-        Tree* res = (Tree*) malloc(sizeof(Tree));
-        res->top = top;
-        res->subTrees[0] = T1;
-        res->subTrees[1] = T2;
-        res->subTrees[2] = T3;
-        res->subTrees[3] = T4;
-        res->subTrees[4] = T5;
-        res->subTrees[5] = T6;
-
-        return res;
-
-    }
-
-    /*procedura per la stampa dell'albero */
-
-    void printTree (Tree* t, int s){
-
-        printf("%*s%s\n", s, "", t->top);
-
-        for(int i = 0; i < ARIETA; i++){
-
-            if (!t->subTrees[i]) 
-            continue;
-
-            printTree(t->subTrees[i], s + 3);
-
-
-        }
-
-    }
-    
-%}
+	void printTree (Tree* t, int sp) {
+		printf("%*s%s\n", sp, "", t->top);
+		for (int i = 0; i < ARITY - 1; i++) {
+			if (!t->subTrees[i]) continue;
+			printTree(t->subTrees[i], sp + 3);
+		}
+	}
+%} 
 
 %union 		{char* txt; struct Tree* tp;}
 
@@ -71,32 +54,46 @@
 %token      '['
 %token      ']'
 
-%left DIFFERENZA SOMMA
-%left '*'
-%left NEG
-
-%type <txt> NUMERO IDENTIFICATORE CASE LET DIFFERENZA SOMMA EQUIVALENZA MOLTIPLICAZIONE'(' ')'
-%type <tp> input blocco espressione
+%type 		<txt> NUMERO IDENTIFICATORE SOMMA DIFFERENZA EQUIVALENZA MOLTIPLICAZIONE LET CASE ELSE '(' ')' '[' ']'
+%type       <tp> input operazione valore espressione blocco
 
 %%
 
 input :                                     {} 
-    | IDENTIFICATORE                        {printf("IDENTIFICATORE");}
-    | NUMERO                                {printf("NUMERO");}
-    | blocco                                {printf("\n"); printTree($1, 0); printf("\n");}
+    | blocco                             {printf("\n"); printTree($1, 0); printf("\n");}
     ;
 
-blocco : espressione                      {$$ = makeTree("BLOCCO", $1, NULL, NULL, NULL, NULL, NULL);}
-    | '(' espressione ')'                 {$$ = makeTree("BLOCCO", makeTree ($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
-    ;
+blocco : 						{$$ = makeTree("BLOCCO", $1, $2, NULL, NULL, NULL, NULL);}
+	| espressione				{$$ = makeTree("BLOCCO", $1, NULL, NULL, NULL, NULL, NULL);}
+	| '(' espressione ')'		{$$ = makeTree("BLOCCO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
+	| '[' blocco ']'			{$$ = makeTree("CASO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
+	;
 
-espressione : SOMMA                    {$$ = makeTree("SOMMA", $1, NULL, NULL, NULL, NULL, NULL);}
-    | DIFFERENZA input                 {$$ = makeTree("DIFFERENZA", $1, NULL, NULL, NULL, NULL, NULL);}
-    | EQUIVALENZA input                {$$ = makeTree("EQUIVALENZA", $1, NULL, NULL, NULL, NULL, NULL);}
-    | MOLTIPLICAZIONE input            {$$ = makeTree("MOLTIPLICAZIONE", $1, NULL, NULL, NULL, NULL, NULL);}
-    | LET input                        {$$ = makeTree("LET", $1, NULL, NULL, NULL, NULL, NULL);}
-    ;
+espressione : operazione			 {$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NULL, NULL, NULL);}
+	;
 
+operazione : SOMMA valore valore							{$$ = makeTree("SOMMA", $2, $3, NULL, NULL, NULL, NULL);}
+	| SOMMA valore blocco									{$$ = makeTree("SOMMA", $2, $3, NULL, NULL, NULL, NULL);}
+	| SOMMA blocco valore									{$$ = makeTree("SOMMA", $2, $3, NULL, NULL, NULL, NULL);}
+	| SOMMA blocco blocco									{$$ = makeTree("SOMMA", $2, $3, NULL, NULL, NULL, NULL);}
+	| DIFFERENZA valore valore								{$$ = makeTree("DIFFERENZA", $2, $3, NULL, NULL, NULL, NULL);}
+	| DIFFERENZA valore blocco								{$$ = makeTree("DIFFERENZA", $2, $3, NULL, NULL, NULL, NULL);}
+	| DIFFERENZA blocco valore								{$$ = makeTree("DIFFERENZA", $2, $3, NULL, NULL, NULL, NULL);}
+	| DIFFERENZA blocco blocco								{$$ = makeTree("DIFFERENZA", $2, $3, NULL, NULL, NULL, NULL);}
+	| MOLTIPLICAZIONE valore valore							{$$ = makeTree("MOLTIPLICAZIONE", $2, $3, NULL, NULL, NULL, NULL);}
+	| MOLTIPLICAZIONE valore blocco							{$$ = makeTree("MOLTIPLICAZIONE", $2, $3, NULL, NULL, NULL, NULL);}
+	| MOLTIPLICAZIONE blocco valore							{$$ = makeTree("MOLTIPLICAZIONE", $2, $3, NULL, NULL, NULL, NULL);}
+	| MOLTIPLICAZIONE blocco blocco							{$$ = makeTree("MOLTIPLICAZIONE", $2, $3, NULL, NULL, NULL, NULL);}
+	| EQUIVALENZA valore valore								{$$ = makeTree("EQUIVALENZA", $2, $3, NULL, NULL, NULL, NULL);}
+	| EQUIVALENZA valore blocco								{$$ = makeTree("EQUIVALENZA", $2, $3, NULL, NULL, NULL, NULL);}
+	| EQUIVALENZA blocco valore								{$$ = makeTree("EQUIVALENZA", $2, $3, NULL, NULL, NULL, NULL);}
+	| EQUIVALENZA blocco blocco								{$$ = makeTree("EQUIVALENZA", $2, $3, NULL, NULL, NULL, NULL);}
+	| CASE blocco											{$$ = makeTree("CASE", $2, NULL, NULL, NULL, NULL, NULL);}
+	;
+
+valore : NUMERO {$$ = makeTree("NUMERO", NULL, NULL, NULL, NULL, NULL, NULL);}
+	| IDENTIFICATORE {$$ = makeTree("IDENTIFICATORE", NULL, NULL, NULL, NULL, NULL, NULL);}
+	;
 
 %%   
 

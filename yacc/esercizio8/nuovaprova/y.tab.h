@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_5_TAB_H_INCLUDED
-# define YY_YY_5_TAB_H_INCLUDED
+#ifndef YY_YY_Y_TAB_H_INCLUDED
+# define YY_YY_Y_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -54,26 +54,41 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    IDENT = 258,                   /* IDENT  */
-    NUMERO = 259,                  /* NUMERO  */
-    ASSEGN = 260,                  /* ASSEGN  */
-    INCREM = 261,                  /* INCREM  */
-    IF = 262,                      /* IF  */
-    ELSE = 263,                    /* ELSE  */
-    WHILE = 264,                   /* WHILE  */
-    SEPARATORE = 265               /* SEPARATORE  */
+    NUMERO = 258,                  /* NUMERO  */
+    IDENTIFICATORE = 259,          /* IDENTIFICATORE  */
+    LET = 260,                     /* LET  */
+    CASE = 261,                    /* CASE  */
+    ELSE = 262,                    /* ELSE  */
+    MOLTIPLICAZIONE = 263,         /* MOLTIPLICAZIONE  */
+    SOMMA = 264,                   /* SOMMA  */
+    DIFFERENZA = 265,              /* DIFFERENZA  */
+    EQUIVALENZA = 266              /* EQUIVALENZA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
+#define NUMERO 258
+#define IDENTIFICATORE 259
+#define LET 260
+#define CASE 261
+#define ELSE 262
+#define MOLTIPLICAZIONE 263
+#define SOMMA 264
+#define DIFFERENZA 265
+#define EQUIVALENZA 266
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 40 "5.y"
+#line 42 "8.y"
 char* txt; struct Tree* tp;
 
-#line 77 "5.tab.h"
+#line 92 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -88,4 +103,4 @@ extern YYSTYPE yylval;
 int yyparse (void);
 
 
-#endif /* !YY_YY_5_TAB_H_INCLUDED  */
+#endif /* !YY_YY_Y_TAB_H_INCLUDED  */

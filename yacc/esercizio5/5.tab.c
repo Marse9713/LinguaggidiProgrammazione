@@ -77,7 +77,6 @@
 	void yyerror (char *s);
 	int yylex();
 	
-	/* definizione dell'albero di parsing */
 	struct Tree;
 	typedef struct Tree Tree;
 	struct Tree {
@@ -98,16 +97,15 @@
 		return res;
 	}
 
-	/* procedura che stampa l'albero, incrementando l'indentazione per distinguere i vari livelli */
 	void printTree (Tree* t, int sp) {
 		printf("%*s%s\n", sp, "", t->top);
 		for (int i = 0; i < ARITY; i++) {
 			if (!t->subTrees[i]) continue;
-			printTree(t->subTrees[i], sp + 3);
+			printTree(t->subTrees[i], sp + 1);
 		}
 	}
 
-#line 111 "5.tab.c"
+#line 109 "5.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -544,8 +542,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    64,    64,    65,    68,    69,    72,    73,    76,    77,
-      78,    79,    80,    83,    86,    87,    90
+       0,    61,    61,    62,    65,    66,    69,    70,    73,    74,
+      75,    76,    77,    80,    83,    84,    87
 };
 #endif
 
@@ -1119,97 +1117,97 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* input: %empty  */
-#line 64 "5.y"
+#line 61 "5.y"
                                                                         {}
-#line 1125 "5.tab.c"
+#line 1123 "5.tab.c"
     break;
 
   case 3: /* input: blocco  */
-#line 65 "5.y"
+#line 62 "5.y"
                                                                                 {printf("\n"); printTree((yyvsp[0].tp), 0); printf("\n");}
-#line 1131 "5.tab.c"
+#line 1129 "5.tab.c"
     break;
 
   case 4: /* blocco: dichiarazione  */
-#line 68 "5.y"
+#line 65 "5.y"
                                                         {(yyval.tp) = makeTree("BLOCCO", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1137 "5.tab.c"
+#line 1135 "5.tab.c"
     break;
 
   case 5: /* blocco: dichiarazione blocco  */
-#line 69 "5.y"
+#line 66 "5.y"
                                                                 {(yyval.tp) = makeTree("BLOCCO", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL);}
-#line 1143 "5.tab.c"
+#line 1141 "5.tab.c"
     break;
 
   case 6: /* dichiarazione: com  */
-#line 72 "5.y"
+#line 69 "5.y"
                                                                         {(yyval.tp) = makeTree("DICHIARAZIONE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1149 "5.tab.c"
+#line 1147 "5.tab.c"
     break;
 
   case 7: /* dichiarazione: '{' blocco '}'  */
-#line 73 "5.y"
+#line 70 "5.y"
                                                                                 {(yyval.tp) = makeTree("DICHIARAZIONE", makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL);}
-#line 1155 "5.tab.c"
+#line 1153 "5.tab.c"
     break;
 
   case 8: /* com: lval ASSEGN rval SEPARATORE  */
-#line 76 "5.y"
+#line 73 "5.y"
                                                         {(yyval.tp) = makeTree("COMANDO", (yyvsp[-3].tp), makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-#line 1161 "5.tab.c"
+#line 1159 "5.tab.c"
     break;
 
   case 9: /* com: lval INCREM rval SEPARATORE  */
-#line 77 "5.y"
+#line 74 "5.y"
                                                         {(yyval.tp) = makeTree("COMANDO", (yyvsp[-3].tp), makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL);}
-#line 1167 "5.tab.c"
+#line 1165 "5.tab.c"
     break;
 
   case 10: /* com: WHILE '(' lval ')' dichiarazione  */
-#line 78 "5.y"
+#line 75 "5.y"
                                                         {(yyval.tp) = makeTree("COMANDO", makeTree((yyvsp[-4].txt), NULL, NULL, NULL, NULL, NULL, NULL), makeTree((yyvsp[-3].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-2].tp), makeTree((yyvsp[-1].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[0].tp), NULL);}
-#line 1173 "5.tab.c"
+#line 1171 "5.tab.c"
     break;
 
   case 11: /* com: IF '(' lval ')' dichiarazione  */
-#line 79 "5.y"
+#line 76 "5.y"
                                                         {(yyval.tp) = makeTree("COMANDO", makeTree((yyvsp[-4].txt), NULL, NULL, NULL, NULL, NULL, NULL), makeTree((yyvsp[-3].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-2].tp), makeTree((yyvsp[-1].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[0].tp), NULL);}
-#line 1179 "5.tab.c"
+#line 1177 "5.tab.c"
     break;
 
   case 12: /* com: IF '(' lval ')' dichiarazione elsE  */
-#line 80 "5.y"
+#line 77 "5.y"
                                                         {(yyval.tp) = makeTree("COMANDO", makeTree((yyvsp[-5].txt), NULL, NULL, NULL, NULL, NULL, NULL), makeTree((yyvsp[-4].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-3].tp), makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), (yyvsp[0].tp));}
-#line 1185 "5.tab.c"
+#line 1183 "5.tab.c"
     break;
 
   case 13: /* elsE: ELSE dichiarazione  */
-#line 83 "5.y"
+#line 80 "5.y"
                                                                         {(yyval.tp) = makeTree("ELSE", makeTree((yyvsp[-1].txt), NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[0].tp), NULL, NULL, NULL, NULL);}
-#line 1191 "5.tab.c"
+#line 1189 "5.tab.c"
     break;
 
   case 14: /* rval: lval  */
-#line 86 "5.y"
+#line 83 "5.y"
                                                                                 {(yyval.tp) = makeTree("RVAL", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1197 "5.tab.c"
+#line 1195 "5.tab.c"
     break;
 
   case 15: /* rval: NUMERO  */
-#line 87 "5.y"
+#line 84 "5.y"
                                                                                         {(yyval.tp) = makeTree("RVAL", makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
-#line 1203 "5.tab.c"
+#line 1201 "5.tab.c"
     break;
 
   case 16: /* lval: IDENT  */
-#line 90 "5.y"
+#line 87 "5.y"
                                                                                 {(yyval.tp) = makeTree("LVAL", makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
-#line 1209 "5.tab.c"
+#line 1207 "5.tab.c"
     break;
 
 
-#line 1213 "5.tab.c"
+#line 1211 "5.tab.c"
 
       default: break;
     }
@@ -1402,7 +1400,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 93 "5.y"
+#line 90 "5.y"
  
 
 int main (void) {
