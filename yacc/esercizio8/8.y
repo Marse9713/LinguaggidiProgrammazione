@@ -114,7 +114,7 @@ definizione:
 
    | '(' '=' lista_di_coppie ')'                                      {printf("'(' = lista_di_coppie ')'\n");}
    ;
-
+a
 lista_di_definizioni: lista_di_definizioni definizione
    | definizione
    ;
