@@ -54,17 +54,15 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    ID = 258,                      /* ID  */
-    LET = 259,                     /* LET  */
-    NUMERO = 260,                  /* NUMERO  */
-    MOLTIPLICAZIONE = 261,         /* MOLTIPLICAZIONE  */
-    SOMMA = 262,                   /* SOMMA  */
-    CASE = 263,                    /* CASE  */
-    DIFFERENZA = 264,              /* DIFFERENZA  */
-    EQUIVALENZA = 265,             /* EQUIVALENZA  */
-    FINERIGA = 266,                /* FINERIGA  */
-    BREAK = 267,                   /* BREAK  */
-    NEG = 268                      /* NEG  */
+    NUMERO = 258,                  /* NUMERO  */
+    IDENTIFICATORE = 259,          /* IDENTIFICATORE  */
+    LET = 260,                     /* LET  */
+    CASE = 261,                    /* CASE  */
+    ELSE = 262,                    /* ELSE  */
+    MOLTIPLICAZIONE = 263,         /* MOLTIPLICAZIONE  */
+    SOMMA = 264,                   /* SOMMA  */
+    DIFFERENZA = 265,              /* DIFFERENZA  */
+    EQUIVALENZA = 266              /* EQUIVALENZA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -73,10 +71,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 57 "8.y"
+#line 41 "8.y"
 char* txt; struct Tree* tp;
 
-#line 80 "8.tab.h"
+#line 78 "8.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
