@@ -56,7 +56,7 @@
 %token      ']'
 
 %type 		<txt> NUMERO IDENTIFICATORE SOMMA DIFFERENZA EQUIVALENZA MOLTIPLICAZIONE LET CASE ELSE '(' ')' '[' ']'
-%type       <tp> input valore espressione blocco somma differenza moltiplicazione equivalenza valore_multiplo blocco_multiplo case caso casi
+%type       <tp> input valore espressione blocco somma differenza moltiplicazione equivalenza valore_multiplo blocco_multiplo case caso casi let corpolet quadre
 
 %%
 
@@ -73,6 +73,7 @@ espressione : somma				 							{$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NUL
 	| moltiplicazione										{$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
 	| equivalenza			 								{$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
 	| case													{$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
+	| let													{$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
 	;
 
 somma : SOMMA valore_multiplo								{$$ = makeTree("SOMMA", $2, NULL, NULL, NULL, NULL, NULL, NULL);}
@@ -120,6 +121,18 @@ caso : '[' ELSE valore ']'									{$$ = makeTree("CASO ELSE", makeTree($1, NULL
 
 casi : caso													{$$ = $1;}
 	| caso casi												{$$ = makeTree("BLOCCO CASI", $1, $2, NULL, NULL, NULL, NULL, NULL);}
+	;
+
+let : LET '(' quadre ')' corpolet							{$$ = makeTree("LET", makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL, NULL, NULL);}
+	;
+
+corpolet : valore_multiplo									{$$ = $1;}
+	| blocco												{$$ = $1;}
+	| '(' let ')' corpolet									{$$ = makeTree("LET ANNIDATO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $4, NULL, NULL, NULL);}
+	;
+
+quadre : '[' valore_multiplo ']'							{$$ = makeTree("[", $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL, NULL);}
+	| '[' valore_multiplo ']' quadre						{$$ = makeTree("[", $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $4, NULL, NULL, NULL, NULL);}
 	;
 
 %%   
