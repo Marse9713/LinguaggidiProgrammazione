@@ -162,7 +162,8 @@ enum yysymbol_kind_t
   YYSYMBOL_blocco_multiplo = 25,           /* blocco_multiplo  */
   YYSYMBOL_valore = 26,                    /* valore  */
   YYSYMBOL_case = 27,                      /* case  */
-  YYSYMBOL_casi = 28                       /* casi  */
+  YYSYMBOL_caso = 28,                      /* caso  */
+  YYSYMBOL_casi = 29                       /* casi  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -488,18 +489,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  32
+#define YYFINAL  35
 /* YYLAST -- Last index in YYTABLE.  */
 #define YYLAST   77
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  16
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  13
+#define YYNNTS  14
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  36
+#define YYNRULES  38
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  64
+#define YYNSTATES  66
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   266
@@ -551,8 +552,8 @@ static const yytype_int8 yyrline[] =
 {
        0,    63,    63,    64,    67,    68,    71,    72,    73,    74,
       75,    78,    79,    80,    81,    84,    85,    86,    87,    90,
-      91,    92,    93,    96,    97,    98,    99,   102,   103,   106,
-     107,   109,   110,   113,   116,   117,   118
+      91,    92,    93,    96,    97,    98,    99,   102,   103,   104,
+     107,   108,   110,   111,   114,   117,   118,   121,   122
 };
 #endif
 
@@ -573,7 +574,7 @@ static const char *const yytname[] =
   "DIFFERENZA", "EQUIVALENZA", "'('", "')'", "'['", "']'", "$accept",
   "input", "blocco", "espressione", "somma", "differenza",
   "moltiplicazione", "equivalenza", "valore_multiplo", "blocco_multiplo",
-  "valore", "case", "casi", YY_NULLPTR
+  "valore", "case", "caso", "casi", YY_NULLPTR
 };
 
 static const char *
@@ -583,7 +584,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-30)
+#define YYPACT_NINF (-21)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -597,13 +598,13 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      58,    -5,    36,    36,    36,    51,    13,   -30,   -30,   -30,
-     -30,   -30,   -30,    65,   -30,   -30,    36,    20,   -30,    58,
-      36,    20,   -30,    58,    36,    20,   -30,    58,    36,     7,
-      16,    19,   -30,    21,    58,   -30,   -30,   -30,   -30,   -30,
-     -30,   -30,   -30,    36,    20,   -30,    58,   -30,   -30,    23,
-     -30,   -30,    18,   -30,    20,    20,    28,     2,   -30,   -30,
-      20,    34,    23,   -30
+      61,    -5,    36,    36,    36,    36,    43,    27,   -21,   -21,
+     -21,   -21,   -21,   -21,   -21,    43,    19,    19,    54,   -21,
+     -21,    61,    54,   -21,   -21,    61,    54,   -21,   -21,    61,
+      54,   -21,   -21,    61,     6,   -21,    18,   -21,   -21,   -21,
+     -21,   -21,    61,   -21,   -21,   -21,   -21,   -21,   -21,   -21,
+     -21,   -21,   -21,    20,     2,    20,   -21,    22,    19,   -21,
+       0,    23,   -21,    22,    17,   -21
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -611,27 +612,27 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       2,     0,     0,     0,     0,     0,     0,     3,     4,     7,
-       8,     9,    10,     0,    31,    32,    29,    19,    22,    28,
-      29,    15,    18,    28,    29,    23,    26,    28,     0,     0,
-       0,     0,     1,     0,    29,    30,    21,    27,    20,    17,
-      16,    25,    24,    29,    11,    14,    28,     5,     6,     0,
-      13,    12,     0,    33,     0,     0,     0,     0,    28,    36,
-       0,     0,    34,    35
+       2,     0,     0,     0,     0,     0,     0,     0,     3,     4,
+       6,     7,     8,     9,    10,     0,    32,    33,    30,    19,
+      22,    27,    30,    11,    14,    27,    30,    15,    18,    27,
+      30,    23,    26,    27,     0,     1,     0,    28,    27,    29,
+      32,    33,    30,    31,    21,    20,    13,    12,    17,    16,
+      25,    24,     5,     0,     0,    37,    34,     0,     0,    38,
+       0,     0,    35,     0,     0,    36
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -30,   -30,     8,     4,   -30,   -30,   -30,   -30,     0,    17,
-      -2,   -30,   -29
+     -21,   -21,     8,    15,   -21,   -21,   -21,   -21,     1,    72,
+      -2,   -21,   -21,   -20
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     6,    34,     8,    31,     9,    10,    11,    17,    35,
-      37,    12,    53
+       0,     7,    42,     9,    10,    11,    12,    13,    19,    43,
+      38,    14,    55,    56
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -639,39 +640,39 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      19,    23,    27,    21,    25,    14,    15,    13,     7,    30,
-      16,    20,    24,    32,    36,    60,    28,    33,    39,    18,
-      22,    26,    41,    14,    15,    54,    46,    38,    44,    47,
-      55,    40,    48,    63,    49,    42,    43,    52,     0,    14,
-      15,    50,     1,    59,     2,    45,     3,     4,     5,    62,
-       0,     0,    56,    58,    51,    57,     0,     1,    61,     2,
-      28,     3,     4,    29,     1,     0,     2,     0,     3,     4,
-       5,     1,     0,     2,     0,     3,     4,    29
+      21,    25,    29,    33,    23,    27,    31,    15,     8,    57,
+      18,    22,    26,    30,    58,    62,    44,    37,    39,    52,
+      46,    34,    16,    17,    48,    40,    41,    35,    50,    45,
+      36,    53,    65,    47,    54,    59,    63,    49,     0,    16,
+      17,    51,     1,     0,     2,     3,     4,     5,     6,     1,
+       0,     2,     3,     4,     5,    60,     0,    40,    41,    61,
+       1,    64,     2,     3,     4,     5,     6,     1,     0,     2,
+       3,     4,     5,     6,    20,    24,    28,    32
 };
 
 static const yytype_int8 yycheck[] =
 {
-       2,     3,     4,     3,     4,     3,     4,    12,     0,     5,
-       2,     3,     4,     0,    16,    13,     9,    13,    20,     2,
-       3,     4,    24,     3,     4,     7,    28,    19,    28,    13,
-      12,    23,    13,    62,    13,    27,    28,    14,    -1,     3,
-       4,    43,     6,    15,     8,    28,    10,    11,    12,    15,
-      -1,    -1,    54,    55,    46,    55,    -1,     6,    60,     8,
-       9,    10,    11,    12,     6,    -1,     8,    -1,    10,    11,
-      12,     6,    -1,     8,    -1,    10,    11,    12
+       2,     3,     4,     5,     3,     4,     5,    12,     0,     7,
+       2,     3,     4,     5,    12,    15,    18,    16,    17,    13,
+      22,     6,     3,     4,    26,     3,     4,     0,    30,    21,
+      15,    13,    15,    25,    14,    55,    13,    29,    -1,     3,
+       4,    33,     6,    -1,     8,     9,    10,    11,    12,     6,
+      -1,     8,     9,    10,    11,    57,    -1,     3,     4,    58,
+       6,    63,     8,     9,    10,    11,    12,     6,    -1,     8,
+       9,    10,    11,    12,     2,     3,     4,     5
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     6,     8,    10,    11,    12,    17,    18,    19,    21,
-      22,    23,    27,    12,     3,     4,    18,    24,    25,    26,
-      18,    24,    25,    26,    18,    24,    25,    26,     9,    12,
-      19,    20,     0,    19,    18,    25,    26,    26,    18,    26,
-      18,    26,    18,    18,    24,    25,    26,    13,    13,    13,
-      26,    18,    14,    28,     7,    12,    26,    24,    26,    15,
-      13,    26,    15,    28
+       0,     6,     8,     9,    10,    11,    12,    17,    18,    19,
+      20,    21,    22,    23,    27,    12,     3,     4,    18,    24,
+      25,    26,    18,    24,    25,    26,    18,    24,    25,    26,
+      18,    24,    25,    26,    19,     0,    19,    24,    26,    24,
+       3,     4,    18,    25,    26,    18,    26,    18,    26,    18,
+      26,    18,    13,    13,    14,    28,    29,     7,    12,    29,
+      26,    24,    15,    13,    26,    15
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
@@ -679,17 +680,17 @@ static const yytype_int8 yyr1[] =
 {
        0,    16,    17,    17,    18,    18,    19,    19,    19,    19,
       19,    20,    20,    20,    20,    21,    21,    21,    21,    22,
-      22,    22,    22,    23,    23,    23,    23,    24,    24,    25,
-      25,    26,    26,    27,    28,    28,    28
+      22,    22,    22,    23,    23,    23,    23,    24,    24,    24,
+      25,    25,    26,    26,    27,    28,    28,    29,    29
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     0,     1,     1,     3,     3,     1,     1,     1,
+       0,     2,     0,     1,     1,     3,     1,     1,     1,     1,
        1,     2,     3,     3,     2,     2,     3,     3,     2,     2,
-       3,     3,     2,     2,     3,     3,     2,     2,     1,     1,
-       2,     1,     1,     5,     6,     7,     4
+       3,     3,     2,     2,     3,     3,     2,     1,     2,     2,
+       1,     2,     1,     1,     5,     4,     6,     1,     2
 };
 
 
@@ -1155,215 +1156,227 @@ yyreduce:
   case 2: /* input: %empty  */
 #line 63 "8.y"
                                                                         {}
-#line 1159 "8.tab.c"
+#line 1160 "8.tab.c"
     break;
 
   case 3: /* input: blocco  */
 #line 64 "8.y"
                                                                                 {printf("\n"); printTree((yyvsp[0].tp), 0); return 0;}
-#line 1165 "8.tab.c"
+#line 1166 "8.tab.c"
     break;
 
   case 4: /* blocco: espressione  */
 #line 67 "8.y"
                                                                                                 {(yyval.tp) = makeTree("BLOCCO", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1171 "8.tab.c"
+#line 1172 "8.tab.c"
     break;
 
   case 5: /* blocco: '(' espressione ')'  */
 #line 68 "8.y"
                                                                                                 {(yyval.tp) = makeTree("BLOCCO", makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL);}
-#line 1177 "8.tab.c"
+#line 1178 "8.tab.c"
     break;
 
-  case 6: /* espressione: '(' somma ')'  */
+  case 6: /* espressione: somma  */
 #line 71 "8.y"
-                                                                                                        {(yyval.tp) = makeTree("ESPRESSIONE", makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL);}
-#line 1183 "8.tab.c"
+                                                                                                        {(yyval.tp) = makeTree("ESPRESSIONE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
+#line 1184 "8.tab.c"
     break;
 
   case 7: /* espressione: differenza  */
 #line 72 "8.y"
                                                                                                         {(yyval.tp) = makeTree("ESPRESSIONE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1189 "8.tab.c"
+#line 1190 "8.tab.c"
     break;
 
   case 8: /* espressione: moltiplicazione  */
 #line 73 "8.y"
                                                                                                         {(yyval.tp) = makeTree("ESPRESSIONE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1195 "8.tab.c"
+#line 1196 "8.tab.c"
     break;
 
   case 9: /* espressione: equivalenza  */
 #line 74 "8.y"
                                                                                                         {(yyval.tp) = makeTree("ESPRESSIONE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1201 "8.tab.c"
+#line 1202 "8.tab.c"
     break;
 
   case 10: /* espressione: case  */
 #line 75 "8.y"
                                                                                                                 {(yyval.tp) = makeTree("ESPRESSIONE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1207 "8.tab.c"
+#line 1208 "8.tab.c"
     break;
 
   case 11: /* somma: SOMMA valore_multiplo  */
 #line 78 "8.y"
                                                                                         {(yyval.tp) = makeTree("SOMMA", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1213 "8.tab.c"
+#line 1214 "8.tab.c"
     break;
 
   case 12: /* somma: SOMMA valore blocco  */
 #line 79 "8.y"
                                                                                                 {(yyval.tp) = makeTree("SOMMA", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1219 "8.tab.c"
+#line 1220 "8.tab.c"
     break;
 
   case 13: /* somma: SOMMA blocco valore  */
 #line 80 "8.y"
                                                                                                 {(yyval.tp) = makeTree("SOMMA", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1225 "8.tab.c"
+#line 1226 "8.tab.c"
     break;
 
   case 14: /* somma: SOMMA blocco_multiplo  */
 #line 81 "8.y"
                                                                                                 {(yyval.tp) = makeTree("SOMMA", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1231 "8.tab.c"
+#line 1232 "8.tab.c"
     break;
 
   case 15: /* differenza: DIFFERENZA valore_multiplo  */
 #line 84 "8.y"
                                                                                 {(yyval.tp) = makeTree("DIFFERENZA", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1237 "8.tab.c"
+#line 1238 "8.tab.c"
     break;
 
   case 16: /* differenza: DIFFERENZA valore blocco  */
 #line 85 "8.y"
                                                                                                 {(yyval.tp) = makeTree("DIFFERENZA", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1243 "8.tab.c"
+#line 1244 "8.tab.c"
     break;
 
   case 17: /* differenza: DIFFERENZA blocco valore  */
 #line 86 "8.y"
                                                                                                 {(yyval.tp) = makeTree("DIFFERENZA", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1249 "8.tab.c"
+#line 1250 "8.tab.c"
     break;
 
   case 18: /* differenza: DIFFERENZA blocco_multiplo  */
 #line 87 "8.y"
                                                                                         {(yyval.tp) = makeTree("DIFFERENZA", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1255 "8.tab.c"
+#line 1256 "8.tab.c"
     break;
 
   case 19: /* moltiplicazione: MOLTIPLICAZIONE valore_multiplo  */
 #line 90 "8.y"
                                                                         {(yyval.tp) = makeTree("MOLTIPLICAZIONE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1261 "8.tab.c"
+#line 1262 "8.tab.c"
     break;
 
   case 20: /* moltiplicazione: MOLTIPLICAZIONE valore blocco  */
 #line 91 "8.y"
                                                                                         {(yyval.tp) = makeTree("MOLTIPLICAZIONE", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1267 "8.tab.c"
+#line 1268 "8.tab.c"
     break;
 
   case 21: /* moltiplicazione: MOLTIPLICAZIONE blocco valore  */
 #line 92 "8.y"
                                                                                         {(yyval.tp) = makeTree("MOLTIPLICAZIONE", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1273 "8.tab.c"
+#line 1274 "8.tab.c"
     break;
 
   case 22: /* moltiplicazione: MOLTIPLICAZIONE blocco_multiplo  */
 #line 93 "8.y"
                                                                                         {(yyval.tp) = makeTree("MOLTIPLICAZIONE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1279 "8.tab.c"
+#line 1280 "8.tab.c"
     break;
 
   case 23: /* equivalenza: EQUIVALENZA valore_multiplo  */
 #line 96 "8.y"
                                                                                 {(yyval.tp) = makeTree("EQUIVALENZA", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1285 "8.tab.c"
+#line 1286 "8.tab.c"
     break;
 
   case 24: /* equivalenza: EQUIVALENZA valore blocco  */
 #line 97 "8.y"
                                                                                                 {(yyval.tp) = makeTree("EQUIVALENZA", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1291 "8.tab.c"
+#line 1292 "8.tab.c"
     break;
 
   case 25: /* equivalenza: EQUIVALENZA blocco valore  */
 #line 98 "8.y"
                                                                                                 {(yyval.tp) = makeTree("EQUIVALENZA", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1297 "8.tab.c"
+#line 1298 "8.tab.c"
     break;
 
   case 26: /* equivalenza: EQUIVALENZA blocco_multiplo  */
 #line 99 "8.y"
                                                                                         {(yyval.tp) = makeTree("EQUIVALENZA", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1303 "8.tab.c"
+#line 1304 "8.tab.c"
     break;
 
-  case 27: /* valore_multiplo: valore_multiplo valore  */
+  case 27: /* valore_multiplo: valore  */
 #line 102 "8.y"
-                                                                                {(yyval.tp) = makeTree("NUMERO", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1309 "8.tab.c"
+                                                                                                {(yyval.tp) = (yyvsp[0].tp);}
+#line 1310 "8.tab.c"
     break;
 
-  case 28: /* valore_multiplo: valore  */
+  case 28: /* valore_multiplo: NUMERO valore_multiplo  */
 #line 103 "8.y"
-                                                                                                                {(yyval.tp) = makeTree("NUMERO", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1315 "8.tab.c"
+                                                                                                {(yyval.tp) = makeTree("NUMERO", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
+#line 1316 "8.tab.c"
     break;
 
-  case 29: /* blocco_multiplo: blocco  */
-#line 106 "8.y"
-                                                                                                {(yyval.tp) = makeTree("BLOCCO", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1321 "8.tab.c"
+  case 29: /* valore_multiplo: IDENTIFICATORE valore_multiplo  */
+#line 104 "8.y"
+                                                                                        {(yyval.tp) = makeTree("IDENTIFICATORE", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
+#line 1322 "8.tab.c"
     break;
 
-  case 30: /* blocco_multiplo: blocco blocco_multiplo  */
+  case 30: /* blocco_multiplo: blocco  */
 #line 107 "8.y"
-                                                                                                {(yyval.tp) = makeTree("BLOCCO", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
-#line 1327 "8.tab.c"
+                                                                                                {(yyval.tp) = makeTree("BLOCCO", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
+#line 1328 "8.tab.c"
     break;
 
-  case 31: /* valore: NUMERO  */
-#line 109 "8.y"
-                                                                                                        {(yyval.tp) = makeTree("NUMERO", NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1333 "8.tab.c"
+  case 31: /* blocco_multiplo: blocco blocco_multiplo  */
+#line 108 "8.y"
+                                                                                                {(yyval.tp) = makeTree("BLOCCO", (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL, NULL);}
+#line 1334 "8.tab.c"
     break;
 
-  case 32: /* valore: IDENTIFICATORE  */
+  case 32: /* valore: NUMERO  */
 #line 110 "8.y"
+                                                                                                        {(yyval.tp) = makeTree("NUMERO", NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
+#line 1340 "8.tab.c"
+    break;
+
+  case 33: /* valore: IDENTIFICATORE  */
+#line 111 "8.y"
                                                                                                         {(yyval.tp) = makeTree("IDENTIFICATORE", NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
-#line 1339 "8.tab.c"
+#line 1346 "8.tab.c"
     break;
 
-  case 33: /* case: CASE '(' espressione ')' casi  */
-#line 113 "8.y"
+  case 34: /* case: CASE '(' espressione ')' casi  */
+#line 114 "8.y"
                                                                                 {(yyval.tp) = makeTree("CASE", makeTree((yyvsp[-3].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-2].tp), makeTree((yyvsp[-1].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[0].tp), NULL, NULL, NULL);}
-#line 1345 "8.tab.c"
+#line 1352 "8.tab.c"
     break;
 
-  case 34: /* casi: '[' '(' valore_multiplo ')' valore ']'  */
-#line 116 "8.y"
-                                                                        {(yyval.tp) = makeTree("CASO", makeTree((yyvsp[-5].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), makeTree((yyvsp[-4].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-3].tp), makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL);}
-#line 1351 "8.tab.c"
-    break;
-
-  case 35: /* casi: '[' '(' valore_multiplo ')' valore ']' casi  */
+  case 35: /* caso: '[' ELSE valore ']'  */
 #line 117 "8.y"
-                                                                        {(yyval.tp) = makeTree("CASO", makeTree((yyvsp[-6].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), makeTree((yyvsp[-5].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-4].tp), makeTree((yyvsp[-3].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-2].tp), makeTree((yyvsp[-1].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[0].tp));}
-#line 1357 "8.tab.c"
-    break;
-
-  case 36: /* casi: '[' ELSE valore ']'  */
-#line 118 "8.y"
                                                                                                 {(yyval.tp) = makeTree("CASO ELSE", makeTree((yyvsp[-3].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL);}
-#line 1363 "8.tab.c"
+#line 1358 "8.tab.c"
+    break;
+
+  case 36: /* caso: '[' '(' valore_multiplo ')' valore ']'  */
+#line 118 "8.y"
+                                                                                {(yyval.tp) = makeTree("CASO", makeTree((yyvsp[-5].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), makeTree((yyvsp[-4].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-3].tp), makeTree((yyvsp[-2].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), (yyvsp[-1].tp), makeTree((yyvsp[0].txt), NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL);}
+#line 1364 "8.tab.c"
+    break;
+
+  case 37: /* casi: caso  */
+#line 121 "8.y"
+                                                                                                                {(yyval.tp) = (yyvsp[0].tp);}
+#line 1370 "8.tab.c"
+    break;
+
+  case 38: /* casi: caso casi  */
+#line 122 "8.y"
+                                                                                                                {(yyval.tp) = makeTree("BLOCCO CASI", (yyvsp[-1].tp), (yyvsp[0].tp), NULL, NULL, NULL, NULL, NULL);}
+#line 1376 "8.tab.c"
     break;
 
 
-#line 1367 "8.tab.c"
+#line 1380 "8.tab.c"
 
       default: break;
     }
@@ -1556,7 +1569,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 121 "8.y"
+#line 125 "8.y"
    
 
 int main (void) {

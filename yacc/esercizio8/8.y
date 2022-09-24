@@ -56,7 +56,7 @@
 %token      ']'
 
 %type 		<txt> NUMERO IDENTIFICATORE SOMMA DIFFERENZA EQUIVALENZA MOLTIPLICAZIONE LET CASE ELSE '(' ')' '[' ']'
-%type       <tp> input valore espressione blocco somma differenza moltiplicazione equivalenza valore_multiplo blocco_multiplo case casi
+%type       <tp> input valore espressione blocco somma differenza moltiplicazione equivalenza valore_multiplo blocco_multiplo case caso casi
 
 %%
 
@@ -68,7 +68,7 @@ blocco :  espressione										{$$ = makeTree("BLOCCO", $1, NULL, NULL, NULL, NU
 	| '(' espressione ')'									{$$ = makeTree("BLOCCO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL);}
 	;
 
-espressione : '(' somma	')'		 							{$$ = makeTree("ESPRESSIONE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $2, makeTree($3, NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL);}
+espressione : somma				 							{$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
 	| differenza			 								{$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
 	| moltiplicazione										{$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
 	| equivalenza			 								{$$ = makeTree("ESPRESSIONE", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
@@ -99,12 +99,13 @@ equivalenza : EQUIVALENZA valore_multiplo					{$$ = makeTree("EQUIVALENZA", $2, 
 	| EQUIVALENZA blocco_multiplo							{$$ = makeTree("EQUIVALENZA", $2, NULL, NULL, NULL, NULL, NULL, NULL);}
 	;
 
-valore_multiplo : valore_multiplo valore					{$$ = makeTree("NUMERO", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
-	| valore												{$$ = makeTree("NUMERO", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
+valore_multiplo : valore									{$$ = $1;}
+	| NUMERO valore_multiplo								{$$ = makeTree("NUMERO", $2, NULL, NULL, NULL, NULL, NULL, NULL);}
+	| IDENTIFICATORE valore_multiplo						{$$ = makeTree("IDENTIFICATORE", $2, NULL, NULL, NULL, NULL, NULL, NULL);}
 	;
 
 blocco_multiplo : blocco									{$$ = makeTree("BLOCCO", $1, NULL, NULL, NULL, NULL, NULL, NULL);}
-	| blocco blocco_multiplo								{$$ = makeTree("BLOCCO", $1, $2, NULL, NULL, NULL, NULL, NULL);}
+	| blocco blocco_multiplo								{$$ = makeTree("BLOCCO", $2, NULL, NULL, NULL, NULL, NULL, NULL);}
 
 valore : NUMERO 											{$$ = makeTree("NUMERO", NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
 	| IDENTIFICATORE 										{$$ = makeTree("IDENTIFICATORE", NULL, NULL, NULL, NULL, NULL, NULL, NULL);}
@@ -113,9 +114,12 @@ valore : NUMERO 											{$$ = makeTree("NUMERO", NULL, NULL, NULL, NULL, NULL
 case : CASE '(' espressione ')' casi 						{$$ = makeTree("CASE", makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $5, NULL, NULL, NULL);}			
 	;
 
-casi : '[' '(' valore_multiplo ')' valore ']'				{$$ = makeTree("CASO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $5, makeTree($6, NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL);}
-	| '[' '(' valore_multiplo ')' valore ']' casi			{$$ = makeTree("CASO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $5, makeTree($6, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $7);}
-	| '[' ELSE valore ']'									{$$ = makeTree("CASO ELSE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL);}
+caso : '[' ELSE valore ']'									{$$ = makeTree("CASO ELSE", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL);}
+	| '[' '(' valore_multiplo ')' valore ']'				{$$ = makeTree("CASO", makeTree($1, NULL, NULL, NULL, NULL, NULL, NULL, NULL), makeTree($2, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $3, makeTree($4, NULL, NULL, NULL, NULL, NULL, NULL, NULL), $5, makeTree($6, NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL);}
+	;
+
+casi : caso													{$$ = $1;}
+	| caso casi												{$$ = makeTree("BLOCCO CASI", $1, $2, NULL, NULL, NULL, NULL, NULL);}
 	;
 
 %%   
