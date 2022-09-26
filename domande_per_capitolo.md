@@ -119,7 +119,7 @@
 
 # Capitolo 3
 
-1. Che cos'è il legame e un ambiente?
+1. Che cosa sono il legame e l'ambiente?
 
     Il legame (binding) è l'associazione esistente tra un nome e un oggetto mentre l'ambiente (environment) sono gli insiemi dei legami esistenti dipendenti da uno specifico punto del programma, quindi può essere condizionato dal codice eseguito in precedenza quindi la storia del programma.
 
@@ -134,3 +134,179 @@
     - il caricamento del programma in memoria
     - l'esecuzione
     - ...
+
+4. Quali tipi di binding esistono?
+
+    Esistono 2 tipi di binding, ovvero il binding statico (viene eseguito prima dell'esecuzione della prima istruzione) e binding dinamico (che avviene durante l'esecuzione)
+
+5. Che cosa sono le dichiarazioni?
+
+    Le dichiarazioni sono un meccanismo (implicito o esplicito) col quale si crea un legame e si modifica l'ambiente
+
+6. Che cosa sono i blocchi?
+
+    Sono regioni del programma nelle quali sono contenute dichiarazioni
+
+7. Quali operazioni si possono effettuare su un ambiente?
+
+    - Si possono creare associazioni nome-oggetto denotato (naming)
+    - Si possono distruggere le associazioni nome-oggetto denotato (unnaming)
+    - Si possono fare riferimenti ad oggetto denotato meiante il suo nome (referencing)
+    - Si possono diasttivare associazione nome-oggetto denotato
+    - Si possono riattivare ddelle associazioni nome-oggetto denotato
+
+8. Quali sono le operazioni possibili sugli oggetti denotabili?
+
+    La creazione, l'accesso, la modifica (se l'oggetto è modificabile) e la distruzione di tali oggetti. La creazione e la distruzione fanno riferimento a dati in memoria (variabili) e il codice (procedure).
+
+9. Differenze tra scope statico e dinamico
+
+    Lo scope statico ha le informazioni complete dal testo del programma, le associazioni sono note a tempo di compilazione è complesso da implementare ma è più efficiente
+    Lo scope dinamico ha le informazioni derivanti dall'esecuzione e spesso a causa di programmi meno leggibili, però è più flessibile e quindi le modifiche sono possibili all'istante ed è più semplice da implementare
+
+10. Cosa si intende per aliasing?
+
+    Si intende una uguale denomina dello stesso oggetto (puntatori, passaggio di parametro per riferimento alle procedure), possono portare all'overloading e quindi serve il contesto per poter capire il vero funzionamento della funzione
+
+11. Da che cosa è determinato l'ambiente?
+
+    L'ambiente è determianto da regole di scope (statico o dinamico), dalle regole specifiche (come ad esempio quando sia possibile la visibilità di una dichiarazione nel blocco), regole per il passaggio dei parametri e le regole di binding (shallow o deep)
+
+12. Cosa sono i moduli e a che cosa servono?
+
+    Per evitare grossi conglomerati di codice e problemi nell'information hiding, si sviluppano i moduli che sono grosse parti di codice che portano altre funzionalità e che permettono anche l'information hiding, però con nomi simili possono possono portare a un overloading provocando comportamenti imprevedibili
+
+---
+
+# Capitolo 4
+
+1. Come viene riorganizzata la Ram solitamente?
+
+    - 0 - 0xFFF è la parte riservata al sistema operativo
+    - 0x1000 - ww è la parte riservata al .text del codice del programma
+    - ww - xx è la parte riservata alle costanti, variabili del programma principale nel .data
+    - xx - yy è la parte della heap per i dati dinamici come liste e alberi
+    - yy -zz è la parte dedicata allo stack per le chiamate di procedura e allo stack di attivazione
+    - il registro r13 (SP, stack pointer) è il registro dedito a puntare alla cima dello stack
+    - il registro r11 (FP, frame pointer) è il redistro dedito a puntare al "frame" della procedura in esecuzione
+
+2. Quali sono i tipi di allocazione alla memoria?
+
+    - Vi sono 3 meccanismi di allocazione della memoria:
+      - statica, la memorai è allocata a tempo di compilazione
+      - dinamica, la memoria è allocata a tempo di esecuzione di cui si devono ricordare
+        - la pila (stack) dove gli oggetti sono allocati con politica LIFO (last in first out)
+        - la heap dove gli oggetti sono allocati e de-alloccati in qualsiasi momento
+
+3. Cosa si intende per allocazione statica?
+
+    Si intende che gli oggetti hanno un indirizzo assoluto, mantenito per tutta l'esecuzione. Le variabili globali, le costanti e le tabelle usate dal supporto a run time sono solitamente alloccate saticamente. Non permettono la ricosione e viene forzato più spazio rispetto a quello necessario; daltronde sono ad accesso diretto e veloce
+
+4. Cosa si intende per allocazione dinamica?
+
+    Si intende che ogni istanza di procedura in esecuzione possiede un record di attivazione (RdA o freame) e può contenere qualsiasi tipo di oggetto
+
+5. Che cos'è il link statico?
+
+    Il link statico è il metodo per poter accedere ai RdA degli antenati, poiché ogni RdA contiene un puntatore all'ultimo RdA del genitore, definendo una catena statica, ovvero la lista dei RdA degli antenati
+
+6. Riassunto dell'ultima parte
+
+    Il link dinamico (procedura chiamante) dipende dalla sequenza di esecuzione del progeamma, definendo la catena dinamica
+    Il link statico (procedura genitore) dipende dalla struttura delle dichiarazioni di procedure, definendo la catena statica
+
+7. Come si crea il link statico?
+
+    La procedura chiamante determina il link statico della procedura chiamata, quindi passa alla procedura chiamata che lo inserisce nel suo RdA.
+
+8. Come si possono ridurre i costi?
+
+    Per ridurre i costi si è implementato il display, che è un unico array contenente il link ai RdA visibili al momento attuale, quindi evitando di dover ripercorrere tutta la catena statica
+
+9. Come si aggiorna il display?
+
+    Per aggiornare il display è necessario aggiornare il display all'ingresso di ogni procedura, all'uscita della procedura viene ripristinato il valore originale
+
+10. Che cos'è la CRT?
+
+    La CRT è la tabella centrale dei riferimenti, quindi evita le lunghe scansioni della A-list, mantenendo tutti i nomi distinti del programma, associati alla lista delle associazioni di quel nome; tempo costante per l'accesso alle variabili
+
+---
+
+# Capitolo 5
+
+1. In che cosa differiscono i paradigmi di programmazione funzionale ed imperativo?
+
+    L'imperativo e il funzionale differiscono nei meccanismi di controllo adottati, quindi l'assegnazione, sequenzializzazione e iterazione fanno parte di un paradigma imperativo, mentre valutazione di espressioni e ricorsione sono per il dichiarativo
+
+2. Che cosa sono le espressioni?
+
+    Sono un insieme di identificatori, letterali e operatori che possono produrre un risultato, un possibile effetto collaterale e possono divergere
+
+3. Che cos'è lo zucchero sintattico?
+
+    Intendiamo per zucchero sintattico, delle scritture alternative di una espressione (comando) per migliorare la sua leggibilità
+
+4. Cos'è la notazione polacca?
+
+    Vi sono due notazioni polacche, diretta ed inversa. Sono due metodi di notazioni che non necessitano parentesi, cambiando però l'ordine di identificatori e operatori. C'è la possibilità di omettere le parentesi
+
+5. Quali sono le reogle di precedenza?
+
+    Ogni linguaggio di programmazione fissa le sue regole di precedenaza tra operatori; solitamente gli operatori aritmetici hanno la precedenza su quelli di confronto che hanno precedenza su quelli logici solitamente.
+
+6. Quali sono gli effetti collaterali?
+
+    Gli effetti collaterali sono tipicamente la restituzione di un valore ma vi è la modifica dello stato del programma (esempio, valutazione espressione -> chiamate di funzione -> funzione modifica la memoria)
+
+7. Cosa si intende per linguaggi funzionali puri?
+
+    Si intende che la computazione con tali linguaggi si riduce alla sola valutazione di espressioni senza effetti collaterali
+
+8. Che cosa si intende la valutazione lazy?
+
+    Si intende che vengono valutati gli operandi quando sono strettamente necessari
+
+9. Cosa si intende per valutazione corto-circuito?
+
+    Si intende non è necessario valutare ogni singolo booleano poiché è sufficiente la prima valuazione in se, poichè non modificherebbe il risultato
+
+10. Che cosa sono i comandi?
+
+    I comandi sono la parte del codice la cui valutazione non restituisce un valore ma ha un effetto collaterale (modifica dello stato). Solitamente sono tipici del paradigma imperativo e non sono molto presenti nei linguaggi funzionali e logici
+
+11. Che cos'è l'assegnamento?
+
+    L'assegnamento è l'inserimento in una locazione, cella di un valore ottenuto valutando una espressione.
+
+12. Che cosa sono rval e lval?
+
+    Sono due metodi di assegnamento di una variabile, lval solitamente è la denotazione della locazione di memoria, mentre rval è il conetenuto della locazione
+
+13. Differenza tra espressione e comando
+
+    Sintatticamente il coamndo è importante per l'effetto collaterale ottenuto da tale comando, mentre l'espressione è importante per il valore restituito.
+
+14. Cosa si intende per pre e post incremento?
+
+    Per pre incremento si intende la restituzione immediata del valore incrementato, mentre il post è restituito il valore originale ma dopo viene incrementato successivamente al termine della procedura
+
+15. Che cos'è il comando goto?
+
+    Il comando goto è il comando che permette di saltare parti del codice per passare da una sezione ad un'altra senza processare il resto del codice. Molto flessibile ma rende illeggibile il codice, complicandolo.
+
+16. Che cos'è l'iterazione?
+
+    L'iterazion e la ricorsione son i due meccanismi che permettono di ottenere tutte le funzioni computabili. Può essere indeterminata con cicli controllati logicamente o determinata con cicli controllati numericamente.
+
+17. Che cos'è la tail recursion?
+
+    La tail recursion si dice come di coda, è la chiamata di una funzione, che attende il suo risultato senza fare nulla, ad un'altra funzione che deve riportare il risultato. Simulo un ciclo while
+
+---
+# Capitolo 6
+
+1. Quali sono i due modi principali per il passaggio dei parametri?
+
+    Uno è per valore, quindi il parametro formale è una variabile locale, preso quindi l'rvale
+    L'altro è per riferimento che è passato per riferimento (indirizzo) all'attuale, l-value
