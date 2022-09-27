@@ -85,7 +85,7 @@
     - uno tra (un or tra i vari valori di una certa lista di elementi)
     - opposto (rappresentato da ^ davanti ad i caratteri successivi come [^a-z] quindi prende solo le minuscole)
 
-8. Enuncia il teorema di equivalenza.
+8. Come possono essere descritti i linguaggi?
 
     I linguaggi regolari possono essere descritti in modi diversi:
     - espressioni regolari
@@ -95,7 +95,7 @@
 
     Esiste anche un automa deterministico minimo (quindi con il minor numero di stati), chiamato il DFA minimo.
 
-9. Cos'è uno scanner?
+9.  Cos'è uno scanner?
 
     Uno scannere (lexer) deve risolvere un problema più complesso del semplice riconoscimento di una singola espressione regolare, ovvero deve dividere la stringa d'ingresso in lessemi, ciascuno riconosciuto da un'espressione regolare.
 
