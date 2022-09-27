@@ -531,5 +531,3 @@
 17. Cos'è l'RPC?
 
     Si tratta di un ulteriore meccanismo di comunicazione che viene usato su una macchina remota solitamente (quindi sistemi distribuiti e client-server). Si invola la procedura su una macchina remota e la comunicazione avviene passando dei parametri o il risultato e viene attivato il processo all'arrivo della richiesta.
-
-18. 
