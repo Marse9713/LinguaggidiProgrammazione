@@ -1,4 +1,4 @@
-<h1> DOMANDE POSSIBILI IN LINGUAGGI DI PROGRAMMAZIONE PER CAPITOLO <h1>
+<h2> DOMANDE POSSIBILI IN LINGUAGGI DI PROGRAMMAZIONE PER CAPITOLO <h2>
 
 # Capitolo 1
 <p>
@@ -401,4 +401,135 @@
 
     Una classe definisce un insieme di oggetti specificando, un insieme di campi con relativo tipo, un insieme di metodi con relativo codice, visibilità dei campi e metodi e costruttori degli oggetti.
 
-2. 
+2. Quali sono gli aspetti nella definizione di una classe?
+
+    l'information hiding e incapsulamento e definisco cosa deve essere visibile all'esterno o meno (quindi uso private, public e protected), l'astrazione sui dati e sul controllo quindi assegno un nome alla classe, ai campi e ai metodi ed infine la possibilità di estendere e riusare il codice, quindi poter definire delle sottoclassi
+
+3. Cosa sono i linguaggi prototype based?
+   
+   Sono dei linguaggi OO che usano gli oggetti come record con metodi, non hanno la necessità di pattern predefiniti e sono preseti nei linguaggi con sistema di tipo dinamico (esempio JS).
+
+4. Cosa sono i linguaggi a modello riferimento-variabile?
+   
+    Normalmente gli oggetti usano il modello a riferimento (quindi variabile contiene un puntatore all'oggetto immagazzinato nella memoria).
+    I modelli a valore invece sono variabili contenute nei campi dell'oggetto che sono memorizzati nello stack, quindi si ha una creazione implicita degli oggetti (maggiore efficienza ma spreco di memoria).
+
+5. Cosa sono le sottoclassi?
+
+    Le sottoclassi sono classi che creano nuovi metodi o campi ed estendono le classi principali, non toccando la classe principale (avendo anche tipo compatibili tra classi)
+
+6. Cosa si intende per ereditarietà?
+
+    Si intende la definzione di sottoclassi, con un meccanismo di riuso e condivisione del codice, permettendo l'estensione del codice e la modificabilità del codice.
+
+7. Cosa si intende per ereditarietà singola?
+
+    Si intende che ogni classe eredita al più da una sola super classe immediata.
+
+8. Cosa si intende per ereditarietà multipla?
+
+    una classe può ereditare da più di una super-classe immediata.
+
+9. Cosa si intende per polimorfismo di sottotipo?
+
+    Si può dire che è un meccanismo che permette di usare un oggetto in un altro contesto ed è la relazione tra le interfacce di due classi (interfaccia = insime dei campi e metodi pubblici di una classe)
+
+10. Cos'è il duck typing?
+
+    Sostanzialmente è se l'uso di oggetti in un contesto è lecito e se possiede tutti i metodi necessari, indipendentemente dal suo tipo (sistema a tipo dinamico).
+
+---
+
+# Capitolo 9
+
+1. Differenze tra Haskell e Scheme
+
+    Sono entrambi fortemente tipati ma Scheme ha come controllo di tipo dinamico e Haskell usa un controllo di tipo statico. Poi Scheme è un linguaggio eager, quindi una valutazione viene fatta quando tutto appena possibile, mentre Haskell è lazy, quindi la valutazione di un argomento viene fatta solo se necessaria.
+
+2. Vantaggi e svantaggi della valutazione lazy.
+
+    Il vantaggio maggiore è quello di evitare lavoro inutile quindi se non necessario, non valuto nemmeno il codice. Più programmi terminano è più programmi non generano errori. Per gli svantaggi, valuto la possibilità di avere potenziali ripetizioni delle esecuzioni, evitabili con il call-by-need e le espressioni con side-effect sono complicate da gestire.
+
+3. Che cosa sono i thunk?
+
+    Sono dei sottoprogrammi che vengono creati, automaticamente, per assistere una chiamata ad un'altra subroutine, quindi sono pricipalmente rappresentati da un calcolo aggiuntivo di un sottoprogramma che deve calcolare espressioni complesse.
+
+---
+# Capitolo 10 e 11 sono tutti esercizi per poter fare Haskell, Lex e Yacc
+
+# Capitolo 12
+
+1. Cosa si intende per programmazione concorrente?
+
+    Si intende una programmazione che mira a sfruttare l'hardware, quindi aumentando il parallelismo e la possibilità di divide un compito in sottocompiti da svolgere in parallelo e in maniera indipendente, gestendo l'hardware distribuito.
+
+2. Come si realizza la concorrenza fisica?
+
+    Viene fatta a livello di macchina fisica e si prevede l'esecuzione simultanea di istruzioni, con diversi gradi di granularità (pipeline, superscalari, istruzioni vettoriali, ...)
+
+3. Come si realizza la concorrenza logica?
+
+    Si lavora a livello di linguagio di programmazione, quindi si cerca di parallelizzare l'esecuzione di un singolo programma e tramite anche all'esecuzione di algoritmi in parallelo. Un altro tipo di programmazione è lo sfruttamento del multithread, ovvero più thread o processi attivi contemporaneamente che usano la stessa macchina fisica. Come altro modo vi è la programmazione distribuita, ovvero tramite i programmi concorrenti, eseguito su macchine separate (come i multicomputer) e non si assume la memoria condivisa.
+
+4. Cos'è la SOC?
+
+    La SOC è un paradigma di programmzazione basata sulla composizione di componenti (servizi) che interagiscono (Service Oriented Computing)
+
+5. Cos'è il cloud computing?
+
+    Ha lo stesso scopo della SOC ma con meno struttura, usando una granularità più fine, usate per lo sviluppo di applicazioni distribuite su scala planetaria, con accesso on demand.
+
+6. Alcuni aspetti della programmazione concorrente
+
+    Molti sono i modi per strutturare la programmazione concorrente ma in particolare, sono necessarie due parti fondamentali:
+    - la comunicazione tra i thread per avere le informazioni necessarie
+    - la sincronizzazione per regolare la velocità dei thread
+
+7. Cosa sono i thread?
+   
+    I thread del controllo è l'esecuzione di comandi, una specifica computazione con spazio di indirizzamento comune
+
+8. Cosa sono i processi?
+
+    Sono un generico insieme di istruzioni in esecuzione con il proprio spazio di indirizzamento e un processo può contenere più thread divisi
+
+9. Quali sono i meccanisimo di comunicazione?
+
+    - Memoria condivisa, accesso in lettura e scrittura ad una zona comune di memoria
+    - Scambio di messaggi, usando primitive esplicite di invio e ricezione di messaggi, tramite un canale usando un percorso logico fra mittente e destinatario
+    - Blackboard, si intende un modello intermedio fra i precedenti ovvero che condividono la stessa zona di memoria e comunicano tramite send e recive.
+
+10. Quali sono i meccanismi di sincronizzazione'
+
+    Sono i meccanismi che permettono di controllare l'ordine relativo delle varie attività dei processi. Le race condition sono uno degli strumenti per questo scopo, che valuta i programmi concorrenti intrinsecamente, dando un diverso ordine di esecuzione, escludendo quelle non accettabili. Poi parliamo di mutua esclusione dove una regione di codice dove ci sono dati che non possono essere accessibili contemporaneamente a più processi. Poi abbiamo la sincronizzazione su condizione e semplicemente sospende l'esecuzione di un processo fino al verificarsi di una opportuna condizione.
+
+11. Come si implementa la sincronizzazione?
+
+    - Attesa attiva (busy waiting o spinning), ha senso solo su multiprocessori
+    - sincronizzazione basata sugli scheduler, con sospensione del thread
+
+12. Cosa è la sincronizzazione su condizione con barriere?
+
+    Si tratta di un meccanismo di sincronizzazione e si basa sull'attesa che una condizione globale non venga soddisfatta.
+
+13. Cosa sono i semafori?
+
+    Si tratta di un costrutto per la sincronizzazione di thread per bloccare o far partire i singoli thread.
+
+14. Cosa sono i monitor?
+
+    Sono dei semplici contatori condivisi per la gestione corretta delle risorse codnivise, venendo affidata al programmatore.
+
+15. Come può essere eseguita la comunicazione mediante scambio di messaggi?
+
+    Può essere o sincrona (quindi l'invio e la ricezione di un messaggio avviene allo stesso tempo) ed asincrona (l'invio e la ricezione di un messaggio possono avvenire in momenti differenti)
+
+16. Cosa sono i canali?
+
+    Sono strutture simi alle porte ma più in generale sono astratte, usate nella comunicazione tra processi e non si fanno ipotesi sul numero di processi coinvolti o sulla direzione dei dati
+
+17. Cos'è l'RPC?
+
+    Si tratta di un ulteriore meccanismo di comunicazione che viene usato su una macchina remota solitamente (quindi sistemi distribuiti e client-server). Si invola la procedura su una macchina remota e la comunicazione avviene passando dei parametri o il risultato e viene attivato il processo all'arrivo della richiesta.
+
+18. 
