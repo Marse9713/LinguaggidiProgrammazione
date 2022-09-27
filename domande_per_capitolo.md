@@ -310,3 +310,95 @@
 
     Uno è per valore, quindi il parametro formale è una variabile locale, preso quindi l'rvale
     L'altro è per riferimento che è passato per riferimento (indirizzo) all'attuale, l-value
+
+2. Quali sono i metodi per il passaggio delle funzioni?
+
+    Alcuni linguaggi possono passare funzioni come argomenti di altre funzioni (procedure), dove le funzioni sono passate come oggetti di secondo livello.
+    Altri possono restituire funzioni come risultato di funzioni, ovvero sono trattate come funzioni di primo livello
+
+3. Quali sono le politiche di binding e su quale ambiente vengono applicate?
+
+    Vengono applicate sull'ambiente in uso se si parla di scope statico mente per lo scope dinamico, il deep binding viene creato l'ambiente al momento della creazione del legame, mentre lo shallow binding viene creato al momento della chiamata di varie funzioni
+
+4. Come funziona la gestione delle eccezioni?
+
+    Viene definito un insime di eccezioni, il programma la rileva l'eccezione e viene fatto un raise an exception, un gestore si occupa dell'eccezione sollevata e per arrivare al gestore, se necessario, va cercato tramite la catena dinamica del RdA per arrivare al primo gestore disponibile.
+
+5. Cosa succede se un'eccezione si propaga?
+
+    La routine termina. l'eccezione viene risollevata al punto di chiamata e se l'eccezione non è gestita dal chimante l'eccezione si propaga lungo la catena dinamica si toglie un RdA e si passa al relativo chiamante, finché non si arriva al top-level che fornisce un gestore deaful e ferma il programma con un messaggio di errore.
+
+---
+
+# Capitolo 7
+
+1. Quando avviene il controllo di tipo?
+
+    Dipende se statico o dinamico, poiché lo statico avviene a tempo di compilazione, mentre quello dinamico viene fatto durante l'esecuzione del codice.
+
+2. Quali sono i vantaggi e gli svantaggi del controllo di tipo statico?
+
+    Il vantaggio maggiore è la prevenzione e anticipazione degli errori di tipo; poi si garantisce un carico di lavoro minore, poiché a tempo di esecuzione molti controlli possono essere omessi ma come contro ha la possibilità di essere prolisso e meno flessibile.
+
+3. Quali sono i vantaggi e svantaggi del controllo di tipo dinamico?
+
+    I vantaggi sono la flessibilità e possibilità di avere un codice più conciso e test ottimizati il più possibile (test non pesanti) ma il grosso svantaggio è che va eseguito il codice per trovare l'errore.
+
+4. Cosa è il strong type system?
+
+    Il strong type system è il sistema di tipi forte che rende difficile che errori di tipo vengano rilevati (type safe), quindi il problema di errore di tipo non avverrà mai durante l'esecuzione
+
+5. Cosa è il weak type system?
+
+    Il weak type system è il sistema di tipi debole che permette una maggiore flessibilità ma a costo della sicurezza poiché è possibile avere problemi relazionati ad errori di tipo sia durante l'esecuzione, sia durante la compilazione
+
+6. Cosa si intende per Dope Vector (descrittore del vettore)?
+
+    Si intende un vettore dove sono mantenute tutte le informazioni necessarie, come il puntatore all'inizio dell'array, il numero dimensioni, il limite inferiore o superiore e l'occupazione per ogni dimensione. Il dope vector è memorizzato nella parte fissa del RdA, e per fare l'accesso al vettore dati solitamente si calcola l'indirizzo a run-time, usando esattamente il dope vector
+
+7. Cosa sono i puntatori e come si possono usare?
+
+    I puntatori identificano una locazione di memoria, l-value e fanno riferimento a dei valori o a delle costanti (solitamente null); i puntatori sono nel tipo del puntatore specifico del tipo dell'oggetto puntato e le operazioni fattibili sono la creazione, la dereferenziazione e il test di uguaglianza. In c si può anche eseguire l'aritmetica sui puntatori.
+
+8. Cosa si intende per Dangling refernce?
+
+    Questo è uno dei proble con l'uso dei puntatori, ovvero si fa riferimento ad unazona della memoria che contiene dati di un tipo non compatibile, quindi arbitrari. Le possibile cause sono l'aritmetica sui puntatori (uscita dalla memoria alloccata), la deallocazione dello spazio sulla heap (free(p)) o la deallocazione dei RdA. Per risolvere il problema va ristretto l'uso dei puntatori e non deve essereci nessuna esplicita deallo cazione e implementato una garbage collection.
+
+9. Quando si dice che due relazioni di tipo sono equivalenti?
+
+    Quando due espressioni denotano "lo stesso tipo".
+
+10. Quando invece di dicono di compatibilità?
+
+    Quando la prima funzione è compatibile con la seconda, ovvero i valori della prima possono essere usati in contesti dove ci si attende valori della seconda ma non è necessariamente detto che sia possibile fare anche viceversa.
+
+11. Quali tipi di equivalenza ci sono?
+
+    - Per nome, quindi due tipi sono equivalenti se sono lo stesso nome, identificatore di tipo enon è sufficiente che leespressioni siano di tipo uguali
+    - Per nome lasca, non sono per nome ma sono degli alias per determinare la stessa variabile ma non genera un nuovo tipo, è solo una rinomina della variabile.
+    - Per equivalenza strutturale, ovvero è solo necessario controllare che se l'espansione delle definizioni di una struttura genera la stessa espressione di tipo della seconda, allora le strutture sono equivalenti strutturalmente.
+
+12. Cos'è il polimorfismo'
+
+    Si intende per polimorfismo, una stessa espressione che può assumere diversi tipi, distinguendole tra polimorfismo ad hoc o overloading (dove uno stesso simbolo denota diversi significati) e due tipi di polimorfismi universali, parametrico esplicito o implicito (infinità di diversi tipi, ottenuti per istanziazione da un unico schema di tipo generale) e il polimorfismo di sottotipo (usato nei linguaggi ad oggetti e può assumere diverse forme a seconda del linguaggio di programmazione dove i tipi sono compatibili)
+
+--- 
+# Capitolo 7
+
+1. Cosa si intende peer principio di incapsulamento?
+
+    Si intende l'implementazione di una parte di codice o di un programma che è indipendente dalla rappresentazione (ovvero due implementazioni corrette di un tipo non sono distinguibili dal contesto), sono modificabili senza dover interferire col contesto ed è anche usato per il nascondimento di informazioni (information hiding)
+
+2. Cosa sono i moduli?
+
+    I moduli sono un costrutto generale per l'information hiding, evitanod i conflitti di nome, facendo si che vi sia una compilazione separata, consesnte la creazione di interfaccie più sofisticate e i moduli sono visibili all'esterno, ma in maniera ristretta. Vanno eseguite delle importazioni ed esportazioni per utilizzare i costrutti di tali moduli.
+
+---
+
+# Capitolo 8
+
+1. Cos'è una classe?
+
+    Una classe definisce un insieme di oggetti specificando, un insieme di campi con relativo tipo, un insieme di metodi con relativo codice, visibilità dei campi e metodi e costruttori degli oggetti.
+
+2. 
